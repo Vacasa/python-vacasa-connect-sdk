@@ -1,5 +1,5 @@
 # python-vacasa-connect-sdk
-A python SDK for interacting with the connect.vacasa.com API
+A Python 3.6 SDK for interacting with the connect.vacasa.com API
 
 # Prerequisites
 Before you can use this SDK you'll need access to the 
