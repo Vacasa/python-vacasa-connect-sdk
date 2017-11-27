@@ -51,7 +51,7 @@ class VacasaConnect:
             self._refresh_token = tokens.get('refresh_token')
         else:
             now = pendulum.now()
-            expiration = pendulum.parse(self._refresh_token.get('expires_at'))
+            expiration = pendulum.parse(self._refresh_token['expires_at'])
 
             # refresh the token if it has expired
             if now > expiration:
@@ -72,7 +72,7 @@ class VacasaConnect:
         headers = {'content-type': 'application/json'}
 
         r = self._post(f"{self.endpoint}/auth", payload, headers)
-        tokens = r.json().get('data').get('attributes')
+        tokens = r.json().get('data', {}).get('attributes', {})
         self._validate_tokens(tokens)
 
         return tokens
@@ -82,11 +82,11 @@ class VacasaConnect:
         url = f"{self.endpoint}/auth/refresh"
         payload = {
             'data': {
-                'refresh_token': self._refresh_token.get('token')
+                'refresh_token': self._refresh_token['token']
             }
         }
         r = self._post(url, payload)
-        tokens = r.json().get('data').get('attributes')
+        tokens = r.json().get('data', {}).get('attributes', {})
         self._validate_tokens(tokens)
 
         return tokens
@@ -105,7 +105,7 @@ class VacasaConnect:
         self._populate_tokens()
 
         return {
-            'Authorization': f"Bearer {self._access_token.get('token')}",
+            'Authorization': f"Bearer {self._access_token['token']}",
             'Accept-Language': self.language,
             'X-Accept-Currency': self.currency,
             'X-Accept-Timezone': self.timezone
@@ -168,11 +168,11 @@ class VacasaConnect:
 
         while more_pages:
             r = self._get(url, headers=headers, params=params)
-            yield from r.json().get('data')
+            yield from r.json()['data']
 
             if r.json().get('links').get('next'):
                 more_pages = True
-                url = r.json().get('links').get('next')
+                url = r.json()['links']['next']
             else:
                 more_pages = False
 
@@ -194,7 +194,7 @@ class VacasaConnect:
         url = f"{self.endpoint}/v1/units/{unit_id}"
         r = self._get(url, headers=self._headers(), params=params)
 
-        return r.json().get('data')
+        return r.json()['data']
 
     def get_availability(self, params: dict = None):
         """Retrieve availabilities.
@@ -216,11 +216,11 @@ class VacasaConnect:
 
         while more_pages:
             r = self._get(url, headers=headers, params=params)
-            yield from r.json().get('data')
+            yield from r.json()['data']
 
             if r.json().get('links').get('next'):
                 more_pages = True
-                url = r.json().get('links').get('next')
+                url = r.json()['links']['next']
             else:
                 more_pages = False
 
