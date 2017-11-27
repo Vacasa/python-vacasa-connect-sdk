@@ -1,0 +1,7 @@
+.idea/
+.cache/
+.python-version
+ve/
+*.pyc
+*.json
+config.py
