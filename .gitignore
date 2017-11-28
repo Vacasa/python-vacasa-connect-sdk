@@ -5,3 +5,4 @@ ve/
 *.pyc
 *.json
 config.py
+*.egg-info/
