@@ -157,13 +157,19 @@ class VacasaConnect:
             else:
                 more_pages = False
 
-    def get_units(self, params: dict = None, include_terminated: bool = False):
+    def get_units(self,
+                  params: dict = None,
+                  include_photos: bool = False,
+                  include_terminated: bool = False
+                  ):
         """Retrieve multiple units.
 
         Args:
             params: A dict containing a key for each query string parameter
                 with a corresponding value. See https://connect.vacasait.com/
                 for more detail.
+            include_photos: Whether or not to include a list of photo URLs with
+                each unit.
             include_terminated: Whether or not to include units that are
                 currently terminated or pending termination.
 
@@ -172,6 +178,9 @@ class VacasaConnect:
         """
         if params is None:
             params = {}
+
+        if include_photos:
+            params['include_meta'] = 'photos_list'
 
         if not include_terminated:
             params['filter[terminated]'] = 0
