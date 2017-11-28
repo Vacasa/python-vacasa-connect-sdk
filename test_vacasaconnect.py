@@ -16,7 +16,7 @@ class TestVacasaConnect(object):
 
     @mock.patch.object(VacasaConnect, '_populate_tokens')
     def mock_connect(self, mock_populate_tokens):
-        connect = VacasaConnect('fake_url', 'fake_key', 'fake_secret')
+        connect = VacasaConnect('fake_key', 'fake_secret', 'fake_url')
 
         # mock call that generates tokens
         mock_response = mock.Mock()

@@ -11,9 +11,9 @@ class VacasaConnect:
     _refresh_token = None
 
     def __init__(self,
-                 endpoint: str,
                  api_key: str,
                  api_secret: str,
+                 endpoint: str = 'https://connect.vacasa.com',
                  timezone: str = 'UTC',
                  language: str = 'en-US',
                  currency: str = 'USD'
@@ -21,9 +21,9 @@ class VacasaConnect:
         """Initialize an instance of the VacasaConnect class
 
         Args:
-            endpoint: The URL of the Vacasa Connect API.
             api_key: Your Vacasa Connect API key.
             api_secret: Your Vacasa Connect API secret.
+            endpoint: The URL of the Vacasa Connect API.
             timezone: UTC or a long-form version of a timezone from the tz
                 database. Example: 'America/New_York'. See
                 https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
@@ -34,9 +34,9 @@ class VacasaConnect:
             currency: An ISO-4217 currency code. Send to request monetary
                 values in this currency.
         """
-        self.endpoint = endpoint.rstrip('/')
         self.api_key = api_key
         self.api_secret = api_secret
+        self.endpoint = endpoint.rstrip('/')
         self.timezone = timezone
         self.language = language
         self.currency = currency
@@ -143,6 +143,20 @@ class VacasaConnect:
 
         return r
 
+    def _iterate_pages(self, url, headers, params):
+        """Iterate over paged results"""
+        more_pages = True
+
+        while more_pages:
+            r = self._get(url, headers=headers, params=params)
+            yield from r.json()['data']
+
+            if r.json().get('links').get('next'):
+                more_pages = True
+                url = r.json()['links']['next']
+            else:
+                more_pages = False
+
     def get_units(self, params: dict = None, include_terminated: bool = False):
         """Retrieve multiple units.
 
@@ -164,17 +178,8 @@ class VacasaConnect:
 
         url = f"{self.endpoint}/v1/units"
         headers = self._headers()
-        more_pages = True
 
-        while more_pages:
-            r = self._get(url, headers=headers, params=params)
-            yield from r.json()['data']
-
-            if r.json().get('links').get('next'):
-                more_pages = True
-                url = r.json()['links']['next']
-            else:
-                more_pages = False
+        return self._iterate_pages(url, headers, params)
 
     def get_unit_by_id(self, unit_id: str, params: dict = None) -> dict:
         """Retrieve a single unit by its primary identifier.
@@ -212,17 +217,8 @@ class VacasaConnect:
 
         url = f"{self.endpoint}/v1/availability"
         headers = self._headers()
-        more_pages = True
 
-        while more_pages:
-            r = self._get(url, headers=headers, params=params)
-            yield from r.json()['data']
-
-            if r.json().get('links').get('next'):
-                more_pages = True
-                url = r.json()['links']['next']
-            else:
-                more_pages = False
+        return self._iterate_pages(url, headers, params)
 
     def get_availability_by_id(self, unit_id: str, params: dict = None):
         """Retrieve availabilities for a single unit.
