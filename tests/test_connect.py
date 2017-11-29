@@ -1,6 +1,6 @@
 import mock
 import pendulum
-from vacasaconnect import VacasaConnect
+from vacasa.connect import VacasaConnect
 
 
 class TestVacasaConnect(object):

@@ -8,7 +8,7 @@ Before you can use this SDK you'll need access to the
 # Getting Started
 ```python
 # Initialize an instance of the VacasaConnect class using your credentials.
-from vacasaconnect import VacasaConnect
+from vacasa.connect import VacasaConnect
 connect = VacasaConnect('https://connect.vacasa.com/', 'your_key', 'your_secret')
 
 # Get units
