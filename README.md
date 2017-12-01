@@ -9,12 +9,16 @@ Before you can use this SDK you'll need access to the
 ```python
 # Initialize an instance of the VacasaConnect class using your credentials.
 from vacasa.connect import VacasaConnect
-connect = VacasaConnect('https://connect.vacasa.com/', 'your_key', 'your_secret')
+connect = VacasaConnect('your_key', 'your_secret')
 
 # Get units
 for unit in connect.get_units():
     print(unit)
 ```
+
+# Dependencies
+* [requests](https://github.com/requests/requests)
+* [pendulum](https://github.com/sdispater/pendulum)
 
 # Development
 ```bash
