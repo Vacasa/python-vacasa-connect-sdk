@@ -166,7 +166,7 @@ class VacasaConnect:
 
         Args:
             params: A dict containing a key for each query string parameter
-                with a corresponding value. See https://connect.vacasait.com/
+                with a corresponding value. See https://connect.vacasa.com/
                 for more detail.
             include_photos: Whether or not to include a list of photo URLs with
                 each unit.
@@ -196,7 +196,7 @@ class VacasaConnect:
         Args:
             unit_id: The unique identifier for the individual unit.
             params: A dict containing a key for each query string parameter
-                with a corresponding value. See https://connect.vacasait.com/
+                with a corresponding value. See https://connect.vacasa.com/
                 for more detail.
 
         Returns:
@@ -215,7 +215,7 @@ class VacasaConnect:
 
         Args:
             params: A dict containing a key for each query string parameter
-                with a corresponding value. See https://connect.vacasait.com/
+                with a corresponding value. See https://connect.vacasa.com/
                 for more detail.
 
         Yields:
@@ -235,7 +235,7 @@ class VacasaConnect:
         Args:
             unit_id: The unique identifier for the individual unit.
             params: A dict containing a key for each query string parameter
-                with a corresponding value. See https://connect.vacasait.com/
+                with a corresponding value. See https://connect.vacasa.com/
                 for more detail.
 
         Yields:
