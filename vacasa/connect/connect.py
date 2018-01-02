@@ -145,7 +145,7 @@ class VacasaConnect:
 
         return r
 
-    def _iterate_pages(self, url, headers, params):
+    def _iterate_pages(self, url: str, headers: dict, params: dict = None):
         """Iterate over paged results."""
         more_pages = True
 
@@ -159,7 +159,8 @@ class VacasaConnect:
             else:
                 more_pages = False
 
-    def _add_meta_param(self, params: dict, meta_value: str) -> dict:
+    @staticmethod
+    def _add_meta_param(params: dict, meta_value: str) -> dict:
         """Add to the include_meta comma-delimited string parameter."""
         meta_param = params.get('include_meta', '')
         # A leading comma is ignored by the connect api
@@ -185,7 +186,7 @@ class VacasaConnect:
             include_terminated: Whether or not to include units that are
                 currently terminated or pending termination.
             include_amenities: Whether or not to include key/values of each
-                amentity with each unit.
+                amenity with each unit.
 
         Yields:
             An iterator of units. Each unit is a dict.
@@ -263,3 +264,14 @@ class VacasaConnect:
         params['filter[unit_id]'] = unit_id
 
         return self.get_availability(params)
+
+    def get_amenities(self):
+        """Retrieve a master list of all amenities
+
+        Yields:
+            An iterator of amenities. Each amenity is a dict.
+        """
+        url = f"{self.endpoint}/v1/amenities"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers)
