@@ -1,3 +1,4 @@
+"""Vacasa Connect Python SDK."""
 import hashlib
 import hmac
 import json
@@ -7,6 +8,7 @@ import requests
 
 class VacasaConnect:
     """This class serves as a wrapper for the Vacasa Connect API."""
+
     _access_token = None
     _refresh_token = None
 
@@ -18,7 +20,7 @@ class VacasaConnect:
                  language: str = 'en-US',
                  currency: str = 'USD'
                  ):
-        """Initialize an instance of the VacasaConnect class
+        """Initialize an instance of the VacasaConnect class.
 
         Args:
             api_key: Your Vacasa Connect API key.
@@ -43,7 +45,7 @@ class VacasaConnect:
         self._populate_tokens()
 
     def _populate_tokens(self):
-        """Decide if current tokens need refreshed and populate them"""
+        """Decide if current tokens need refreshed and populate them."""
         # generate a token if we don't have one yet
         if self._access_token is None:
             tokens = self._get_new_tokens()
@@ -60,7 +62,7 @@ class VacasaConnect:
                 self._refresh_token = tokens.get('refresh_token')
 
     def _get_new_tokens(self) -> dict:
-        """Generate new access and refresh tokens"""
+        """Generate new access and refresh tokens."""
         timestamp = int(pendulum.now().timestamp())
         payload = json.dumps({
             'data': {
@@ -93,7 +95,7 @@ class VacasaConnect:
 
     @staticmethod
     def _validate_tokens(tokens):
-        """Raise errors for incomplete tokens"""
+        """Raise errors for incomplete tokens."""
         if 'access_token' not in tokens:
             raise LookupError("access_token not found")
 
@@ -101,7 +103,7 @@ class VacasaConnect:
             raise LookupError("refresh_token not found")
 
     def _headers(self) -> dict:
-        """Build common headers"""
+        """Build common headers."""
         self._populate_tokens()
 
         return {
@@ -112,7 +114,7 @@ class VacasaConnect:
         }
 
     def _generate_signature(self, timestamp: int) -> str:
-        """Create a hash signature used for generating new tokens"""
+        """Create a hash signature used for generating new tokens."""
         secret = bytes(self.api_secret, 'utf-8')
         message = f"{self.api_key}{timestamp}{self.api_secret}".encode('utf-8')
 
@@ -120,7 +122,7 @@ class VacasaConnect:
 
     @staticmethod
     def _get(url, headers: dict = None, params: dict = None):
-        """HTTP GET request helper"""
+        """HTTP GET request helper."""
         if headers is None:
             headers = {}
 
@@ -134,7 +136,7 @@ class VacasaConnect:
 
     @staticmethod
     def _post(url, payload: dict, headers: dict = None):
-        """HTTP POST request helper"""
+        """HTTP POST request helper."""
         if not headers:
             headers = {}
 
@@ -143,8 +145,8 @@ class VacasaConnect:
 
         return r
 
-    def _iterate_pages(self, url, headers, params):
-        """Iterate over paged results"""
+    def _iterate_pages(self, url: str, headers: dict, params: dict = None):
+        """Iterate over paged results."""
         more_pages = True
 
         while more_pages:
@@ -157,10 +159,21 @@ class VacasaConnect:
             else:
                 more_pages = False
 
+    @staticmethod
+    def _add_meta_param(params: dict, meta_value: str) -> dict:
+        """Add to the include_meta comma-delimited string parameter."""
+        meta_param = params.get('include_meta', '')
+        # A leading comma is ignored by the connect api
+        meta_param += f",{meta_value}"
+        params['include_meta'] = meta_param
+
+        return params
+
     def get_units(self,
                   params: dict = None,
                   include_photos: bool = False,
-                  include_terminated: bool = False
+                  include_terminated: bool = False,
+                  include_amenities: bool = False
                   ):
         """Retrieve multiple units.
 
@@ -172,6 +185,8 @@ class VacasaConnect:
                 each unit.
             include_terminated: Whether or not to include units that are
                 currently terminated or pending termination.
+            include_amenities: Whether or not to include key/values of each
+                amenity with each unit.
 
         Yields:
             An iterator of units. Each unit is a dict.
@@ -180,7 +195,10 @@ class VacasaConnect:
             params = {}
 
         if include_photos:
-            params['include_meta'] = 'photos_list'
+            params = self._add_meta_param(params, 'photos_list')
+
+        if include_amenities:
+            params = self._add_meta_param(params, 'amenities_map')
 
         if not include_terminated:
             params['filter[terminated]'] = 0
@@ -246,3 +264,14 @@ class VacasaConnect:
         params['filter[unit_id]'] = unit_id
 
         return self.get_availability(params)
+
+    def get_amenities(self):
+        """Retrieve a master list of all amenities
+
+        Yields:
+            An iterator of amenities. Each amenity is a dict.
+        """
+        url = f"{self.endpoint}/v1/amenities"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers)
