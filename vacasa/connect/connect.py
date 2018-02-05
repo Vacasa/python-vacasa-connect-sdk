@@ -275,3 +275,69 @@ class VacasaConnect:
         headers = self._headers()
 
         return self._iterate_pages(url, headers)
+
+    def get_cities(self):
+        """Retrieve a list of all cities
+
+        Yields:
+            An iterator of cities. Each city is a dict.
+        """
+        url = f"{self.endpoint}/v1/cities"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers)
+
+    def get_states(self):
+        """Retrieve a list of all states
+
+        Yields:
+            An iterator of states. Each state is a dict.
+        """
+        url = f"{self.endpoint}/v1/states"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers)
+
+    def get_countries(self):
+        """Retrieve a list of all countries
+
+        Yields:
+            An iterator of countries. Each country is a dict.
+        """
+        url = f"{self.endpoint}/v1/countries"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers)
+
+    def get_destinations(self):
+        """Retrieve a list of all destinations
+
+        Yields:
+            An iterator of destinations. Each destination is a dict.
+        """
+        url = f"{self.endpoint}/v1/destinations"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers)
+
+    def get_regions(self):
+        """Retrieve a list of all regions
+
+        Yields:
+            An iterator of regions. Each region is a dict.
+        """
+        url = f"{self.endpoint}/v1/regions"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers)
+
+    def get_region_phones(self):
+        """Retrieve a list of all region-phones
+
+        Yields:
+            An iterator of region-phones. Each region-phone is a dict.
+        """
+        url = f"{self.endpoint}/v1/region-phones"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers)
