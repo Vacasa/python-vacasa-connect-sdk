@@ -6,3 +6,4 @@ ve/
 *.json
 config.py
 *.egg-info/
+.DS_Store
