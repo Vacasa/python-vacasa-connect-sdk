@@ -341,3 +341,59 @@ class VacasaConnect:
         headers = self._headers()
 
         return self._iterate_pages(url, headers)
+
+    def get_region_cities(self, params: dict = None):
+        """Retrieve a list of region-cities
+
+        Yields:
+            An iterator of region-cities. Each region-city is a dict.
+        """
+        if params is None:
+            params = {}
+
+        url = f"{self.endpoint}/v1/region-cities"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
+
+    def get_guarantees(self, params: dict = None):
+        """Retrieve a list of guarantees
+
+        Yields:
+            An iterator of guarantees. Each guarantee is a dict.
+        """
+        if params is None:
+            params = {}
+
+        url = f"{self.endpoint}/v1/guarantees"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
+
+    def get_guarantee_dates(self, params: dict = None):
+        """Retrieve a list of guarantee_dates
+
+        Yields:
+            An iterator of guarantee_dates. Each guarantee_date is a dict.
+        """
+        if params is None:
+            params = {}
+
+        url = f"{self.endpoint}/v1/guarantee-dates"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
+
+    def get_reviews(self, params: dict = None):
+        """Retrieve a list of reviews
+
+        Yields:
+            An iterator of reviews. Each review is a dict.
+        """
+        if params is None:
+            params = {}
+
+        url = f"{self.endpoint}/v1/reviews"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
