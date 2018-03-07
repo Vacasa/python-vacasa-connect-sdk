@@ -169,6 +169,17 @@ class VacasaConnect:
 
         return params
 
+    @staticmethod
+    def _add_include_param(params: dict, include_value: str) -> dict:
+        """Add to the include_meta comma-delimited string parameter."""
+        include_param = params.get('include', '')
+        if include_param:
+            include_param += ","
+        include_param += f"{include_value}"
+        params['include'] = include_param
+
+        return params
+
     def get_units(self,
                   params: dict = None,
                   include_photos: bool = False,
@@ -265,16 +276,33 @@ class VacasaConnect:
 
         return self.get_availability(params)
 
-    def get_amenities(self):
+    def get_amenities(self,
+                      params=None,
+                      include_categories: bool = False,
+                      include_content: bool = False,
+                      include_options: bool = False
+                      ):
         """Retrieve a master list of all amenities
 
         Yields:
             An iterator of amenities. Each amenity is a dict.
         """
+        if params is None:
+            params = {}
+
         url = f"{self.endpoint}/v1/amenities"
         headers = self._headers()
 
-        return self._iterate_pages(url, headers)
+        if include_categories:
+            params = self._add_include_param(params, 'categories')
+
+        if include_content:
+            params = self._add_include_param(params, 'content')
+
+        if include_options:
+            params = self._add_include_param(params, 'options')
+
+        return self._iterate_pages(url, headers, params)
 
     def get_cities(self):
         """Retrieve a list of all cities
