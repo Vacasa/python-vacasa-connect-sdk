@@ -304,16 +304,19 @@ class VacasaConnect:
 
         return self._iterate_pages(url, headers, params)
 
-    def get_unit_amenities(self):
+    def get_unit_amenities(self, params=None):
         """Retrieve a list of all amenities for all units
 
         Yields:
             An iterator of unit amenities. Each unit amenity is a dict.
         """
+        if params is None:
+            params = {}
+
         url = f"{self.endpoint}/v1/unit-amenities"
         headers = self._headers()
 
-        return self._iterate_pages(url, headers)
+        return self._iterate_pages(url, headers, params)
 
     def get_cities(self):
         """Retrieve a list of all cities
