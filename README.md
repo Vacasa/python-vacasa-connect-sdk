@@ -28,6 +28,7 @@ print(reviews)
 # Dependencies
 * [requests](https://github.com/requests/requests)
 * [pendulum](https://github.com/sdispater/pendulum)
+* [backoff](https://github.com/litl/backoff)
 
 # Development
 ```bash
