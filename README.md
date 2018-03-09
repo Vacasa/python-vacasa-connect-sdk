@@ -14,6 +14,15 @@ connect = VacasaConnect('your_key', 'your_secret')
 # Get units
 for unit in connect.get_units():
     print(unit)
+
+# Get reviews
+for review in connect.get_reviews():
+    print(review)
+
+# Generic get
+# This is useful if you want to handle paging yourself
+reviews = connect.get('reviews')
+print(reviews)
 ```
 
 # Dependencies
