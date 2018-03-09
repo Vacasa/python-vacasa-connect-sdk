@@ -1,4 +1,5 @@
 """Vacasa Connect Python SDK."""
+import backoff
 import hashlib
 import hmac
 import json
@@ -121,6 +122,8 @@ class VacasaConnect:
         return hmac.new(secret, message, hashlib.sha256).hexdigest()
 
     @staticmethod
+    @backoff.on_exception(backoff.fibo,
+                          requests.exceptions.RequestException, max_tries=3)
     def _get(url, headers: dict = None, params: dict = None):
         """HTTP GET request helper."""
         if headers is None:
@@ -179,6 +182,15 @@ class VacasaConnect:
         params['include'] = include_param
 
         return params
+
+    def get(self, uri, params: dict = None):
+        if params is None:
+            params = {}
+
+        url = f"{self.endpoint}/v1/{uri}"
+        r = self._get(url, headers=self._headers(), params=params)
+
+        return r.json()
 
     def get_units(self,
                   params: dict = None,
