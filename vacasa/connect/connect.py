@@ -123,7 +123,7 @@ class VacasaConnect:
 
     @staticmethod
     @backoff.on_exception(backoff.fibo,
-                          requests.exceptions.RequestException, max_tries=3)
+                          requests.exceptions.RequestException, max_tries=5)
     def _get(url, headers: dict = None, params: dict = None):
         """HTTP GET request helper."""
         if headers is None:
