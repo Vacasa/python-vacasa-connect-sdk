@@ -316,7 +316,7 @@ class VacasaConnect:
 
         return self._iterate_pages(url, headers, params)
 
-    def get_unit_amenities(self, params=None):
+    def get_unit_amenities(self, params: dict = None):
         """Retrieve a list of all amenities for all units
 
         Yields:
@@ -330,71 +330,89 @@ class VacasaConnect:
 
         return self._iterate_pages(url, headers, params)
 
-    def get_cities(self):
+    def get_cities(self, params: dict = None):
         """Retrieve a list of all cities
 
         Yields:
             An iterator of cities. Each city is a dict.
         """
+        if params is None:
+            params = {}
+
         url = f"{self.endpoint}/v1/cities"
         headers = self._headers()
 
-        return self._iterate_pages(url, headers)
+        return self._iterate_pages(url, headers, params)
 
-    def get_states(self):
+    def get_states(self, params: dict = None):
         """Retrieve a list of all states
 
         Yields:
             An iterator of states. Each state is a dict.
         """
+        if params is None:
+            params = {}
+
         url = f"{self.endpoint}/v1/states"
         headers = self._headers()
 
-        return self._iterate_pages(url, headers)
+        return self._iterate_pages(url, headers, params)
 
-    def get_countries(self):
+    def get_countries(self, params: dict = None):
         """Retrieve a list of all countries
 
         Yields:
             An iterator of countries. Each country is a dict.
         """
+        if params is None:
+            params = {}
+
         url = f"{self.endpoint}/v1/countries"
         headers = self._headers()
 
-        return self._iterate_pages(url, headers)
+        return self._iterate_pages(url, headers, params)
 
-    def get_destinations(self):
+    def get_destinations(self, params: dict = None):
         """Retrieve a list of all destinations
 
         Yields:
             An iterator of destinations. Each destination is a dict.
         """
+        if params is None:
+            params = {}
+
         url = f"{self.endpoint}/v1/destinations"
         headers = self._headers()
 
-        return self._iterate_pages(url, headers)
+        return self._iterate_pages(url, headers, params)
 
-    def get_regions(self):
+    def get_regions(self, params: dict = None):
         """Retrieve a list of all regions
 
         Yields:
             An iterator of regions. Each region is a dict.
         """
+        if params is None:
+            params = {}
+
         url = f"{self.endpoint}/v1/regions"
         headers = self._headers()
 
-        return self._iterate_pages(url, headers)
+        return self._iterate_pages(url, headers, params)
 
-    def get_region_phones(self):
+    def get_region_phones(self, params: dict = None):
         """Retrieve a list of all region-phones
 
         Yields:
             An iterator of region-phones. Each region-phone is a dict.
         """
+        if params is None:
+            params = {}
+
         url = f"{self.endpoint}/v1/region-phones"
         headers = self._headers()
 
-        return self._iterate_pages(url, headers)
+        return self._iterate_pages(url, headers, params)
 
     def get_region_cities(self, params: dict = None):
         """Retrieve a list of region-cities
