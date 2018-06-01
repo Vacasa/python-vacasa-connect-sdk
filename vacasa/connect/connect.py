@@ -483,3 +483,17 @@ class VacasaConnect:
         headers = self._headers()
 
         return self._iterate_pages(url, headers, params)
+
+    def get_reservations(self, params: dict = None):
+        """Retrieve a list of reservations
+
+        Yields:
+            An iterator of reservations. Each reservation is a dict.
+        """
+        if params is None:
+            params = {}
+
+        url = f"{self.endpoint}/v1/reservations"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
