@@ -316,6 +316,20 @@ class VacasaConnect:
 
         return self._iterate_pages(url, headers, params)
 
+    def get_amenities_groups(self, params: dict = None):
+        """Retrieve a list of amenity groups
+
+        Yields:
+            An iterator of amenity groups. Each amenity group is a dict.
+        """
+        if params is None:
+            params = {}
+
+        url = f"{self.endpoint}/v1/amenities-groups"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
+
     def get_unit_amenities(self, params: dict = None):
         """Retrieve a list of all amenities for all units
 
