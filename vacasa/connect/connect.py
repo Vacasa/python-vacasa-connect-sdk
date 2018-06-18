@@ -5,6 +5,7 @@ import hmac
 import json
 import pendulum
 import requests
+from urllib.parse import urlparse, urlunparse
 
 
 class VacasaConnect:
@@ -148,6 +149,17 @@ class VacasaConnect:
 
         return r
 
+    def _ensure_url_has_host(self, url: str):
+        """Insurance against the API returning a URL that lacks a host name"""
+        parsed_url = urlparse(url)
+
+        if not parsed_url.hostname:
+            valid_host = urlparse(self.endpoint).hostname
+            parsed_url = parsed_url._replace(netloc=valid_host)
+            return urlunparse(parsed_url)
+
+        return url
+
     def _iterate_pages(self, url: str, headers: dict, params: dict = None):
         """Iterate over paged results."""
         more_pages = True
@@ -158,7 +170,7 @@ class VacasaConnect:
 
             if r.json().get('links').get('next'):
                 more_pages = True
-                url = r.json()['links']['next']
+                url = self._ensure_url_has_host(r.json()['links']['next'])
             else:
                 more_pages = False
 
