@@ -523,3 +523,36 @@ class VacasaConnect:
         headers = self._headers()
 
         return self._iterate_pages(url, headers, params)
+
+    def get_quote_by_id(self, unit_id: int, arrival_date: str, departure_date: str, adult_count: int, params: dict = None):
+        """Retrieve a quote for a unit_id
+
+        Yields:
+            A dict containing attributes about the requested quote.
+        """
+
+        if params is None:
+            params = {}
+
+        if unit_id is None:
+            raise TypeError
+
+        if arrival_date is None:
+            raise TypeError
+
+        if departure_date is None:
+            raise TypeError
+
+        if adult_count is None:
+            raise TypeError
+
+        params['unit_id'] = unit_id
+        params['arrival'] = arrival_date
+        params['departure'] = departure_date
+        params['adults'] = adult_count
+
+        url = f"{self.endpoint}/v1/quotes"
+        headers = self._headers()
+
+        r = self._get(url, headers, params)
+        return r.json()['data']
