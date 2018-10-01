@@ -32,7 +32,7 @@ class TestVacasaConnect(object):
 
     def test_generate_signature(self):
         connect = self.mock_connect()
-        timestamp = int(pendulum.create(2017, 1, 1, 0, 0).timestamp())
+        timestamp = int(pendulum.datetime(2017, 1, 1, 0, 0).timestamp())
         signature = connect._generate_signature(timestamp)
         expected = '87446b676b79b6e493a6b852ec3c32faf579086bd12728178197ef278ec7abfc'
 

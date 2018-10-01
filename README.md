@@ -32,8 +32,8 @@ print(reviews)
 
 # Development
 ```bash
-# Install requirements
-pip install -r requirements.txt
+# Install requirements https://pipenv.readthedocs.io/en/latest/
+pipenv install
 
 # Run tests
 pytest

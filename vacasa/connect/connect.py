@@ -1,11 +1,12 @@
 """Vacasa Connect Python SDK."""
-import backoff
 import hashlib
 import hmac
 import json
+from urllib.parse import urlparse, urlunparse
+
+import backoff
 import pendulum
 import requests
-from urllib.parse import urlparse, urlunparse
 
 
 class VacasaConnect:
@@ -130,9 +131,6 @@ class VacasaConnect:
         if headers is None:
             headers = {}
 
-        if params is None:
-            params = {}
-
         r = requests.get(url, headers=headers, params=params)
         r.raise_for_status()
 
@@ -196,9 +194,6 @@ class VacasaConnect:
         return params
 
     def get(self, uri, params: dict = None):
-        if params is None:
-            params = {}
-
         url = f"{self.endpoint}/v1/{uri}"
         r = self._get(url, headers=self._headers(), params=params)
 
@@ -255,9 +250,6 @@ class VacasaConnect:
         Returns:
             A dict containing attributes about the individual unit.
         """
-        if params is None:
-            params = {}
-
         url = f"{self.endpoint}/v1/units/{unit_id}"
         r = self._get(url, headers=self._headers(), params=params)
 
@@ -274,9 +266,6 @@ class VacasaConnect:
         Yields:
             An iterator of availabilities. Each availability is a dict.
         """
-        if params is None:
-            params = {}
-
         url = f"{self.endpoint}/v1/availability"
         headers = self._headers()
 
@@ -301,7 +290,7 @@ class VacasaConnect:
         return self.get_availability(params)
 
     def get_amenities(self,
-                      params=None,
+                      params: dict = None,
                       include_categories: bool = False,
                       include_content: bool = False,
                       include_options: bool = False
@@ -334,9 +323,6 @@ class VacasaConnect:
         Yields:
             An iterator of amenity groups. Each amenity group is a dict.
         """
-        if params is None:
-            params = {}
-
         url = f"{self.endpoint}/v1/amenities-groups"
         headers = self._headers()
 
@@ -348,9 +334,6 @@ class VacasaConnect:
         Yields:
             An iterator of unit amenities. Each unit amenity is a dict.
         """
-        if params is None:
-            params = {}
-
         url = f"{self.endpoint}/v1/unit-amenities"
         headers = self._headers()
 
@@ -362,9 +345,6 @@ class VacasaConnect:
         Yields:
             An iterator of unit amenities. Each unit amenity is a dict.
         """
-        if params is None:
-            params = {}
-
         url = f"{self.endpoint}/v1/unit-amenities-reduced"
         headers = self._headers()
 
@@ -376,9 +356,6 @@ class VacasaConnect:
         Yields:
             An iterator of cities. Each city is a dict.
         """
-        if params is None:
-            params = {}
-
         url = f"{self.endpoint}/v1/cities"
         headers = self._headers()
 
@@ -390,9 +367,6 @@ class VacasaConnect:
         Yields:
             An iterator of states. Each state is a dict.
         """
-        if params is None:
-            params = {}
-
         url = f"{self.endpoint}/v1/states"
         headers = self._headers()
 
@@ -404,9 +378,6 @@ class VacasaConnect:
         Yields:
             An iterator of countries. Each country is a dict.
         """
-        if params is None:
-            params = {}
-
         url = f"{self.endpoint}/v1/countries"
         headers = self._headers()
 
@@ -418,9 +389,6 @@ class VacasaConnect:
         Yields:
             An iterator of destinations. Each destination is a dict.
         """
-        if params is None:
-            params = {}
-
         url = f"{self.endpoint}/v1/destinations"
         headers = self._headers()
 
@@ -432,9 +400,6 @@ class VacasaConnect:
         Yields:
             An iterator of regions. Each region is a dict.
         """
-        if params is None:
-            params = {}
-
         url = f"{self.endpoint}/v1/regions"
         headers = self._headers()
 
@@ -446,9 +411,6 @@ class VacasaConnect:
         Yields:
             An iterator of region-phones. Each region-phone is a dict.
         """
-        if params is None:
-            params = {}
-
         url = f"{self.endpoint}/v1/region-phones"
         headers = self._headers()
 
@@ -460,9 +422,6 @@ class VacasaConnect:
         Yields:
             An iterator of region-cities. Each region-city is a dict.
         """
-        if params is None:
-            params = {}
-
         url = f"{self.endpoint}/v1/region-cities"
         headers = self._headers()
 
@@ -474,9 +433,6 @@ class VacasaConnect:
         Yields:
             An iterator of guarantees. Each guarantee is a dict.
         """
-        if params is None:
-            params = {}
-
         url = f"{self.endpoint}/v1/guarantees"
         headers = self._headers()
 
@@ -488,9 +444,6 @@ class VacasaConnect:
         Yields:
             An iterator of guarantee_dates. Each guarantee_date is a dict.
         """
-        if params is None:
-            params = {}
-
         url = f"{self.endpoint}/v1/guarantee-dates"
         headers = self._headers()
 
@@ -502,9 +455,6 @@ class VacasaConnect:
         Yields:
             An iterator of reviews. Each review is a dict.
         """
-        if params is None:
-            params = {}
-
         url = f"{self.endpoint}/v1/reviews"
         headers = self._headers()
 
@@ -516,10 +466,18 @@ class VacasaConnect:
         Yields:
             An iterator of reservations. Each reservation is a dict.
         """
-        if params is None:
-            params = {}
-
         url = f"{self.endpoint}/v1/reservations"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
+
+    def get_offices(self, params: dict = None):
+        """Retrieve a list of Vacasa local office locations
+
+        Yields:
+            An iterator of office locations. Each office location is a dict.
+        """
+        url = f"{self.endpoint}/v1/offices"
         headers = self._headers()
 
         return self._iterate_pages(url, headers, params)
