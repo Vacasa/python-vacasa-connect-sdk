@@ -7,5 +7,10 @@ setup(
     packages=['vacasa.connect'],
     url='https://github.com/Vacasa/python-vacasa-connect-sdk',
     license='MIT',
+    install_requires=[
+        'pendulum==2.*',
+        'backoff~=1.6',
+        'requests==2.*'
+    ],
     long_description=open('README.md').read()
 )
