@@ -9,6 +9,10 @@ import pendulum
 import requests
 
 
+def is_https_url(url: str) -> bool:
+    return urlparse(url).scheme.lower() == 'https'
+
+
 class VacasaConnect:
     """This class serves as a wrapper for the Vacasa Connect API."""
 
@@ -39,6 +43,8 @@ class VacasaConnect:
             currency: An ISO-4217 currency code. Send to request monetary
                 values in this currency.
         """
+        if not is_https_url(endpoint):
+            raise ValueError(f"`endpoint` scheme should be https")
         self.api_key = api_key
         self.api_secret = api_secret
         self.endpoint = endpoint.rstrip('/')
