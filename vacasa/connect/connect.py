@@ -489,10 +489,10 @@ class VacasaConnect:
         return self._iterate_pages(url, headers, params)
 
     def get_quote(self,
-                  adults: int,
                   unit_id: int,
                   arrival: str,
                   departure: str,
+                  adults: int,
                   children: Optional[int] = 0,
                   pets: Optional[int] = 0,
                   trip_protection: Optional[bool] = None
@@ -500,10 +500,10 @@ class VacasaConnect:
         """ Get a price quote for a given stay
 
         Args:
-            adults: How many adults will be staying
             unit_id: A Vacasa Unit ID
             arrival: Checkin date in 'YYYY-MM-DD' format
             departure: Checkout date in 'YYYY-MM-DD' format
+            adults: How many adults will be staying
             children: How many children will be staying
             pets: How many pets will be staying
             trip_protection: Has the user requested trip protection?
