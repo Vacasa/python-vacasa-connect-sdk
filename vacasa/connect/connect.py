@@ -1,12 +1,16 @@
 """Vacasa Connect Python SDK."""
 import hashlib
 import hmac
-import json
+from typing import Optional
 from urllib.parse import urlparse, urlunparse
 
 import backoff
 import pendulum
 import requests
+
+
+def is_https_url(url: str) -> bool:
+    return urlparse(url).scheme.lower() == 'https'
 
 
 class VacasaConnect:
@@ -39,6 +43,8 @@ class VacasaConnect:
             currency: An ISO-4217 currency code. Send to request monetary
                 values in this currency.
         """
+        if not is_https_url(endpoint):
+            raise ValueError(f"`endpoint` scheme should be https")
         self.api_key = api_key
         self.api_secret = api_secret
         self.endpoint = endpoint.rstrip('/')
@@ -67,16 +73,16 @@ class VacasaConnect:
     def _get_new_tokens(self) -> dict:
         """Generate new access and refresh tokens."""
         timestamp = int(pendulum.now().timestamp())
-        payload = json.dumps({
+        payload = {
             'data': {
                 'api_key': self.api_key,
                 'timestamp': timestamp,
                 'signature': self._generate_signature(timestamp)
             }
-        })
+        }
         headers = {'content-type': 'application/json'}
 
-        r = self._post(f"{self.endpoint}/auth", payload, headers)
+        r = self._post(f"{self.endpoint}/auth", json=payload, headers=headers)
         tokens = r.json().get('data', {}).get('attributes', {})
         self._validate_tokens(tokens)
 
@@ -90,7 +96,7 @@ class VacasaConnect:
                 'refresh_token': self._refresh_token['token']
             }
         }
-        r = self._post(url, payload)
+        r = self._post(url, json=payload)
         tokens = r.json().get('data', {}).get('attributes', {})
         self._validate_tokens(tokens)
 
@@ -137,12 +143,12 @@ class VacasaConnect:
         return r
 
     @staticmethod
-    def _post(url, payload: dict, headers: dict = None):
+    def _post(url, data: dict = None, json: dict = None, headers: dict = None):
         """HTTP POST request helper."""
         if not headers:
             headers = {}
 
-        r = requests.post(url, data=payload, headers=headers)
+        r = requests.post(url, data=data, json=json, headers=headers)
         r.raise_for_status()
 
         return r
@@ -238,7 +244,7 @@ class VacasaConnect:
 
         return self._iterate_pages(url, headers, params)
 
-    def get_unit_by_id(self, unit_id: str, params: dict = None) -> dict:
+    def get_unit_by_id(self, unit_id: int, params: dict = None) -> dict:
         """Retrieve a single unit by its primary identifier.
 
         Args:
@@ -271,7 +277,7 @@ class VacasaConnect:
 
         return self._iterate_pages(url, headers, params)
 
-    def get_availability_by_id(self, unit_id: str, params: dict = None):
+    def get_availability_by_id(self, unit_id: int, params: dict = None):
         """Retrieve availabilities for a single unit.
 
         Args:
@@ -481,3 +487,129 @@ class VacasaConnect:
         headers = self._headers()
 
         return self._iterate_pages(url, headers, params)
+
+    def get_quote(self,
+                  unit_id: int,
+                  arrival: str,
+                  departure: str,
+                  adults: int,
+                  children: Optional[int] = 0,
+                  pets: Optional[int] = 0,
+                  trip_protection: Optional[bool] = None
+                  ) -> dict:
+        """ Get a price quote for a given stay
+
+        Args:
+            unit_id: A Vacasa Unit ID
+            arrival: Checkin date in 'YYYY-MM-DD' format
+            departure: Checkout date in 'YYYY-MM-DD' format
+            adults: How many adults will be staying
+            children: How many children will be staying
+            pets: How many pets will be staying
+            trip_protection: Has the user requested trip protection?
+                -1 No
+                 0 TBD
+                 1 Yes
+
+        Returns: dict
+
+        """
+        url = f"{self.endpoint}/v1/quotes"
+        headers = self._headers()
+
+        params = {
+            'adults': adults,
+            'children': children,
+            'pets': pets,
+            'unit_id': unit_id,
+            'arrival': arrival,
+            'departure': departure,
+        }
+
+        if trip_protection is not None:
+            params[trip_protection] = trip_protection
+
+        return self._get(url, headers, params).json()
+
+    def create_reservation(self,
+                           unit_id: int,
+                           arrival: str,
+                           departure: str,
+                           email: str,
+                           address: dict,
+                           adults: int,
+                           quote_id: str,
+                           first_name: str,
+                           last_name: str,
+                           account_number: str,
+                           exp_mmyy: str,
+                           phone: Optional[str] = None,
+                           children: int = 0,
+                           pets: int = 0,
+                           trip_protection: Optional[bool] = None,
+                           source: Optional[str] = None
+                           ) -> dict:
+        """ Reserve a given unit
+
+        Arguments:
+            unit_id: A Vacasa Unit ID
+            arrival: Checkin date in 'YYYY-MM-DD' format
+            departure: Checkout date in 'YYYY-MM-DD' format
+            email: User's email address
+            phone: User's phone number
+            address: User's address information, e.g.
+                {
+                    'address_1': '999 W Main St #301',
+                    'city': 'Boise',
+                    'state': 'ID',
+                    'zip': '83702'
+                }
+            adults: How many adults will be staying
+            children: How many children will be staying
+            pets: How many pets will be staying
+            trip_protection: Has the user requested trip protection?
+                -1 No
+                 0 TBD
+                 1 Yes
+            quote_id: ID of a quote retrieved from the `GET /quotes` endpoint
+            first_name: User's First Name (for billing)
+            last_name: User's Last Name (for billing)
+            account_number: Credit card #
+            exp_mmyy: Credit card expiry in `mmyy` format
+            source: A Vacasa-issued code identifying the source of this request
+
+        Returns: dict
+
+        """
+
+        url = f"{self.endpoint}/v1/reservations"
+        headers = self._headers()
+        payload = {
+            'unit_id': unit_id,
+            'arrival': arrival,
+            'departure': departure,
+            'email': email,
+            'phone': phone,
+            'address': address,
+            'adults': adults,
+            'children': children,
+            'pets': pets,
+            'trip_protection': trip_protection,
+            'quote_id': quote_id,
+            'first_name': first_name,
+            'last_name': last_name,
+            'account_number': account_number,
+            'exp_mmyy': exp_mmyy,
+            'source': source,
+        }
+
+        if phone is not None:
+            payload['phone'] = phone
+
+        if trip_protection is not None:
+            payload['trip_protection'] = trip_protection
+
+        if source is not None:
+            payload['source'] = source
+
+        return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
