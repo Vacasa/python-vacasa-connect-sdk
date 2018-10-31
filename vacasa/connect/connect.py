@@ -244,7 +244,7 @@ class VacasaConnect:
 
         return self._iterate_pages(url, headers, params)
 
-    def get_unit_by_id(self, unit_id: str, params: dict = None) -> dict:
+    def get_unit_by_id(self, unit_id: int, params: dict = None) -> dict:
         """Retrieve a single unit by its primary identifier.
 
         Args:
@@ -277,7 +277,7 @@ class VacasaConnect:
 
         return self._iterate_pages(url, headers, params)
 
-    def get_availability_by_id(self, unit_id: str, params: dict = None):
+    def get_availability_by_id(self, unit_id: int, params: dict = None):
         """Retrieve availabilities for a single unit.
 
         Args:
