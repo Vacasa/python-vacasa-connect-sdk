@@ -1,12 +1,11 @@
 """Vacasa Connect Python SDK."""
+from retry import retry
 import hashlib
 import hmac
-from typing import Optional
-from urllib.parse import urlparse, urlunparse
-
-import backoff
 import pendulum
 import requests
+from typing import Optional
+from urllib.parse import urlparse, urlunparse
 
 
 def is_https_url(url: str) -> bool:
@@ -130,8 +129,7 @@ class VacasaConnect:
         return hmac.new(secret, message, hashlib.sha256).hexdigest()
 
     @staticmethod
-    @backoff.on_exception(backoff.fibo,
-                          requests.exceptions.RequestException, max_tries=5)
+    @retry(exceptions=requests.exceptions.RequestException, tries=5, delay=1, backoff=2)
     def _get(url, headers: dict = None, params: dict = None):
         """HTTP GET request helper."""
         if headers is None:

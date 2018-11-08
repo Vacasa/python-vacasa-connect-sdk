@@ -8,6 +8,7 @@ backoff = "*"
 pendulum = "*"
 requests = "*"
 pytest = "*"
+retry = "*"
 
 [requires]
 python_version = "3.6"
