@@ -9,8 +9,8 @@ setup(
     license='MIT',
     install_requires=[
         'pendulum==2.*',
-        'backoff~=1.6',
-        'requests>=2.20.0'
+        'requests>=2.20.0',
+        'retry==0.9.*'
     ],
     long_description=open('README.md').read()
 )
