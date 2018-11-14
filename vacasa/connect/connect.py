@@ -6,7 +6,7 @@ from urllib.parse import urlparse, urlunparse
 
 import pendulum
 import requests
-from retry import retry
+from retry.api import retry_call
 
 
 def is_https_url(url: str) -> bool:
@@ -130,8 +130,7 @@ class VacasaConnect:
         return hmac.new(secret, message, hashlib.sha256).hexdigest()
 
     @staticmethod
-    @retry(exceptions=requests.exceptions.RequestException, tries=5, delay=1, backoff=2)
-    def _get(url, headers: dict = None, params: dict = None):
+    def __get(url, headers: dict = None, params: dict = None):
         """HTTP GET request helper."""
         if headers is None:
             headers = {}
@@ -140,6 +139,20 @@ class VacasaConnect:
         r.raise_for_status()
 
         return r
+
+    def _get(self, url, headers: dict = None, params: dict = None, retry: bool = True):
+        """HTTP Get helper with optional retrying."""
+        if retry:
+            return retry_call(
+                self.__get,
+                fargs=[url, headers, params],
+                exceptions=requests.exceptions.RequestException,
+                tries=5,
+                delay=1,
+                backoff=2
+            )
+        else:
+            return self.__get(url, headers, params)
 
     @staticmethod
     def _post(url, data: dict = None, json: dict = None, headers: dict = None):
@@ -528,7 +541,7 @@ class VacasaConnect:
         if trip_protection is not None:
             params[trip_protection] = trip_protection
 
-        return self._get(url, headers, params).json()
+        return self._get(url, headers, params, retry=False).json()
 
     def create_reservation(self,
                            unit_id: int,
