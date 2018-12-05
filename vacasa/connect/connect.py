@@ -508,6 +508,7 @@ class VacasaConnect:
                   children: Optional[int] = 0,
                   pets: Optional[int] = 0,
                   trip_protection: Optional[bool] = None,
+                  discount_id: Optional[int] = None,
                   language=None,
                   currency=None
                   ) -> dict:
@@ -524,7 +525,8 @@ class VacasaConnect:
                 -1 No
                  0 TBD
                  1 Yes
-            language: e.g. 'en-US' or 'es-ES' optional
+            discount_id: optional
+            language: e.g. 'en-US' or 'es-ES' (optional)
             currency: e.g. 'USD' or 'EUR' (optional)
 
         Returns: dict
@@ -541,6 +543,9 @@ class VacasaConnect:
             'arrival': arrival,
             'departure': departure,
         }
+
+        if discount_id is not None:
+            params['discount_id'] = discount_id
 
         if trip_protection is not None:
             params[trip_protection] = trip_protection
