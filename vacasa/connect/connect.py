@@ -111,14 +111,14 @@ class VacasaConnect:
         if 'refresh_token' not in tokens:
             raise LookupError("refresh_token not found")
 
-    def _headers(self) -> dict:
+    def _headers(self, language=None, currency=None) -> dict:
         """Build common headers."""
         self._populate_tokens()
 
         return {
             'Authorization': f"Bearer {self._access_token['token']}",
-            'Accept-Language': self.language,
-            'X-Accept-Currency': self.currency,
+            'Accept-Language': self.language if language is None else language,
+            'X-Accept-Currency': self.currency if currency is None else currency,
             'X-Accept-Timezone': self.timezone
         }
 
@@ -507,7 +507,9 @@ class VacasaConnect:
                   adults: int,
                   children: Optional[int] = 0,
                   pets: Optional[int] = 0,
-                  trip_protection: Optional[bool] = None
+                  trip_protection: Optional[bool] = None,
+                  language=None,
+                  currency=None
                   ) -> dict:
         """ Get a price quote for a given stay
 
@@ -522,12 +524,14 @@ class VacasaConnect:
                 -1 No
                  0 TBD
                  1 Yes
+            language: e.g. 'en-US' or 'es-ES' optional
+            currency: e.g. 'USD' or 'EUR' (optional)
 
         Returns: dict
 
         """
         url = f"{self.endpoint}/v1/quotes"
-        headers = self._headers()
+        headers = self._headers(language, currency)
 
         params = {
             'adults': adults,
