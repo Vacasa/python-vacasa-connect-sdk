@@ -500,6 +500,13 @@ class VacasaConnect:
 
         return self._iterate_pages(url, headers, params)
 
+    @staticmethod
+    def _trip_protection_to_integer(trip_protection: bool) -> int:
+        """Convert from True/False/None to 1/0/-1"""
+        if trip_protection is None:
+            return 0
+        return 1 if trip_protection else -1
+
     def get_quote(self,
                   unit_id: int,
                   arrival: str,
@@ -547,8 +554,7 @@ class VacasaConnect:
         if discount_id is not None:
             params['discount_id'] = discount_id
 
-        if trip_protection is not None:
-            params[trip_protection] = trip_protection
+        params['trip_protection'] = self._trip_protection_to_integer(trip_protection)
 
         return self._get(url, headers, params, retry=False).json()
 
@@ -564,11 +570,12 @@ class VacasaConnect:
                            last_name: str,
                            account_number: str,
                            exp_mmyy: str,
+                           cvv: Optional[str] = None,
                            phone: Optional[str] = None,
                            children: int = 0,
                            pets: int = 0,
                            trip_protection: Optional[bool] = None,
-                           source: Optional[str] = None
+                           source: Optional[str] = None,
                            ) -> dict:
         """ Reserve a given unit
 
@@ -597,6 +604,7 @@ class VacasaConnect:
             last_name: User's Last Name (for billing)
             account_number: Credit card #
             exp_mmyy: Credit card expiry in `mmyy` format
+            cvv: Card verification value on credit card
             source: A Vacasa-issued code identifying the source of this request
 
         Returns: dict
@@ -627,10 +635,12 @@ class VacasaConnect:
         if phone is not None:
             payload['phone'] = phone
 
-        if trip_protection is not None:
-            payload['trip_protection'] = trip_protection
+        payload['trip_protection'] = self._trip_protection_to_integer(trip_protection)
 
         if source is not None:
             payload['source'] = source
+
+        if cvv:
+            payload['cvv'] = str(cvv)
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
