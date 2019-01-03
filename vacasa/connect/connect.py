@@ -1,12 +1,15 @@
 """Vacasa Connect Python SDK."""
 import hashlib
 import hmac
+import logging
 from typing import Optional
 from urllib.parse import urlparse, urlunparse
 
 import pendulum
 import requests
 from retry.api import retry_call
+
+logger = logging.getLogger(__name__)
 
 
 def is_https_url(url: str) -> bool:
@@ -136,7 +139,7 @@ class VacasaConnect:
             headers = {}
 
         r = requests.get(url, headers=headers, params=params)
-        r.raise_for_status()
+        _handle_http_exceptions(r)
 
         return r
 
@@ -161,7 +164,7 @@ class VacasaConnect:
             headers = {}
 
         r = requests.post(url, data=data, json=json, headers=headers)
-        r.raise_for_status()
+        _handle_http_exceptions(r)
 
         return r
 
@@ -644,3 +647,15 @@ class VacasaConnect:
             payload['cvv'] = str(cvv)
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
+
+
+def _handle_http_exceptions(response):
+    """Log 400/500s and raise them as exceptions"""
+    try:
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        try:
+            logger.exception(response.json())
+        except ValueError:
+            logger.exception(response.content)
+        raise e
