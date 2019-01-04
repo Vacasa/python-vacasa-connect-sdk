@@ -659,3 +659,42 @@ def _handle_http_exceptions(response):
         except ValueError:
             logger.exception(response.content)
         raise e
+
+
+def create_blocklist_entry(self,
+                           reservationId: int,
+                           firstName: str,
+                           lastName: str,
+                           Email: str,
+                           Phone: str,
+                           Reason: str,
+                           Block: bool,
+                           Warn: bool) -> dict:
+    """
+
+    :param self:
+    :param reservationId:
+    :param firstName:
+    :param lastName:
+    :param Email:
+    :param Phone:
+    :param Reason:
+    :param Block:
+    :param Warn:
+    :return:
+    """
+
+    url = f"{self.endpoint}/v1/blocklist"
+    headers = self._headers()
+    payload = {
+        'reservation_id': reservationId,
+        'first_name': firstName,
+        'last_name': lastName,
+        'email': Email,
+        'phone': Phone,
+        'reason': Reason,
+        'block': Block,
+        'warn': Warn,
+    }
+
+    return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
