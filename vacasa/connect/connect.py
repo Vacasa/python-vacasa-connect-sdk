@@ -662,39 +662,26 @@ def _handle_http_exceptions(response):
 
 
 def create_blocklist_entry(self,
-                           reservationId: int,
-                           firstName: str,
-                           lastName: str,
-                           Email: str,
-                           Phone: str,
-                           Reason: str,
-                           Block: bool,
-                           Warn: bool) -> dict:
-    """
-
-    :param self:
-    :param reservationId:
-    :param firstName:
-    :param lastName:
-    :param Email:
-    :param Phone:
-    :param Reason:
-    :param Block:
-    :param Warn:
-    :return:
-    """
+                           reservation_id: int,
+                           first_name: str,
+                           last_name: str,
+                           email: str,
+                           phone: str,
+                           reason: str,
+                           block: bool,
+                           warn: bool) -> dict:
 
     url = f"{self.endpoint}/v1/blocklist"
     headers = self._headers()
     payload = {
-        'reservation_id': reservationId,
-        'first_name': firstName,
-        'last_name': lastName,
-        'email': Email,
-        'phone': Phone,
-        'reason': Reason,
-        'block': Block,
-        'warn': Warn,
+        'reservationId': reservation_id,
+        'firstName': first_name,
+        'lastName': last_name,
+        'Email': email,
+        'Phone': phone,
+        'Reason': reason,
+        'Block': block,
+        'Warn': warn,
     }
 
     return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
