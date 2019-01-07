@@ -65,10 +65,11 @@ class VacasaConnect:
             self._refresh_token = tokens.get('refresh_token')
         else:
             now = pendulum.now()
-            expiration = pendulum.parse(self._refresh_token['expires_at'])
+            refresh_expiration = pendulum.parse(self._refresh_token['expires_at'])
+            access_expiration = pendulum.parse(self._access_token['expires_at'])
 
             # refresh the token if it has expired
-            if now > expiration:
+            if now > refresh_expiration or now > access_expiration:
                 tokens = self._refresh_tokens()
                 self._access_token = tokens.get('access_token')
                 self._refresh_token = tokens.get('refresh_token')
