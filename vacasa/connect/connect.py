@@ -648,6 +648,44 @@ class VacasaConnect:
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
+    def create_blocklist_entry(self,
+                               reservation_id: int,
+                               first_name: str,
+                               last_name: str,
+                               email: str,
+                               phone: str,
+                               reason: str,
+                               block: bool,
+                               warn: bool) -> dict:
+        """
+        Add users to Vacasa's blocklist.
+
+        :param reservation_id: A reservation id created when creating a canceled reservation.
+        :param first_name:
+        :param last_name:
+        :param email:
+        :param phone:
+        :param reason: Reason for adding user to Vacasa's blocklist.
+        :param block: 1 for iDology hard fail, else 0
+        :param warn: 1 for iDology soft fail, else 0
+
+        :return: # TODO: paste in example response after CONN-318 completion
+        """
+
+        url = f"{self.endpoint}/v1/blocklists"
+        headers = self._headers()
+        payload = {
+            'reservation_id': reservation_id,
+            'first_name': first_name,
+            'last_name': last_name,
+            'email': email,
+            'phone': phone,
+            'reason': reason,
+            'block': block,
+            'warn': warn,
+        }
+
+        return self._post(url, json={'data': {'attributes': payload, 'type':'blocklists'}}, headers=headers).json()
 
 def _handle_http_exceptions(response):
     """Log 400/500s and raise them as exceptions"""
@@ -659,29 +697,3 @@ def _handle_http_exceptions(response):
         except ValueError:
             logger.exception(response.content)
         raise e
-
-
-def create_blocklist_entry(self,
-                           reservation_id: int,
-                           first_name: str,
-                           last_name: str,
-                           email: str,
-                           phone: str,
-                           reason: str,
-                           block: bool,
-                           warn: bool) -> dict:
-
-    url = f"{self.endpoint}/v1/blocklist"
-    headers = self._headers()
-    payload = {
-        'reservationId': reservation_id,
-        'firstName': first_name,
-        'lastName': last_name,
-        'Email': email,
-        'Phone': phone,
-        'Reason': reason,
-        'Block': block,
-        'Warn': warn,
-    }
-
-    return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
