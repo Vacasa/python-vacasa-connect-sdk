@@ -180,12 +180,12 @@ class VacasaConnect:
 
         return url
 
-    def _iterate_pages(self, url: str, headers: dict, params: dict = None):
+    def _iterate_pages(self, url: str, headers: dict, params: dict = None, *, retry=True):
         """Iterate over paged results."""
         more_pages = True
 
         while more_pages:
-            r = self._get(url, headers=headers, params=params)
+            r = self._get(url, headers=headers, params=params, retry=retry)
             yield from r.json()['data']
 
             if r.json().get('links', {}).get('next'):
@@ -565,7 +565,7 @@ class VacasaConnect:
 
         return self._iterate_pages(url, headers, params)
 
-    def get_offices(self, params: dict = None):
+    def get_offices(self, params: dict = None, *, retry=False):
         """Retrieve a list of Vacasa local office locations
 
         Yields:
@@ -574,7 +574,18 @@ class VacasaConnect:
         url = f"{self.endpoint}/v1/offices"
         headers = self._headers()
 
-        return self._iterate_pages(url, headers, params)
+        return self._iterate_pages(url, headers, params, retry=retry)
+
+    def get_page_templates(self, params: dict = None, *, retry=False):
+        """Retrieve a list of Vacasa "pages" objects, which are html templates
+
+        Yields:
+            An iterator of pages.
+        """
+        url = f"{self.endpoint}/v1/pages"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params, retry=retry)
 
     @staticmethod
     def _trip_protection_to_integer(trip_protection: bool) -> int:
@@ -672,9 +683,9 @@ class VacasaConnect:
             children: How many children will be staying
             pets: How many pets will be staying
             trip_protection: Has the user requested trip protection?
-                -1 No
-                 0 TBD
-                 1 Yes
+                False: No
+                None: TBD
+                True: Yes
             quote_id: ID of a quote retrieved from the `GET /quotes` endpoint
             first_name: User's First Name (for billing)
             last_name: User's Last Name (for billing)
@@ -758,7 +769,8 @@ class VacasaConnect:
             'warn': warn,
         }
 
-        return self._post(url, json={'data': {'attributes': payload, 'type':'blocklists'}}, headers=headers).json()
+        return self._post(url, json={'data': {'attributes': payload, 'type': 'blocklists'}}, headers=headers).json()
+
 
 def _handle_http_exceptions(response):
     """Log 400/500s and raise them as exceptions"""
