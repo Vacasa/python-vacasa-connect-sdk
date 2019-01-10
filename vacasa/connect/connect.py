@@ -347,7 +347,7 @@ class VacasaConnect:
                     obj[k] = json_response[k]
             yield obj
 
-            if json_response.get('links').get('next'):
+            if json_response.get('links', {}).get('next'):
                 more_pages = True
                 url = self._ensure_url_has_host(json_response['links']['next'])
             else:
