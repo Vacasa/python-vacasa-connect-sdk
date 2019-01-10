@@ -188,7 +188,7 @@ class VacasaConnect:
             r = self._get(url, headers=headers, params=params)
             yield from r.json()['data']
 
-            if r.json().get('links').get('next'):
+            if r.json().get('links', {}).get('next'):
                 more_pages = True
                 url = self._ensure_url_has_host(r.json()['links']['next'])
             else:
@@ -341,11 +341,7 @@ class VacasaConnect:
             json_response = r.json()
 
             # Limiting the keys we return strips out the unnecessary paging links, etc.
-            obj = dict()
-            for k in yield_keys:
-                if k in json_response:
-                    obj[k] = json_response[k]
-            yield obj
+            yield {k: json_response[k] for k in yield_keys if k in json_response}
 
             if json_response.get('links', {}).get('next'):
                 more_pages = True
