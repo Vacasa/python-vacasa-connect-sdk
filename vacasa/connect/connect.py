@@ -649,6 +649,50 @@ class VacasaConnect:
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
+    def cancel_reservation(self,
+                           unit_id: int,
+                           arrival: str,
+                           departure: str,
+                           adults: int,
+                           children: int,
+                           pets: int,
+                           trip_protection: bool,
+                           discount_id: str,
+                           first_name: str,
+                           last_name: str,
+                           phone: str,
+                           rent: int,
+                           fee_amount: int,
+                           cleaning_fees: int,
+                           trip_protection_fee: int,
+                           total: int,
+                           tax_amount: int,
+                           ) -> dict:
+
+        url = f"{self.endpoint}/v1/reservations-abandoned"
+        headers = self._headers()
+        payload = {
+            'adults': adults,
+            'first_night': arrival,
+            'children': children,
+            'cleaning_fees': cleaning_fees,
+            'last_night': departure,
+            'discount_id': discount_id,
+            'fee_amount': fee_amount,
+            'first_name': first_name,
+            'last_name': last_name,
+            'pets': pets,
+            'phone': phone,
+            'rent': rent,
+            'tax_amount': tax_amount,
+            'total': total,
+            'trip_protection': self._trip_protection_to_integer(trip_protection),
+            'trip_protection_fee': trip_protection_fee,
+            'unit_id': unit_id,
+        }
+
+        return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
+
     def create_blocklist_entry(self,
                                reservation_id: int,
                                first_name: str,
@@ -686,7 +730,8 @@ class VacasaConnect:
             'warn': warn,
         }
 
-        return self._post(url, json={'data': {'attributes': payload, 'type':'blocklists'}}, headers=headers).json()
+        return self._post(url, json={'data': {'attributes': payload, 'type': 'blocklists'}}, headers=headers).json()
+
 
 def _handle_http_exceptions(response):
     """Log 400/500s and raise them as exceptions"""
