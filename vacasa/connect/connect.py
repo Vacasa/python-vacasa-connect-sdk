@@ -180,15 +180,15 @@ class VacasaConnect:
 
         return url
 
-    def _iterate_pages(self, url: str, headers: dict, params: dict = None):
+    def _iterate_pages(self, url: str, headers: dict, params: dict = None, *, retry=True):
         """Iterate over paged results."""
         more_pages = True
 
         while more_pages:
-            r = self._get(url, headers=headers, params=params)
+            r = self._get(url, headers=headers, params=params, retry=retry)
             yield from r.json()['data']
 
-            if r.json().get('links').get('next'):
+            if r.json().get('links', {}).get('next'):
                 more_pages = True
                 url = self._ensure_url_has_host(r.json()['links']['next'])
             else:
@@ -276,6 +276,78 @@ class VacasaConnect:
         r = self._get(url, headers=self._headers(), params=params)
 
         return r.json()['data']
+
+    def get_unit_events(self,
+                        unit_id: str = None,
+                        created_since_time: str = None,
+                        min_event_id: str = None,
+                        include_units: bool = False,
+                        include_unit_content: bool = False,
+                        include_photos: bool = False,
+                        include_amenities: bool = False):
+        """Get a list of unit events. Optionally include unit data for units
+           that have events in the response.
+
+        Args:
+            unit_id: Limit events to a single unit_id
+            created_since_time: Limit events to those created after this timestamp
+            min_event_id: Limit events to those starting with this event ID
+            include_units: Whether or not to include unit data in the response
+            include_unit_content: Whether or not to include unit content in the response
+            include_photos: Whether or not to include unit photos (include_units must be True)
+            include_amenities: Whether or not to include unit amenity data (include_units must be True)
+
+        Returns:
+            A dict containing the requested attributes related to unit-events. The event data will be
+            returned in a 'data' key in each page. If include_units or include_unit_content is True
+            that data will be returned in an 'included' key in each page.
+        """
+        url = f"{self.endpoint}/v1/unit-events"
+        params = {}
+
+        if unit_id:
+            params['filter[unit_id]'] = unit_id
+
+        if created_since_time:
+            params['filter[created_at_min]'] = created_since_time
+
+        if min_event_id:
+            params['filter[event_min]'] = min_event_id
+
+        if include_units:
+            params['include'] = 'unit'
+
+            if include_photos:
+                params['include_meta'] = 'photos_list'
+
+            if include_amenities:
+                if 'include_meta' in params:
+                    params['include_meta'] += ',amenities_map'
+                else:
+                    params['include_meta'] = 'amenities_map'
+
+        if include_unit_content:
+            if 'include' in params:
+                params['include'] += ',unit-content'
+            else:
+                params['include'] = 'unit-content'
+
+        # Custom paging because this endpoint returns responses in a different format than all others.
+        more_pages = True
+        yield_keys = ['data', 'included']
+
+        while more_pages:
+            r = self._get(url, headers=self._headers(), params=params)
+            json_response = r.json()
+
+            # Limiting the keys we return strips out the unnecessary paging links, etc.
+            yield {k: json_response[k] for k in yield_keys if k in json_response}
+
+            if json_response.get('links', {}).get('next'):
+                more_pages = True
+                url = self._ensure_url_has_host(json_response['links']['next'])
+            else:
+                more_pages = False
 
     def get_availability(self, params: dict = None):
         """Retrieve availabilities.
@@ -493,7 +565,7 @@ class VacasaConnect:
 
         return self._iterate_pages(url, headers, params)
 
-    def get_offices(self, params: dict = None):
+    def get_offices(self, params: dict = None, *, retry=False):
         """Retrieve a list of Vacasa local office locations
 
         Yields:
@@ -502,7 +574,18 @@ class VacasaConnect:
         url = f"{self.endpoint}/v1/offices"
         headers = self._headers()
 
-        return self._iterate_pages(url, headers, params)
+        return self._iterate_pages(url, headers, params, retry=retry)
+
+    def get_page_templates(self, params: dict = None, *, retry=False):
+        """Retrieve a list of Vacasa "pages" objects, which are html templates
+
+        Yields:
+            An iterator of pages.
+        """
+        url = f"{self.endpoint}/v1/pages"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params, retry=retry)
 
     @staticmethod
     def _trip_protection_to_integer(trip_protection: bool) -> int:
@@ -600,9 +683,9 @@ class VacasaConnect:
             children: How many children will be staying
             pets: How many pets will be staying
             trip_protection: Has the user requested trip protection?
-                -1 No
-                 0 TBD
-                 1 Yes
+                False: No
+                None: TBD
+                True: Yes
             quote_id: ID of a quote retrieved from the `GET /quotes` endpoint
             first_name: User's First Name (for billing)
             last_name: User's Last Name (for billing)
