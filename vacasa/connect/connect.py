@@ -820,7 +820,7 @@ class VacasaConnect:
         :param block: 1 for iDology hard fail, else 0
         :param warn: 1 for iDology soft fail, else 0
 
-        :return: # TODO: paste in example response after CONN-318 completion
+        :return: e.g.: {'result': 'success', 'id': 8411, 'meta': {'transaction_id': '5c393085ecd86'}}
         """
 
         url = f"{self.endpoint}/v1/blocklists"
