@@ -751,6 +751,29 @@ class VacasaConnect:
                            total: int,
                            tax_amount: int,
                            ) -> dict:
+        """
+        :param unit_id: A Vacasa Unit ID
+        :param arrival: Checkin date in 'YYYY-MM-DD' format
+        :param departure: Checkout date in 'YYYY-MM-DD' format
+        :param adults: How many adults will be staying
+        :param children: How many children will be staying
+        :param pets: How many pets will be staying
+        :param trip_protection: Has the user requested trip protection?
+                -1 No
+                0 TBD
+                1 Yes
+        :param discount_id:
+        :param first_name:
+        :param last_name:
+        :param phone:
+        :param rent:
+        :param fee_amount:
+        :param cleaning_fees:
+        :param trip_protection_fee:
+        :param total:
+        :param tax_amount:
+        :return:
+        """
 
         url = f"{self.endpoint}/v1/reservations-abandoned"
         headers = self._headers()
