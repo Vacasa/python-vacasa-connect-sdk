@@ -752,27 +752,30 @@ class VacasaConnect:
                            tax_amount: int,
                            ) -> dict:
         """
-        :param unit_id: A Vacasa Unit ID
-        :param arrival: Checkin date in 'YYYY-MM-DD' format
-        :param departure: Checkout date in 'YYYY-MM-DD' format
-        :param adults: How many adults will be staying
-        :param children: How many children will be staying
-        :param pets: How many pets will be staying
-        :param trip_protection: Has the user requested trip protection?
+        Args:
+            unit_id: A Vacasa Unit ID
+            arrival: Checkin date in 'YYYY-MM-DD' format
+            departure: Checkout date in 'YYYY-MM-DD' format
+            adults: How many adults will be staying
+            children: How many children will be staying
+            pets: How many pets will be staying
+            trip_protection: Has the user requested trip protection?
                 -1 No
                 0 TBD
                 1 Yes
-        :param discount_id:
-        :param first_name:
-        :param last_name:
-        :param phone:
-        :param rent:
-        :param fee_amount:
-        :param cleaning_fees:
-        :param trip_protection_fee:
-        :param total:
-        :param tax_amount:
-        :return:
+            discount_id:
+            first_name:
+            last_name:
+            phone:
+            rent:
+            fee_amount:
+            cleaning_fees:
+            trip_protection_fee:
+            total:
+            tax_amount:
+
+        Returns: dict
+
         """
 
         url = f"{self.endpoint}/v1/reservations-abandoned"
@@ -809,18 +812,18 @@ class VacasaConnect:
                                block: bool,
                                warn: bool) -> dict:
         """
-        Add users to Vacasa's blocklist.
+        Args:
+            reservation_id: A reservation id created when creating a canceled reservation.
+            first_name:
+            last_name:
+            email:
+            phone:
+            reason: Reason for adding user to Vacasa's blocklist.
+            block: 1 for iDology hard fail, else 0
+            warn: 1 for iDology soft fail, else 0
 
-        :param reservation_id: A reservation id created when creating a canceled reservation.
-        :param first_name:
-        :param last_name:
-        :param email:
-        :param phone:
-        :param reason: Reason for adding user to Vacasa's blocklist.
-        :param block: 1 for iDology hard fail, else 0
-        :param warn: 1 for iDology soft fail, else 0
+        Returns: e.g.: {'result': 'success', 'id': 8411, 'meta': {'transaction_id': '5c393085ecd86'}}
 
-        :return: e.g.: {'result': 'success', 'id': 8411, 'meta': {'transaction_id': '5c393085ecd86'}}
         """
 
         url = f"{self.endpoint}/v1/blocklists"
