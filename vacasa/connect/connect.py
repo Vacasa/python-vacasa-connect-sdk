@@ -732,7 +732,7 @@ class VacasaConnect:
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
-    def cancel_reservation(self,
+    def created_cancelled_reservation(self,
                            unit_id: int,
                            arrival: str,
                            departure: str,
