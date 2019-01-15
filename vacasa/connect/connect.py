@@ -844,7 +844,7 @@ class VacasaConnect:
 
         return self._post(url, json={'data': {'attributes': payload, 'type': 'blocklists'}}, headers=headers).json()
 
-    def get_blocklist_entries(self) -> dict:
+    def get_blocklist_entries(self, page_number=0) -> dict:
         """
         Get the current blocklist from connect API.
 
@@ -853,6 +853,8 @@ class VacasaConnect:
         """
 
         url = f"{self.endpoint}/v1/blocklists"
+        if page_number:
+            url += "?page[number]=" + str(page_number)
         headers = self._headers()
 
         return self._get(url, headers=headers).json()
