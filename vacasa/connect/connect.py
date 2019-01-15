@@ -844,6 +844,19 @@ class VacasaConnect:
 
         return self._post(url, json={'data': {'attributes': payload, 'type': 'blocklists'}}, headers=headers).json()
 
+    def get_blocklist_entries(self) -> dict:
+        """
+        Get the current blocklist from connect API.
+
+        Returns: dict
+
+        """
+
+        url = f"{self.endpoint}/v1/blocklists"
+        headers = self._headers()
+
+        return self._get(url, headers=headers).json()
+
 
 def _handle_http_exceptions(response):
     """Log 400/500s and raise them as exceptions"""
