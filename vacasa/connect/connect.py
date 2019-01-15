@@ -786,7 +786,6 @@ class VacasaConnect:
             'children': children,
             'cleaning_fees': cleaning_fees,
             'last_night': departure,
-            'discount_id': discount_id,
             'fee_amount': fee_amount,
             'first_name': first_name,
             'last_name': last_name,
@@ -799,6 +798,10 @@ class VacasaConnect:
             'trip_protection_fee': trip_protection_fee,
             'unit_id': unit_id,
         }
+
+        # The discount_id is optional. Add it if we've got it.
+        if discount_id:
+            payload['discount_id'] = discount_id
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
