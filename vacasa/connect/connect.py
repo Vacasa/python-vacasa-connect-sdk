@@ -846,10 +846,10 @@ class VacasaConnect:
 
     def get_blocklist_entries(self, page_number=0) -> dict:
         """
-        Get the current blocklist from connect API.
+        Args:
+            page_number: An int used to specify a page of blocklist data.
 
         Returns: dict
-
         """
 
         url = f"{self.endpoint}/v1/blocklists"
