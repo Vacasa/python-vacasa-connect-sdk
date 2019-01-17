@@ -854,7 +854,7 @@ class VacasaConnect:
             last_name:
             email:
 
-        Returns: e.g.: {'result': 'success', 'ok'}}
+        Returns: json response for success
 
         """
 
