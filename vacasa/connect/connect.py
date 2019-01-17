@@ -842,6 +842,34 @@ class VacasaConnect:
         return self._post(url, json={'data': {'attributes': payload, 'type': 'blocklists'}}, headers=headers).json()
 
 
+    def add_reservation_guests(self,
+                               reservation_id: int,
+                               first_name: str,
+                               last_name: str,
+                               email: str) -> dict:
+        """
+        Args:
+            reservation_id: A reservation id created when creating a canceled reservation.
+            first_name:
+            last_name:
+            email:
+
+        Returns: json response for success
+
+        """
+
+        url = f"{self.endpoint}/v1/reservation-guests"
+        headers = self._headers()
+        payload = {
+            'reservation_id': reservation_id,
+            'first_name': first_name,
+            'last_name': last_name,
+            'email': email
+        }
+
+        return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
+
+
 def _handle_http_exceptions(response):
     """Log 400/500s and raise them as exceptions"""
     try:
