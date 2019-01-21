@@ -732,7 +732,7 @@ class VacasaConnect:
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
-    def created_cancelled_reservation(self,
+    def create_cancelled_reservation(self,
                            unit_id: int,
                            arrival: str,
                            departure: str,
@@ -786,7 +786,6 @@ class VacasaConnect:
             'children': children,
             'cleaning_fees': cleaning_fees,
             'last_night': departure,
-            'discount_id': discount_id,
             'fee_amount': fee_amount,
             'first_name': first_name,
             'last_name': last_name,
@@ -799,6 +798,10 @@ class VacasaConnect:
             'trip_protection_fee': trip_protection_fee,
             'unit_id': unit_id,
         }
+
+        # The discount_id is optional. Add it if we've got it.
+        if discount_id:
+            payload['discount_id'] = discount_id
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
@@ -840,6 +843,21 @@ class VacasaConnect:
         }
 
         return self._post(url, json={'data': {'attributes': payload, 'type': 'blocklists'}}, headers=headers).json()
+
+    def get_blocklist_entries(self, page_number=0) -> dict:
+        """
+        Args:
+            page_number: An int used to specify a page of blocklist data.
+
+        Returns: dict
+        """
+
+        url = f"{self.endpoint}/v1/blocklists"
+        if page_number:
+            url += "?page[number]=" + str(page_number)
+        headers = self._headers()
+
+        return self._get(url, headers=headers).json()
 
 
     def add_reservation_guests(self,
