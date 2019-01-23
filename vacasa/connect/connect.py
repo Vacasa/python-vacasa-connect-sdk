@@ -663,6 +663,7 @@ class VacasaConnect:
                            pets: int = 0,
                            trip_protection: Optional[bool] = None,
                            source: Optional[str] = None,
+                           discount_id: Optional[int] = None,
                            ) -> dict:
         """ Reserve a given unit
 
@@ -693,6 +694,7 @@ class VacasaConnect:
             exp_mmyy: Credit card expiry in `mmyy` format
             cvv: Card verification value on credit card
             source: A Vacasa-issued code identifying the source of this request
+            discount_id: Must match value from `quote_id`
 
         Returns: dict
 
@@ -730,27 +732,31 @@ class VacasaConnect:
         if cvv:
             payload['cvv'] = str(cvv)
 
+        # The discount_id is optional. Add it if we've got it.
+        if discount_id:
+            payload['discount_id'] = discount_id
+
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
     def create_cancelled_reservation(self,
-                           unit_id: int,
-                           arrival: str,
-                           departure: str,
-                           adults: int,
-                           children: int,
-                           pets: int,
-                           trip_protection: bool,
-                           discount_id: str,
-                           first_name: str,
-                           last_name: str,
-                           phone: str,
-                           rent: int,
-                           fee_amount: int,
-                           cleaning_fees: int,
-                           trip_protection_fee: int,
-                           total: int,
-                           tax_amount: int,
-                           ) -> dict:
+                                     unit_id: int,
+                                     arrival: str,
+                                     departure: str,
+                                     adults: int,
+                                     children: int,
+                                     pets: int,
+                                     trip_protection: bool,
+                                     discount_id: str,
+                                     first_name: str,
+                                     last_name: str,
+                                     phone: str,
+                                     rent: int,
+                                     fee_amount: int,
+                                     cleaning_fees: int,
+                                     trip_protection_fee: int,
+                                     total: int,
+                                     tax_amount: int,
+                                     ) -> dict:
         """
         Args:
             unit_id: A Vacasa Unit ID
@@ -858,7 +864,6 @@ class VacasaConnect:
         headers = self._headers()
 
         return self._get(url, headers=headers).json()
-
 
     def add_reservation_guests(self,
                                reservation_id: int,
