@@ -697,7 +697,7 @@ class VacasaConnect:
             source: A Vacasa-issued code identifying the source of this request
             discount_id: Must match value from `quote_id`
             initial_payment_amount: if included, only process this amount initially, the remaining balance will be
-                                    charged according to payment plan logic (i.e. 30 days before checking)
+                                    charged according to payment plan logic (i.e. 30 days before check-in)
 
         Returns: dict
 
