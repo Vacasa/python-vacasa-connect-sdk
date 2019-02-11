@@ -664,6 +664,7 @@ class VacasaConnect:
                            trip_protection: Optional[bool] = None,
                            source: Optional[str] = None,
                            discount_id: Optional[int] = None,
+                           initial_payment_amount: [float] = None
                            ) -> dict:
         """ Reserve a given unit
 
@@ -695,6 +696,8 @@ class VacasaConnect:
             cvv: Card verification value on credit card
             source: A Vacasa-issued code identifying the source of this request
             discount_id: Must match value from `quote_id`
+            initial_payment_amount: if included, only process this amount initially, the remaining balance will be
+                                    charged according to payment plan logic (i.e. 30 days before checking)
 
         Returns: dict
 
@@ -735,6 +738,9 @@ class VacasaConnect:
         # The discount_id is optional. Add it if we've got it.
         if discount_id:
             payload['discount_id'] = discount_id
+
+        if initial_payment_amount:
+            payload['initial_payment_amount'] = initial_payment_amount
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
@@ -890,7 +896,8 @@ class VacasaConnect:
             'email': email
         }
 
-        return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
+        return self._post(url, json={'data': {'attributes': payload,
+                                              'type': 'reservation-guest'}}, headers=headers).json()
 
 
 def _handle_http_exceptions(response):
