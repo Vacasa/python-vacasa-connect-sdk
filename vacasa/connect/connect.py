@@ -935,22 +935,22 @@ class VacasaConnect:
             'phone': address['phone'],
             'zip': address['zip'],
             'block_list_id': block_list_id,
-            'passed_initial_check': _convertBoolToInt(passed_initial_check),
-            'differentiator_shown': _convertBoolToInt(differentiator_shown),
+            'passed_initial_check': _convert_bool_to_int(passed_initial_check),
+            'differentiator_shown': _convert_bool_to_int(differentiator_shown),
             'questions_quantity': questions_quantity,
             'questions_correct': questions_correct,
             'challenge_quantity': challenge_quantity,
             'challenge_correct': challenge_correct,
-            'received_soft_fail': _convertBoolToInt(received_soft_fail),
-            'received_hard_fail': _convertBoolToInt(received_hard_fail),
-            'approved_for_checkout': _convertBoolToInt(approved_for_checkout)
+            'received_soft_fail': _convert_bool_to_int(received_soft_fail),
+            'received_hard_fail': _convert_bool_to_int(received_hard_fail),
+            'approved_for_checkout': _convert_bool_to_int(approved_for_checkout)
         }
 
         return self._post(url, json={'data': {'attributes': payload,
                                               'type': 'reservation-guest'}}, headers=headers).json()
 
 
-def _convertBoolToInt(value):
+def _convert_bool_to_int(value):
     if value is True:
         return 1
     if value is False:
