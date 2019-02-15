@@ -919,28 +919,11 @@ class VacasaConnect:
                             ):
         """
         Adds an identity record into the monolith for idology check result
-        :param reservation_id:
-        :param idology_check_id:
-        :param unit_id:
-        :param name:
-        :param address:
-        :param block_list_id:
-        :param passed_initial_check:
-        :param differentiator_shown:
-        :param questions_quantity:
-        :param questions_correct:
-        :param challenge_quantity:
-        :param challenge_correct:
-        :param received_soft_fail:
-        :param received_hard_fail:
-        :param approved_for_checkout:
-        :param idology_check_message:
-        :return:
         """
         url = f"{self.endpoint}/v1/identity-checks"
         headers = self._headers()
         payload = {
-            'code_id': 100,
+            'code_id': 138,
             'reservation_id': reservation_id,
             'external_reference_id': idology_check_id,
             'external_response_message': idology_check_message,
