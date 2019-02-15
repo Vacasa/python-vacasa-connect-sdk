@@ -899,6 +899,64 @@ class VacasaConnect:
         return self._post(url, json={'data': {'attributes': payload,
                                               'type': 'reservation-guest'}}, headers=headers).json()
 
+    def add_identity_check(self,
+                            reservation_id: int,
+                            idology_check_id: str,
+                            unit_id: int,
+                            name: dict,
+                            address: dict,
+                            block_list_id: int = None,
+                            passed_initial_check: bool = None,
+                            differentiator_shown: bool = None,
+                            questions_quantity: int = None,
+                            questions_correct: int = None,
+                            challenge_quantity: int = None,
+                            challenge_correct: int = None,
+                            received_soft_fail: bool = None,
+                            received_hard_fail: bool = None,
+                            approved_for_checkout: bool = None,
+                            idology_check_message: str = None,
+                            ):
+        """
+        Adds an identity record into the monolith for idology check result
+        """
+        url = f"{self.endpoint}/v1/identity-checks"
+        headers = self._headers()
+        payload = {
+            'code_id': 138,
+            'reservation_id': reservation_id,
+            'external_reference_id': idology_check_id,
+            'external_response_message': idology_check_message,
+            'unit_id': unit_id,
+            'first_name': name['first_name'],
+            'last_name': name['last_name'],
+            'address': address['address'],
+            'email': address['email'],
+            'phone': address['phone'],
+            'zip': address['zip'],
+            'block_list_id': block_list_id,
+            'passed_initial_check': _convert_bool_to_int(passed_initial_check),
+            'differentiator_shown': _convert_bool_to_int(differentiator_shown),
+            'questions_quantity': questions_quantity,
+            'questions_correct': questions_correct,
+            'challenge_quantity': challenge_quantity,
+            'challenge_correct': challenge_correct,
+            'received_soft_fail': _convert_bool_to_int(received_soft_fail),
+            'received_hard_fail': _convert_bool_to_int(received_hard_fail),
+            'approved_for_checkout': _convert_bool_to_int(approved_for_checkout)
+        }
+
+        return self._post(url, json={'data': {'attributes': payload,
+                                              'type': 'reservation-guest'}}, headers=headers).json()
+
+
+def _convert_bool_to_int(value):
+    if value is True:
+        return 1
+    if value is False:
+        return 0
+    return value  # for none case
+
 
 def _handle_http_exceptions(response):
     """Log 400/500s and raise them as exceptions"""
