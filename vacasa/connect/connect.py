@@ -899,7 +899,7 @@ class VacasaConnect:
         return self._post(url, json={'data': {'attributes': payload,
                                               'type': 'reservation-guest'}}, headers=headers).json()
 
-    def add_indentity_check(self,
+    def add_identity_check(self,
                             reservation_id: int,
                             idology_check_id: str,
                             unit_id: int,
