@@ -616,9 +616,9 @@ class VacasaConnect:
             children: How many children will be staying
             pets: How many pets will be staying
             trip_protection: Has the user requested trip protection?
-                -1 No
-                 0 TBD
-                 1 Yes
+                False: No
+                None: TBD
+                True: Yes
             discount_id: optional
             language: e.g. 'en-US' or 'es-ES' (optional)
             currency: e.g. 'USD' or 'EUR' (optional)
@@ -751,17 +751,17 @@ class VacasaConnect:
                                      adults: int,
                                      children: int,
                                      pets: int,
-                                     trip_protection: bool,
-                                     discount_id: str,
                                      first_name: str,
                                      last_name: str,
                                      phone: str,
-                                     rent: int,
-                                     fee_amount: int,
-                                     cleaning_fees: int,
-                                     trip_protection_fee: int,
-                                     total: int,
-                                     tax_amount: int,
+                                     rent: float,
+                                     fee_amount: float,
+                                     cleaning_fees: float,
+                                     trip_protection_fee: float,
+                                     total: float,
+                                     tax_amount: float,
+                                     trip_protection: bool = None,
+                                     discount_id: str = None,
                                      source: str = None,
                                      ) -> dict:
         """
@@ -773,9 +773,9 @@ class VacasaConnect:
             children: How many children will be staying
             pets: How many pets will be staying
             trip_protection: Has the user requested trip protection?
-                -1 No
-                0 TBD
-                1 Yes
+                False: No
+                None: TBD
+                True: Yes
             discount_id:
             first_name:
             last_name:
