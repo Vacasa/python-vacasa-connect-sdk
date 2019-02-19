@@ -762,6 +762,7 @@ class VacasaConnect:
                                      trip_protection_fee: int,
                                      total: int,
                                      tax_amount: int,
+                                     source: str = None,
                                      ) -> dict:
         """
         Args:
@@ -785,6 +786,7 @@ class VacasaConnect:
             trip_protection_fee:
             total:
             tax_amount:
+            source: A Vacasa-issued code identifying the source of this request
 
         Returns: dict
 
@@ -814,6 +816,9 @@ class VacasaConnect:
         # The discount_id is optional. Add it if we've got it.
         if discount_id:
             payload['discount_id'] = discount_id
+
+        if source is not None:
+            payload['source'] = source
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
