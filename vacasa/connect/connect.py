@@ -70,7 +70,13 @@ class VacasaConnect:
 
             # refresh the token if it has expired
             if now > refresh_expiration or now > access_expiration:
-                tokens = self._refresh_tokens()
+                try:
+                    tokens = self._refresh_tokens()
+                except requests.exceptions.HTTPError as e:
+                    if e.response is not None and e.response.status_code == 401:
+                        tokens = self._get_new_tokens()
+                    else:
+                        raise e
                 self._access_token = tokens.get('access_token')
                 self._refresh_token = tokens.get('refresh_token')
 
