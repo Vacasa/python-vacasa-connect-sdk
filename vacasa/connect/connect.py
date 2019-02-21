@@ -966,11 +966,9 @@ class VacasaConnect:
 
 
 def _convert_bool_to_int(value):
-    if value is True:
+    if value:
         return 1
-    if value is False:
-        return 0
-    return value  # for none case
+    return 0  # for none case
 
 
 def _handle_http_exceptions(response):
