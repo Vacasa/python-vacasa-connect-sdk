@@ -588,7 +588,7 @@ class VacasaConnect:
         Yields:
             An iterator of pages.
         """
-        url = f"{self.endpoint}/v1/pages"
+        url = f"{self.endpoint}/v1/pages?include=content"
         headers = self._headers()
 
         return self._iterate_pages(url, headers, params, retry=retry)
