@@ -861,8 +861,8 @@ class VacasaConnect:
             'email': email,
             'phone': phone,
             'reason': reason,
-            'block': block,
-            'warn': warn,
+            'block': _convert_bool_to_int(block),
+            'warn': _convert_bool_to_int(warn),
         }
 
         return self._post(url, json={'data': {'attributes': payload, 'type': 'blocklists'}}, headers=headers).json()
