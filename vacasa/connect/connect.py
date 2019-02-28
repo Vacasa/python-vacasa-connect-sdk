@@ -952,7 +952,7 @@ class VacasaConnect:
             'email': email,
             'phone': phone,
             'zip': zip,
-            'block_list_id': block_list_id,
+            'blocklist_id': block_list_id,
             'passed_initial_check': _convert_bool_to_int(passed_initial_check),
             'differentiator_shown': _convert_bool_to_int(differentiator_shown),
             'questions_quantity': questions_quantity,
