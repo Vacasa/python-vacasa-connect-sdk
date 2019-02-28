@@ -754,6 +754,7 @@ class VacasaConnect:
                                      unit_id: int,
                                      arrival: str,
                                      departure: str,
+                                     email: str,
                                      adults: int,
                                      children: int,
                                      pets: int,
@@ -775,6 +776,7 @@ class VacasaConnect:
             unit_id: A Vacasa Unit ID
             arrival: Checkin date in 'YYYY-MM-DD' format
             departure: Checkout date in 'YYYY-MM-DD' format
+            email: User's email address
             adults: How many adults will be staying
             children: How many children will be staying
             pets: How many pets will be staying
@@ -804,6 +806,7 @@ class VacasaConnect:
             'adults': adults,
             'first_night': arrival,
             'children': children,
+            'email': email,
             'cleaning_fees': cleaning_fees,
             'last_night': departure,
             'fee_amount': fee_amount,
