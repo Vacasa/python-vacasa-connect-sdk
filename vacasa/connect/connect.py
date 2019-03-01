@@ -962,8 +962,8 @@ class VacasaConnect:
             'received_hard_fail': _convert_bool_to_int(received_hard_fail),
             'approved_for_checkout': _convert_bool_to_int(approved_for_checkout)
         }
-        if (blocklist_id):
-            payload['blocklist'] = blocklist_id
+        if blocklist_id:
+            payload['blocklist_id'] = int(blocklist_id)
 
         return self._post(url, json={'data': {'attributes': payload,
                                               'type': 'reservation-guest'}}, headers=headers).json()
