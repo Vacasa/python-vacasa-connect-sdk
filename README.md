@@ -8,8 +8,24 @@ Before you can use this SDK you'll need access to the
 # Getting Started
 ```python
 # Initialize an instance of the VacasaConnect class using your credentials.
-from vacasa.connect import VacasaConnect
-connect = VacasaConnect('your_key', 'your_secret')
+from vacasa.connect import VacasaConnect, IdpAuth
+
+connect = VacasaConnect(
+    endpoint=CONNECT_API_ENDPOINT,
+    auth=IdpAuth(
+        config_endpoint=OIDC_CONFIG_ENDPOINT,
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
+        audience=OIDC_AUDIENCE,
+        scopes=[
+            # see OIDC_CONFIG_ENDPOINT for supported scopes
+            LIST,
+            OF,
+            REQUESTED,
+            SCOPES,
+        ]
+    ),
+)
 
 # Get units
 for unit in connect.get_units():
@@ -28,7 +44,7 @@ print(reviews)
 # Dependencies
 * [requests](https://github.com/requests/requests)
 * [pendulum](https://github.com/sdispater/pendulum)
-* [retry](https://github.com/invl/retry)
+* [python-jose](https://python-jose.readthedocs.io/en/latest/)
 
 # Development
 ```bash
