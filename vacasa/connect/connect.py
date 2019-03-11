@@ -1,40 +1,30 @@
 """Vacasa Connect Python SDK."""
-import hashlib
-import hmac
 import logging
 from typing import Optional
 from urllib.parse import urlparse, urlunparse
 
-import pendulum
-import requests
-from retry.api import retry_call
+from .idp_auth import IdpAuth
+from .requests_config import request_with_retries
+from .util import log_http_error
 
 logger = logging.getLogger(__name__)
-
-
-def is_https_url(url: str) -> bool:
-    return urlparse(url).scheme.lower() == 'https'
+requests = request_with_retries()
 
 
 class VacasaConnect:
     """This class serves as a wrapper for the Vacasa Connect API."""
 
-    _access_token = None
-    _refresh_token = None
-
     def __init__(self,
-                 api_key: str,
-                 api_secret: str,
+                 auth: IdpAuth,
                  endpoint: str = 'https://connect.vacasa.com',
                  timezone: str = 'UTC',
                  language: str = 'en-US',
-                 currency: str = 'USD'
+                 currency: str = 'USD',
                  ):
         """Initialize an instance of the VacasaConnect class.
 
         Args:
-            api_key: Your Vacasa Connect API key.
-            api_secret: Your Vacasa Connect API secret.
+            auth: IdpAuth setup object
             endpoint: The URL of the Vacasa Connect API.
             timezone: UTC or a long-form version of a timezone from the tz
                 database. Example: 'America/New_York'. See
@@ -46,123 +36,31 @@ class VacasaConnect:
             currency: An ISO-4217 currency code. Send to request monetary
                 values in this currency.
         """
-        if not is_https_url(endpoint):
-            raise ValueError(f"`endpoint` scheme should be https")
-        self.api_key = api_key
-        self.api_secret = api_secret
+        self._auth = auth
         self.endpoint = endpoint.rstrip('/')
         self.timezone = timezone
         self.language = language
         self.currency = currency
-        self._populate_tokens()
-
-    def _populate_tokens(self):
-        """Decide if current tokens need refreshed and populate them."""
-        # generate a token if we don't have one yet
-        if self._access_token is None:
-            tokens = self._get_new_tokens()
-            self._access_token = tokens.get('access_token')
-            self._refresh_token = tokens.get('refresh_token')
-        else:
-            now = pendulum.now()
-            refresh_expiration = pendulum.parse(self._refresh_token['expires_at'])
-            access_expiration = pendulum.parse(self._access_token['expires_at'])
-
-            # refresh the token if it has expired
-            if now > refresh_expiration or now > access_expiration:
-                try:
-                    tokens = self._refresh_tokens()
-                except requests.exceptions.HTTPError as e:
-                    if e.response is not None and e.response.status_code == 401:
-                        tokens = self._get_new_tokens()
-                    else:
-                        raise e
-                self._access_token = tokens.get('access_token')
-                self._refresh_token = tokens.get('refresh_token')
-
-    def _get_new_tokens(self) -> dict:
-        """Generate new access and refresh tokens."""
-        timestamp = int(pendulum.now().timestamp())
-        payload = {
-            'data': {
-                'api_key': self.api_key,
-                'timestamp': timestamp,
-                'signature': self._generate_signature(timestamp)
-            }
-        }
-        headers = {'content-type': 'application/json'}
-
-        r = self._post(f"{self.endpoint}/auth", json=payload, headers=headers)
-        tokens = r.json().get('data', {}).get('attributes', {})
-        self._validate_tokens(tokens)
-
-        return tokens
-
-    def _refresh_tokens(self) -> dict:
-        """Refresh existing tokens. Necessary when they expire."""
-        url = f"{self.endpoint}/auth/refresh"
-        payload = {
-            'data': {
-                'refresh_token': self._refresh_token['token']
-            }
-        }
-        r = self._post(url, json=payload)
-        tokens = r.json().get('data', {}).get('attributes', {})
-        self._validate_tokens(tokens)
-
-        return tokens
-
-    @staticmethod
-    def _validate_tokens(tokens):
-        """Raise errors for incomplete tokens."""
-        if 'access_token' not in tokens:
-            raise LookupError("access_token not found")
-
-        if 'refresh_token' not in tokens:
-            raise LookupError("refresh_token not found")
 
     def _headers(self, language=None, currency=None) -> dict:
         """Build common headers."""
-        self._populate_tokens()
-
         return {
-            'Authorization': f"Bearer {self._access_token['token']}",
+            'Authorization': f"Bearer {self._auth.token}",
             'Accept-Language': self.language if language is None else language,
             'X-Accept-Currency': self.currency if currency is None else currency,
             'X-Accept-Timezone': self.timezone
         }
 
-    def _generate_signature(self, timestamp: int) -> str:
-        """Create a hash signature used for generating new tokens."""
-        secret = bytes(self.api_secret, 'utf-8')
-        message = f"{self.api_key}{timestamp}{self.api_secret}".encode('utf-8')
-
-        return hmac.new(secret, message, hashlib.sha256).hexdigest()
-
     @staticmethod
-    def __get(url, headers: dict = None, params: dict = None):
+    def _get(url, headers: dict = None, params: dict = None):
         """HTTP GET request helper."""
         if headers is None:
             headers = {}
 
         r = requests.get(url, headers=headers, params=params)
-        _handle_http_exceptions(r)
+        log_http_error(r)
 
         return r
-
-    def _get(self, url, headers: dict = None, params: dict = None, retry: bool = True):
-        """HTTP Get helper with optional retrying."""
-        if retry:
-            return retry_call(
-                self.__get,
-                fargs=[url, headers, params],
-                exceptions=requests.exceptions.RequestException,
-                tries=5,
-                delay=1,
-                backoff=2
-            )
-        else:
-            return self.__get(url, headers, params)
 
     @staticmethod
     def _post(url, data: dict = None, json: dict = None, headers: dict = None):
@@ -171,7 +69,7 @@ class VacasaConnect:
             headers = {}
 
         r = requests.post(url, data=data, json=json, headers=headers)
-        _handle_http_exceptions(r)
+        log_http_error(r)
 
         return r
 
@@ -186,12 +84,12 @@ class VacasaConnect:
 
         return url
 
-    def _iterate_pages(self, url: str, headers: dict, params: dict = None, *, retry=True):
+    def _iterate_pages(self, url: str, headers: dict, params: dict = None):
         """Iterate over paged results."""
         more_pages = True
 
         while more_pages:
-            r = self._get(url, headers=headers, params=params, retry=retry)
+            r = self._get(url, headers=headers, params=params)
             yield from r.json()['data']
 
             if r.json().get('links', {}).get('next'):
@@ -571,7 +469,7 @@ class VacasaConnect:
 
         return self._iterate_pages(url, headers, params)
 
-    def get_offices(self, params: dict = None, *, retry=False):
+    def get_offices(self, params: dict = None):
         """Retrieve a list of Vacasa local office locations
 
         Yields:
@@ -580,9 +478,9 @@ class VacasaConnect:
         url = f"{self.endpoint}/v1/offices"
         headers = self._headers()
 
-        return self._iterate_pages(url, headers, params, retry=retry)
+        return self._iterate_pages(url, headers, params)
 
-    def get_page_templates(self, params: dict = None, *, retry=False):
+    def get_page_templates(self, params: dict = None):
         """Retrieve a list of Vacasa "pages" objects, which are html templates
 
         Yields:
@@ -591,14 +489,7 @@ class VacasaConnect:
         url = f"{self.endpoint}/v1/pages?include=content"
         headers = self._headers()
 
-        return self._iterate_pages(url, headers, params, retry=retry)
-
-    @staticmethod
-    def _trip_protection_to_integer(trip_protection: bool) -> int:
-        """Convert from True/False/None to 1/0/-1"""
-        if trip_protection is None:
-            return 0
-        return 1 if trip_protection else -1
+        return self._iterate_pages(url, headers, params)
 
     def get_quote(self,
                   unit_id: int,
@@ -647,9 +538,9 @@ class VacasaConnect:
         if discount_id is not None:
             params['discount_id'] = discount_id
 
-        params['trip_protection'] = self._trip_protection_to_integer(trip_protection)
+        params['trip_protection'] = _trip_protection_to_integer(trip_protection)
 
-        return self._get(url, headers, params, retry=False).json()
+        return self._get(url, headers, params).json()
 
     def create_reservation(self,
                            unit_id: int,
@@ -733,7 +624,7 @@ class VacasaConnect:
         if phone is not None:
             payload['phone'] = phone
 
-        payload['trip_protection'] = self._trip_protection_to_integer(trip_protection)
+        payload['trip_protection'] = _trip_protection_to_integer(trip_protection)
 
         if source is not None:
             payload['source'] = source
@@ -817,7 +708,7 @@ class VacasaConnect:
             'rent': rent,
             'tax_amount': tax_amount,
             'total': total,
-            'trip_protection': self._trip_protection_to_integer(trip_protection),
+            'trip_protection': _trip_protection_to_integer(trip_protection),
             'trip_protection_fee': trip_protection_fee,
             'unit_id': unit_id,
         }
@@ -969,19 +860,13 @@ class VacasaConnect:
                                               'type': 'reservation-guest'}}, headers=headers).json()
 
 
+def _trip_protection_to_integer(trip_protection: bool) -> int:
+    """Convert from True/False/None to 1/0/-1"""
+    if trip_protection is None:
+        return 0
+    return 1 if trip_protection else -1
+
+
 def _convert_bool_to_int(value):
-    if value:
-        return 1
-    return 0  # for none case
-
-
-def _handle_http_exceptions(response):
-    """Log 400/500s and raise them as exceptions"""
-    try:
-        response.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        try:
-            logger.exception(response.json())
-        except ValueError:
-            logger.exception(response.content)
-        raise e
+    """ Some connect API endpoints expect 1/0 instead of True/False.  They're also picky that null should be false """
+    return 1 if value else 0
