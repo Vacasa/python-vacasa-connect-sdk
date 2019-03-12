@@ -69,7 +69,7 @@ class IdpAuth:
         self._claims = jwt.decode(
             self._token,
             self._key,
-            algorithms=['RS256'],
+            algorithms=self._config['id_token_signing_alg_values_supported'],
             audience=self._audience
         )
 
