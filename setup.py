@@ -12,8 +12,8 @@ setup(
         'requests>=2.20.0',
         'jose==3.0.*'
     ],
-    extras_require=[
-        'cryptography==2.6.*'
-    ],
+    extras_require={
+        "cryptography": ['cryptography==2.6.*']
+    },
     long_description=open('README.md').read()
 )
