@@ -10,7 +10,7 @@ setup(
     install_requires=[
         'pendulum==2.*',
         'requests>=2.20.0',
-        'jose==3.0.*'
+        'python-jose==3.0.*'
     ],
     extras_require={
         "cryptography": ['cryptography==2.6.*']
