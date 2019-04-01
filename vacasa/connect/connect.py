@@ -496,10 +496,10 @@ class VacasaConnect:
                   arrival: str,
                   departure: str,
                   adults: int,
-                  children: Optional[int] = 0,
-                  pets: Optional[int] = 0,
-                  trip_protection: Optional[bool] = None,
-                  discount_id: Optional[int] = None,
+                  children: int = 0,
+                  pets: int = 0,
+                  trip_protection: bool = None,
+                  discount_id: int = None,
                   language=None,
                   currency=None
                   ) -> dict:
@@ -554,14 +554,15 @@ class VacasaConnect:
                            last_name: str,
                            account_number: str,
                            exp_mmyy: str,
-                           cvv: Optional[str] = None,
-                           phone: Optional[str] = None,
+                           cvv: str = None,
+                           phone: str = None,
                            children: int = 0,
                            pets: int = 0,
-                           trip_protection: Optional[bool] = None,
-                           source: Optional[str] = None,
-                           discount_id: Optional[int] = None,
-                           initial_payment_amount: [float] = None
+                           trip_protection: bool = None,
+                           source: str = None,
+                           discount_id: int = None,
+                           initial_payment_amount: float = None,
+                           anonymous_id: str = None
                            ) -> dict:
         """ Reserve a given unit
 
@@ -595,7 +596,7 @@ class VacasaConnect:
             discount_id: Must match value from `quote_id`
             initial_payment_amount: if included, only process this amount initially, the remaining balance will be
                                     charged according to payment plan logic (i.e. 30 days before check-in)
-
+            anonymous_id (optional): UUID4 for tracking
         Returns: dict
 
         """
@@ -632,12 +633,14 @@ class VacasaConnect:
         if cvv:
             payload['cvv'] = str(cvv)
 
-        # The discount_id is optional. Add it if we've got it.
         if discount_id:
             payload['discount_id'] = discount_id
 
         if initial_payment_amount:
             payload['initial_payment_amount'] = initial_payment_amount
+
+        if anonymous_id is not None:
+            payload['anonymous_id'] = anonymous_id
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
@@ -661,6 +664,7 @@ class VacasaConnect:
                                      trip_protection: bool = None,
                                      discount_id: str = None,
                                      source: str = None,
+                                     anonymous_id: str = None
                                      ) -> dict:
         """
         Args:
@@ -686,6 +690,7 @@ class VacasaConnect:
             total:
             tax_amount:
             source: A Vacasa-issued code identifying the source of this request
+            anonymous_id (optional): UUID4 for tracking
 
         Returns: dict
 
@@ -713,12 +718,14 @@ class VacasaConnect:
             'unit_id': unit_id,
         }
 
-        # The discount_id is optional. Add it if we've got it.
         if discount_id:
             payload['discount_id'] = discount_id
 
         if source is not None:
             payload['source'] = source
+
+        if anonymous_id is not None:
+            payload['anonymous_id'] = anonymous_id
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
