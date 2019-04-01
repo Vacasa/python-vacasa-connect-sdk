@@ -1,7 +1,7 @@
 """Vacasa Connect Python SDK."""
 import logging
-from typing import Optional
 from urllib.parse import urlparse, urlunparse
+from uuid import UUID
 
 from .idp_auth import IdpAuth
 from .requests_config import request_with_retries
@@ -640,7 +640,10 @@ class VacasaConnect:
             payload['initial_payment_amount'] = initial_payment_amount
 
         if anonymous_id is not None:
-            payload['anonymous_id'] = anonymous_id
+            if _is_uuid4(anonymous_id):
+                payload['anonymous_id'] = anonymous_id
+            else:
+                logger.warning("Ignoring invalid UUID4: %s", anonymous_id)
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
@@ -725,7 +728,10 @@ class VacasaConnect:
             payload['source'] = source
 
         if anonymous_id is not None:
-            payload['anonymous_id'] = anonymous_id
+            if _is_uuid4(anonymous_id):
+                payload['anonymous_id'] = anonymous_id
+            else:
+                logger.warning("Ignoring invalid UUID4: %s", anonymous_id)
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
@@ -877,3 +883,13 @@ def _trip_protection_to_integer(trip_protection: bool) -> int:
 def _convert_bool_to_int(value):
     """ Some connect API endpoints expect 1/0 instead of True/False.  They're also picky that null should be false """
     return 1 if value else 0
+
+
+def _is_uuid4(value: str) -> bool:
+    """ Check if a string looks like a valid UUID4 """
+    try:
+        uuid = UUID(value, version=4)
+    except ValueError:
+        return False
+
+    return str(uuid) == value
