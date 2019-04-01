@@ -1,7 +1,7 @@
 """Vacasa Connect Python SDK."""
 import logging
-from typing import Optional
 from urllib.parse import urlparse, urlunparse
+from uuid import UUID
 
 from .idp_auth import IdpAuth
 from .requests_config import request_with_retries
@@ -496,10 +496,10 @@ class VacasaConnect:
                   arrival: str,
                   departure: str,
                   adults: int,
-                  children: Optional[int] = 0,
-                  pets: Optional[int] = 0,
-                  trip_protection: Optional[bool] = None,
-                  discount_id: Optional[int] = None,
+                  children: int = 0,
+                  pets: int = 0,
+                  trip_protection: bool = None,
+                  discount_id: int = None,
                   language=None,
                   currency=None
                   ) -> dict:
@@ -554,14 +554,15 @@ class VacasaConnect:
                            last_name: str,
                            account_number: str,
                            exp_mmyy: str,
-                           cvv: Optional[str] = None,
-                           phone: Optional[str] = None,
+                           cvv: str = None,
+                           phone: str = None,
                            children: int = 0,
                            pets: int = 0,
-                           trip_protection: Optional[bool] = None,
-                           source: Optional[str] = None,
-                           discount_id: Optional[int] = None,
-                           initial_payment_amount: [float] = None
+                           trip_protection: bool = None,
+                           source: str = None,
+                           discount_id: int = None,
+                           initial_payment_amount: float = None,
+                           anonymous_id: str = None
                            ) -> dict:
         """ Reserve a given unit
 
@@ -595,7 +596,7 @@ class VacasaConnect:
             discount_id: Must match value from `quote_id`
             initial_payment_amount: if included, only process this amount initially, the remaining balance will be
                                     charged according to payment plan logic (i.e. 30 days before check-in)
-
+            anonymous_id (optional): UUID4 for tracking
         Returns: dict
 
         """
@@ -632,12 +633,17 @@ class VacasaConnect:
         if cvv:
             payload['cvv'] = str(cvv)
 
-        # The discount_id is optional. Add it if we've got it.
         if discount_id:
             payload['discount_id'] = discount_id
 
         if initial_payment_amount:
             payload['initial_payment_amount'] = initial_payment_amount
+
+        if anonymous_id is not None:
+            if _is_uuid4(anonymous_id):
+                payload['anonymous_id'] = anonymous_id
+            else:
+                logger.warning("Ignoring invalid UUID4: %s", anonymous_id)
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
@@ -661,6 +667,7 @@ class VacasaConnect:
                                      trip_protection: bool = None,
                                      discount_id: str = None,
                                      source: str = None,
+                                     anonymous_id: str = None
                                      ) -> dict:
         """
         Args:
@@ -686,6 +693,7 @@ class VacasaConnect:
             total:
             tax_amount:
             source: A Vacasa-issued code identifying the source of this request
+            anonymous_id (optional): UUID4 for tracking
 
         Returns: dict
 
@@ -713,12 +721,17 @@ class VacasaConnect:
             'unit_id': unit_id,
         }
 
-        # The discount_id is optional. Add it if we've got it.
         if discount_id:
             payload['discount_id'] = discount_id
 
         if source is not None:
             payload['source'] = source
+
+        if anonymous_id is not None:
+            if _is_uuid4(anonymous_id):
+                payload['anonymous_id'] = anonymous_id
+            else:
+                logger.warning("Ignoring invalid UUID4: %s", anonymous_id)
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
@@ -870,3 +883,13 @@ def _trip_protection_to_integer(trip_protection: bool) -> int:
 def _convert_bool_to_int(value):
     """ Some connect API endpoints expect 1/0 instead of True/False.  They're also picky that null should be false """
     return 1 if value else 0
+
+
+def _is_uuid4(value: str) -> bool:
+    """ Check if a string looks like a valid UUID4 """
+    try:
+        uuid = UUID(value, version=4)
+    except ValueError:
+        return False
+
+    return str(uuid) == value
