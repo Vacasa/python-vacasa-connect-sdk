@@ -5,7 +5,7 @@ from uuid import UUID
 
 from .idp_auth import IdpAuth
 from .requests_config import request_with_retries
-from .util import log_http_error
+from .util import log_http_error, is_https_url
 
 logger = logging.getLogger(__name__)
 requests = request_with_retries()
@@ -36,6 +36,9 @@ class VacasaConnect:
             currency: An ISO-4217 currency code. Send to request monetary
                 values in this currency.
         """
+        if not is_https_url(endpoint):
+            raise ValueError("`endpoint` scheme must be https")
+
         self._auth = auth
         self.endpoint = endpoint.rstrip('/')
         self.timezone = timezone
@@ -562,7 +565,8 @@ class VacasaConnect:
                            source: str = None,
                            discount_id: int = None,
                            initial_payment_amount: float = None,
-                           anonymous_id: str = None
+                           anonymous_id: str = None,
+                           terms: str = None
                            ) -> dict:
         """ Reserve a given unit
 
@@ -594,9 +598,12 @@ class VacasaConnect:
             cvv: Card verification value on credit card
             source: A Vacasa-issued code identifying the source of this request
             discount_id: Must match value from `quote_id`
-            initial_payment_amount: if included, only process this amount initially, the remaining balance will be
-                                    charged according to payment plan logic (i.e. 30 days before check-in)
-            anonymous_id (optional): UUID4 for tracking
+            initial_payment_amount: if included, only process this amount
+                initially, the remaining balance will be charged according to
+                payment plan logic (i.e. 30 days before check-in)
+            anonymous_id (optional): UUID4 for tracking,
+            terms: An ISO 8601 timestamp capturing the point in time where a
+                user accepted the rental terms.
         Returns: dict
 
         """
@@ -645,6 +652,9 @@ class VacasaConnect:
             else:
                 logger.warning("Ignoring invalid UUID4: %s", anonymous_id)
 
+        if terms is not None:
+            payload['terms'] = terms
+
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
     def create_cancelled_reservation(self,
@@ -682,16 +692,16 @@ class VacasaConnect:
                 False: No
                 None: TBD
                 True: Yes
-            discount_id:
-            first_name:
-            last_name:
-            phone:
-            rent:
-            fee_amount:
-            cleaning_fees:
-            trip_protection_fee:
-            total:
-            tax_amount:
+            discount_id: Must match value from `quote_id`
+            first_name: User's first name (for billing)
+            last_name: User's last name (for billing)
+            phone: User's phone number
+            rent: Cost of rent
+            fee_amount: Cost of fees
+            cleaning_fees: Cost of cleaning fees
+            trip_protection_fee: Cost of trip protection
+            total: Total code
+            tax_amount: Cost of taxes
             source: A Vacasa-issued code identifying the source of this request
             anonymous_id (optional): UUID4 for tracking
 
@@ -747,10 +757,10 @@ class VacasaConnect:
         """
         Args:
             reservation_id: A reservation id created when creating a canceled reservation.
-            first_name:
-            last_name:
-            email:
-            phone:
+            first_name: User's first name (for billing)
+            last_name: User's last name (for billing)
+            email: User's email address
+            phone: User's phone number
             reason: Reason for adding user to Vacasa's blocklist.
             block: 1 for iDology hard fail, else 0
             warn: 1 for iDology soft fail, else 0
