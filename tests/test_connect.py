@@ -1,9 +1,12 @@
-from unittest.mock import patch, MagicMock
+from copy import deepcopy
+from unittest.mock import patch, ANY, MagicMock
 
 import pendulum
 import pytest
 
 from vacasa.connect import VacasaConnect
+from .test_data import TEST_DATA
+from .test_expected import TEST_EXPECTED
 
 fake_access_token = {
     'access_token': 'fake_access_token',
@@ -13,31 +16,17 @@ fake_refresh_token = {
     'refresh_token': 'fake_refresh_token',
     'expires_at': pendulum.now().add(days=1).to_datetime_string()
 }
+mock_idp = MagicMock()
 
 
-@patch.object(VacasaConnect, '_populate_tokens')
-def mock_connect(mock_populate_tokens):
-    connect = VacasaConnect('fake_key', 'fake_secret', 'https://fake_url')
+def mock_connect():
+    connect = VacasaConnect(mock_idp, 'https://fake_url')
 
     # mock call that generates tokens
     mock_response = MagicMock()
     mock_response.return_value = None
-    mock_populate_tokens.return_value = mock_response
-
-    # populate fake tokens
-    connect._access_token = fake_access_token
-    connect._refresh_token = fake_refresh_token
 
     return connect
-
-
-def test_generate_signature():
-    connect = mock_connect()
-    timestamp = int(pendulum.datetime(2017, 1, 1, 0, 0).timestamp())
-    signature = connect._generate_signature(timestamp)
-    expected = '87446b676b79b6e493a6b852ec3c32faf579086bd12728178197ef278ec7abfc'
-
-    assert signature == expected
 
 
 def test_add_meta_param_adds_one_to_empty():
@@ -59,5 +48,27 @@ def test_add_meta_param_adds_another_to_existing():
 
 
 def test_ensure_https():
-    with pytest.raises(ValueError):
-        VacasaConnect('fake_key', 'fake_secret', 'http://fake_endpoint')
+    with pytest.raises(ValueError) as e:
+        VacasaConnect(mock_idp, 'http://fake_endpoint')
+
+    assert str(e).endswith("`endpoint` scheme must be https")
+
+
+@patch.object(VacasaConnect, '_post')
+def test_create_reservation_passes_terms(mock_post):
+    connect = mock_connect()
+
+    connect.create_reservation(**deepcopy(TEST_DATA['reservation_with_terms']))
+    mock_post.assert_called_once_with('https://fake_url/v1/reservations',
+                                      headers=ANY,
+                                      json=deepcopy(TEST_EXPECTED['reservation_with_terms']))
+
+
+@patch.object(VacasaConnect, '_post')
+def test_create_reservation_ignores_missing_terms(mock_post):
+    connect = mock_connect()
+
+    connect.create_reservation(**deepcopy(TEST_DATA['reservation_without_terms']))
+    mock_post.assert_called_once_with('https://fake_url/v1/reservations',
+                                      headers=ANY,
+                                      json=deepcopy(TEST_EXPECTED['reservation_without_terms']))
