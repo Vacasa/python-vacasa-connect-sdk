@@ -677,7 +677,8 @@ class VacasaConnect:
                                      trip_protection: bool = None,
                                      discount_id: str = None,
                                      source: str = None,
-                                     anonymous_id: str = None
+                                     anonymous_id: str = None,
+                                     cancellation_reason: str = None
                                      ) -> dict:
         """
         Args:
@@ -736,6 +737,9 @@ class VacasaConnect:
 
         if source is not None:
             payload['source'] = source
+
+        if cancellation_reason is not None:
+            payload['cancellation_reason'] = cancellation_reason
 
         if anonymous_id is not None:
             if _is_uuid4(anonymous_id):
