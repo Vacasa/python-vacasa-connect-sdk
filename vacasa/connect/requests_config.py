@@ -43,7 +43,7 @@ class RetryWithJitter(Retry):
         except (KeyError, AttributeError):
             pass
 
-        logger.error(log_message)
+        logger.debug(log_message)
 
         return next_retry
 
