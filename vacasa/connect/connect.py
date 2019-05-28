@@ -131,27 +131,28 @@ class VacasaConnect:
     """ Create a unit via connect. Required args are at the top of the list.
         https://vacasa.docs.stoplight.io/units/postv1units
     """
+
     def create_unit(self,
                     region_id: int,
                     turnover_day: int,
                     housing_type: str,
-                    code: str= None,
-                    name: str= None,
-                    bedrooms: int= None,
-                    full_baths: int= None,
-                    half_baths: int= None,
-                    max_occupancy: int= None,
-                    latitude: int= None,
-                    longitude: int= None,
-                    amenity_email: str= None,
-                    m_source: str= None,
-                    address: dict= None,
-                    king_beds: int= 0,
-                    queen_beds: int= 0,
-                    double_beds: int= 0,
-                    twin_beds: int= 0,
-                    sofabed: int= 0,
-                    futon: int= 0):
+                    code: str = None,
+                    name: str = None,
+                    bedrooms: int = None,
+                    full_baths: int = None,
+                    half_baths: int = None,
+                    max_occupancy: int = None,
+                    latitude: int = None,
+                    longitude: int = None,
+                    amenity_email: str = None,
+                    m_source: str = None,
+                    address: dict = None,
+                    king_beds: int = 0,
+                    queen_beds: int = 0,
+                    double_beds: int = 0,
+                    twin_beds: int = 0,
+                    sofabed: int = 0,
+                    futon: int = 0):
 
         url = f"{self.endpoint}/v1/units"
         headers = self._headers()
@@ -944,12 +945,14 @@ class VacasaConnect:
 
         return self._post(url, json={'data': {'attributes': payload,
                                               'type': 'reservation-guest'}}, headers=headers).json()
+
     """
         https://vacasa.docs.stoplight.io/contracts/get-contracts-list
     """
+
     def get_contracts(self,
-                      params: dict= None,
-                      active_only: bool=True):
+                      params: dict = None,
+                      active_only: bool = True):
         if params is None:
             params = {}
 
@@ -968,20 +971,21 @@ class VacasaConnect:
             owners: list of objects that contain three properties 'percentage_ownership', 'tax_ownership', 'contact_id' 
            
     """
+
     def create_contract(self,
                         unit_id: int,
                         management_fee: int,
                         owners: list,
                         created_by: int,
                         start_date: str,
-                        end_date: str= '01/01/2099',
-                        monthly_rent: int=0,
-                        template_version_id: int=1,
-                        form_id: int= 1,
-                        channel_fee_cost_sharing_id: int= 5,
-                        amendment_by_notice_id: int= 4,
-                        referral_eligible: bool= False,
-                        referral_discount: int= 0):
+                        end_date: str = '01/01/2099',
+                        monthly_rent: int = 0,
+                        template_version_id: int = 1,
+                        form_id: int = 1,
+                        channel_fee_cost_sharing_id: int = 5,
+                        amendment_by_notice_id: int = 4,
+                        referral_eligible: bool = False,
+                        referral_discount: int = 0):
 
         payload = {
             "unit_id": unit_id,
@@ -1010,8 +1014,9 @@ class VacasaConnect:
     """
         https://vacasa.docs.stoplight.io/contacts/getv1contacts
     """
+
     def get_contacts(self,
-                     params: dict=None):
+                     params: dict = None):
 
         if params is None:
             params = {}
@@ -1024,12 +1029,13 @@ class VacasaConnect:
     """
         https://vacasa.docs.stoplight.io/contacts/postv1contacts
     """
+
     def create_contact(self,
                        first_name: str,
                        email: str,
-                       last_name: str= '',
-                       address_1: str= '',
-                       address_2: str= '',
+                       last_name: str = '',
+                       address_1: str = '',
+                       address_2: str = '',
                        city: str = '',
                        state: str = '',
                        zip: str = '',
