@@ -523,8 +523,8 @@ class VacasaConnect:
             language: e.g. 'en-US' or 'es-ES' (optional)
             currency: e.g. 'USD' or 'EUR' (optional)
 
-        Returns: dict
-
+        Returns:
+            The response object as a dict
         """
         url = f"{self.endpoint}/v1/quotes"
         headers = self._headers(language, currency)
@@ -566,11 +566,13 @@ class VacasaConnect:
                            discount_id: int = None,
                            initial_payment_amount: float = None,
                            anonymous_id: str = None,
-                           terms: str = None
+                           terms: str = None,
+                           booked_currency_code: str = None,
+                           display_currency_code: str = None
                            ) -> dict:
         """ Reserve a given unit
 
-        Arguments:
+        Args:
             unit_id: A Vacasa Unit ID
             arrival: Checkin date in 'YYYY-MM-DD' format
             departure: Checkout date in 'YYYY-MM-DD' format
@@ -604,10 +606,14 @@ class VacasaConnect:
             anonymous_id (optional): UUID4 for tracking,
             terms: An ISO 8601 timestamp capturing the point in time where a
                 user accepted the rental terms.
-        Returns: dict
+            booked_currency_code: The currency of record for the unit being
+                booked in ISO 4217 alpha code format (e.g. 'USD', 'CLP', etc.).
+            display_currency_code: The currency preference of the guest in
+                ISO 4217 alpha code format (e.g. 'USD', 'CLP', etc.).
 
+        Returns:
+            A response object as a dict
         """
-
         url = f"{self.endpoint}/v1/reservations"
         headers = self._headers()
         payload = {
@@ -655,6 +661,12 @@ class VacasaConnect:
         if terms is not None:
             payload['terms'] = terms
 
+        if booked_currency_code is not None:
+            payload['booked_currency_code'] = booked_currency_code
+
+        if display_currency_code is not None:
+            payload['display_currency_code'] = display_currency_code
+
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
     def create_cancelled_reservation(self,
@@ -678,9 +690,12 @@ class VacasaConnect:
                                      discount_id: str = None,
                                      source: str = None,
                                      anonymous_id: str = None,
-                                     cancellation_reason: str = None
+                                     cancellation_reason: str = None,
+                                     booked_currency_code: str = None,
+                                     display_currency_code: str = None
                                      ) -> dict:
-        """
+        """Cancel a reservation
+
         Args:
             unit_id: A Vacasa Unit ID
             arrival: Checkin date in 'YYYY-MM-DD' format
@@ -705,9 +720,15 @@ class VacasaConnect:
             tax_amount: Cost of taxes
             source: A Vacasa-issued code identifying the source of this request
             anonymous_id (optional): UUID4 for tracking
+            cancellation_reason: The reason that the reservation is being
+                cancelled (e.g. 'Cart Abandoned').
+            booked_currency_code: The currency of record for the unit being
+                booked in ISO 4217 alpha code format (e.g. 'USD', 'CLP', etc.).
+            display_currency_code: The currency preference of the guest in
+                ISO 4217 alpha code format (e.g. 'USD', 'CLP', etc.).
 
-        Returns: dict
-
+        Returns:
+            A response object as a dict
         """
 
         url = f"{self.endpoint}/v1/reservations-abandoned"
@@ -741,6 +762,12 @@ class VacasaConnect:
         if cancellation_reason is not None:
             payload['cancellation_reason'] = cancellation_reason
 
+        if booked_currency_code is not None:
+            payload['booked_currency_code'] = booked_currency_code
+
+        if display_currency_code is not None:
+            payload['display_currency_code'] = display_currency_code
+
         if anonymous_id is not None:
             if _is_uuid4(anonymous_id):
                 payload['anonymous_id'] = anonymous_id
@@ -769,8 +796,8 @@ class VacasaConnect:
             block: 1 for iDology hard fail, else 0
             warn: 1 for iDology soft fail, else 0
 
-        Returns: e.g.: {'result': 'success', 'id': 8411, 'meta': {'transaction_id': '5c393085ecd86'}}
-
+        Returns:
+            e.g.: {'result': 'success', 'id': 8411, 'meta': {'transaction_id': '5c393085ecd86'}}
         """
 
         url = f"{self.endpoint}/v1/blocklists"
@@ -793,7 +820,8 @@ class VacasaConnect:
         Args:
             page_number: An int used to specify a page of blocklist data.
 
-        Returns: dict
+        Returns:
+            The response object as a dict
         """
 
         url = f"{self.endpoint}/v1/blocklists"
@@ -808,17 +836,17 @@ class VacasaConnect:
                                first_name: str,
                                last_name: str,
                                email: str) -> dict:
-        """
+        """Add a new guest to an existing reservation
+
         Args:
-            reservation_id: A reservation id created when creating a canceled reservation.
-            first_name:
-            last_name:
-            email:
+            reservation_id: A reservation identifier.
+            first_name: The first name of the guest being added.
+            last_name: The last name of the guest being added.
+            email: The email address of the guest being added.
 
-        Returns: json response for success
-
+        Returns:
+            json response for success
         """
-
         url = f"{self.endpoint}/v1/reservation-guests"
         headers = self._headers()
         payload = {

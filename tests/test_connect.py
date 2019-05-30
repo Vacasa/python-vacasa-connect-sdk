@@ -53,7 +53,7 @@ def test_ensure_https():
 
     assert str(e).endswith("`endpoint` scheme must be https")
 
-
+# ----- Create Reservation ----- #
 @patch.object(VacasaConnect, '_post')
 def test_create_reservation_passes_terms(mock_post):
     connect = mock_connect()
@@ -72,3 +72,84 @@ def test_create_reservation_ignores_missing_terms(mock_post):
     mock_post.assert_called_once_with('https://fake_url/v1/reservations',
                                       headers=ANY,
                                       json=deepcopy(TEST_EXPECTED['reservation_without_terms']))
+
+
+@patch.object(VacasaConnect, '_post')
+def test_create_reservation_passes_booked_currency_code(mock_post):
+    connect = mock_connect()
+
+    connect.create_reservation(**deepcopy(TEST_DATA['reservation_with_booked_currency_code']))
+    mock_post.assert_called_once_with('https://fake_url/v1/reservations',
+                                      headers=ANY,
+                                      json=deepcopy(TEST_EXPECTED['reservation_with_booked_currency_code']))
+
+
+@patch.object(VacasaConnect, '_post')
+def test_create_reservation_ignores_missing_booked_currency_code(mock_post):
+    connect = mock_connect()
+
+    connect.create_reservation(**deepcopy(TEST_DATA['reservation_without_booked_currency_code']))
+    mock_post.assert_called_once_with('https://fake_url/v1/reservations',
+                                      headers=ANY,
+                                      json=deepcopy(TEST_EXPECTED['reservation_without_booked_currency_code']))
+
+
+@patch.object(VacasaConnect, '_post')
+def test_create_reservation_passes_display_currency_code(mock_post):
+    connect = mock_connect()
+
+    connect.create_reservation(**deepcopy(TEST_DATA['reservation_with_display_currency_code']))
+    mock_post.assert_called_once_with('https://fake_url/v1/reservations',
+                                      headers=ANY,
+                                      json=deepcopy(TEST_EXPECTED['reservation_with_display_currency_code']))
+
+
+@patch.object(VacasaConnect, '_post')
+def test_create_reservation_ignores_missing_display_currency_code(mock_post):
+    connect = mock_connect()
+
+    connect.create_reservation(**deepcopy(TEST_DATA['reservation_without_display_currency_code']))
+    mock_post.assert_called_once_with('https://fake_url/v1/reservations',
+                                      headers=ANY,
+                                      json=deepcopy(TEST_EXPECTED['reservation_without_display_currency_code']))
+
+
+# ----- Create Cancelled Reservation ----- #
+@patch.object(VacasaConnect, '_post')
+def test_create_cancelled_reservation_passes_booked_currency_code(mock_post):
+    connect = mock_connect()
+
+    connect.create_reservation(**deepcopy(TEST_DATA['reservation_with_booked_currency_code']))
+    mock_post.assert_called_once_with('https://fake_url/v1/reservations',
+                                      headers=ANY,
+                                      json=deepcopy(TEST_EXPECTED['reservation_with_booked_currency_code']))
+
+
+@patch.object(VacasaConnect, '_post')
+def test_create_cancelled_reservation_ignores_missing_booked_currency_code(mock_post):
+    connect = mock_connect()
+
+    connect.create_reservation(**deepcopy(TEST_DATA['reservation_without_booked_currency_code']))
+    mock_post.assert_called_once_with('https://fake_url/v1/reservations',
+                                      headers=ANY,
+                                      json=deepcopy(TEST_EXPECTED['reservation_without_booked_currency_code']))
+
+
+@patch.object(VacasaConnect, '_post')
+def test_create_cancelled_reservation_passes_display_currency_code(mock_post):
+    connect = mock_connect()
+
+    connect.create_reservation(**deepcopy(TEST_DATA['reservation_with_display_currency_code']))
+    mock_post.assert_called_once_with('https://fake_url/v1/reservations',
+                                      headers=ANY,
+                                      json=deepcopy(TEST_EXPECTED['reservation_with_display_currency_code']))
+
+
+@patch.object(VacasaConnect, '_post')
+def test_create_cancelled_reservation_ignores_missing_display_currency_code(mock_post):
+    connect = mock_connect()
+
+    connect.create_reservation(**deepcopy(TEST_DATA['reservation_without_display_currency_code']))
+    mock_post.assert_called_once_with('https://fake_url/v1/reservations',
+                                      headers=ANY,
+                                      json=deepcopy(TEST_EXPECTED['reservation_without_display_currency_code']))
