@@ -76,6 +76,16 @@ class VacasaConnect:
 
         return r
 
+    @staticmethod
+    def _patch(url, data: dict = None, json: dict = None, headers: dict = None):
+        """HTTP PATCH request helper."""
+        if not headers:
+            headers = {}
+        r = requests.patch(url, data=data, json=json, headers=headers)
+        log_http_error(r)
+
+        return r
+
     def _ensure_url_has_host(self, url: str):
         """Insurance against the API returning a URL that lacks a host name"""
         parsed_url = urlparse(url)
@@ -128,50 +138,87 @@ class VacasaConnect:
 
         return r.json()
 
-    """ Create a unit via connect. Required args are at the top of the list.
-        https://vacasa.docs.stoplight.io/units/postv1units
-    """
+    def update_unit(self, unit_id, params: dict):
+        """
+         Update a unit via connect.
+         https://vacasa.docs.stoplight.io/reference/v1-units-id/update-unit
+        :param unit_id: ID of the unit to update
+        :param params: a dict of key value pairs to update.
+        :return: updated unit
+        """
+
+        url = f"{self.endpoint}/v1/units/{unit_id}"
+        return self._patch(url, json={'data': {'attributes': params}}, headers=self._headers()).json()
 
     def create_unit(self,
-                    region_id: int,
-                    turnover_day: int,
                     housing_type: str,
-                    code: str = None,
-                    name: str = None,
-                    bedrooms: int = None,
-                    full_baths: int = None,
-                    half_baths: int = None,
-                    max_occupancy: int = None,
-                    latitude: int = None,
-                    longitude: int = None,
-                    amenity_email: str = None,
-                    m_source: str = None,
-                    address: dict = None,
+                    secured_by,
+                    turnover_day: int = 0,
+                    code: str = '',
+                    name: str = '',
+                    bedrooms: int = 0,
+                    full_baths: int = 0,
+                    half_baths: int = 0,
+                    max_occupancy: int = 0,
+                    latitude: int = 0,
+                    longitude: int = 0,
+                    amenity_email: str = '',
+                    m_source: str = '',
+                    address: dict = {},
                     king_beds: int = 0,
                     queen_beds: int = 0,
                     double_beds: int = 0,
                     twin_beds: int = 0,
                     sofabed: int = 0,
-                    futon: int = 0):
+                    futon: int = 0
+                    ):
+        """
+        Create a unit via connect. Required args are at the top of the list.
+            https://vacasa.docs.stoplight.io/units/postv1units
+        :param housing_type: Effective foreign key to table Codes with CodeTypeId = 2, corresponds to “Housing Type” on Listing tab for a unit
+        :param secured_by: An int id of a user/process that signed up the unit
+        :param turnover_day: Corresponds to “Fixed Turnover” on Rates tab for a unit
+        :param code: Unit code, alternate unique identifier for a unit
+        :param name: Unique name for the unit
+        :param bedrooms:
+        :param full_baths:
+        :param half_baths:
+        :param max_occupancy:
+        :param latitude:
+        :param longitude:
+        :param amenity_email: Selected from hardcoded list of email addresses in Admin source code, corresponds to “Send Amenity Request Email to” on Listing tab for a unit
+        :param m_source: Effective foreign key to table Codes with CodeTypeId = 3, corresponds to “Source” on Listing tab for a unit,
+        :param address:
+        :param king_beds:
+        :param queen_beds:
+        :param double_beds:
+        :param twin_beds:
+        :param sofabed:
+        :param futon:
+        :return: Created unit with additional calculated fields
+        """
 
         url = f"{self.endpoint}/v1/units"
         headers = self._headers()
 
         payload = {
+            "region_id": region_id,
             "code": code,
             "name": name,
             "housing_type": housing_type,
             "bedrooms": bedrooms,
-            "full_baths": full_baths,
-            "half_baths": half_baths,
+            "bathrooms": {
+                "full_baths": full_baths,
+                "half_baths": half_baths,
+            },
             "max_occupancy": max_occupancy,
-            "region_id": region_id,
             "turnover_day": turnover_day,
             "latitude": latitude,
             "longitude": longitude,
             "amenity_email": amenity_email,
             "m_source": m_source,
-            "address": address
+            "address": address,
+            "secured_by": secured_by,
         }
 
         amenities_map = {
@@ -946,13 +993,16 @@ class VacasaConnect:
         return self._post(url, json={'data': {'attributes': payload,
                                               'type': 'reservation-guest'}}, headers=headers).json()
 
-    """
-        https://vacasa.docs.stoplight.io/contracts/get-contracts-list
-    """
-
     def get_contracts(self,
                       params: dict = None,
                       active_only: bool = True):
+        """
+        https://vacasa.docs.stoplight.io/contracts/get-contracts-list
+        :param params: Params used to filter query.
+        :param active_only: Show only the active contracts
+        :return: Pages of contracts
+        """
+
         if params is None:
             params = {}
 
@@ -963,14 +1013,6 @@ class VacasaConnect:
         headers = self._headers()
 
         return self._iterate_pages(url, headers, params)
-
-    """
-        https://vacasa.docs.stoplight.io/contracts/postv1contracts
-        
-        Args:
-            owners: list of objects that contain three properties 'percentage_ownership', 'tax_ownership', 'contact_id' 
-           
-    """
 
     def create_contract(self,
                         unit_id: int,
@@ -986,6 +1028,23 @@ class VacasaConnect:
                         amendment_by_notice_id: int = 4,
                         referral_eligible: bool = False,
                         referral_discount: int = 0):
+        """
+        https://vacasa.docs.stoplight.io/contracts/postv1contracts
+        :param unit_id:  Id of the unit associated with the contract
+        :param management_fee: Number representing the percentage that Vacasa gets on a rental
+        :param owners: List of objects that contain three properties 'percentage_ownership', 'tax_ownership', 'contact_id'
+        :param created_by: ID of logged in user
+        :param start_date: Start date of the contract
+        :param end_date: End date of a contract (By default will be '01/01/2099'
+        :param monthly_rent: Fixed monthly rent per contract
+        :param template_version_id: Foreign key to table contract_template_version, corresponds to “Template Version” on Contract page in Admin
+        :param form_id: Foreign key to table contract_form, corresponds to “Contract Form” on Contract page in Admin
+        :param channel_fee_cost_sharing_id: Foreign key to table contract_channel_fee_cost_sharing, corresponds to “Channel Fee Cost Sharing” on Contract page in Admin
+        :param amendment_by_notice_id: Foreign key to table contract_amendment_by_notice, corresponds to “Amendment by Notice” on Contract page in Admin
+        :param referral_eligible: Corresponds to “Owner Referral Eligible” on Contract page in Admin
+        :param referral_discount: Corresponds to “Owner Referral Discount” on Contract page in Admin
+        :return: Created Contract
+        """
 
         payload = {
             "unit_id": unit_id,
@@ -1011,12 +1070,13 @@ class VacasaConnect:
                           headers=headers
                           ).json()
 
-    """
-        https://vacasa.docs.stoplight.io/contacts/getv1contacts
-    """
-
     def get_contacts(self,
                      params: dict = None):
+        """
+        https://vacasa.docs.stoplight.io/contacts/getv1contacts
+        :param params: Filter down contacts
+        :return: Pages of contacts
+        """
 
         if params is None:
             params = {}
@@ -1025,10 +1085,6 @@ class VacasaConnect:
         headers = self._headers()
 
         return self._iterate_pages(url, headers, params)
-
-    """
-        https://vacasa.docs.stoplight.io/contacts/postv1contacts
-    """
 
     def create_contact(self,
                        first_name: str,
@@ -1042,8 +1098,25 @@ class VacasaConnect:
                        country_code: str = '',
                        phone: str = '',
                        phone_notes: str = '',
-                       language_id: int = None,
-                       account_name: str = ''):
+                       language_id: int = None
+                       ):
+        """
+        https://vacasa.docs.stoplight.io/contacts/postv1contacts
+
+        :param first_name: First name of the contact
+        :param email: Email of the contact
+        :param last_name: Last name of contact
+        :param address_1: Mailing address line 1 of contact
+        :param address_2: Mailing address line 2 of contact
+        :param city: Mailing city address of contact
+        :param state: Mailing state of contact
+        :param zip: Mailing zip code of contact
+        :param country_code: Mailing country code of contact
+        :param phone: Phone Number of contact
+        :param phone_notes: Corresponds to “Phone Notes” on Contact page in Admin
+        :param language_id: Foreign key to table languages
+        :return: Created Contact
+        """
 
         payload = {
             "first_name": first_name,
@@ -1058,7 +1131,6 @@ class VacasaConnect:
             "phone": phone,
             "phone_notes": phone_notes,
             "language_id": language_id,
-            "account_name": account_name,
         }
 
         url = f"{self.endpoint}/v1/contacts"
