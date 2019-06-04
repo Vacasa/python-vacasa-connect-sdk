@@ -140,11 +140,16 @@ class VacasaConnect:
 
     def update_unit(self, unit_id, params: dict):
         """
-         Update a unit via connect.
-         https://vacasa.docs.stoplight.io/reference/v1-units-id/update-unit
-        :param unit_id: ID of the unit to update
-        :param params: a dict of key value pairs to update.
-        :return: updated unit
+        Update a unit via connect.
+        https://vacasa.docs.stoplight.io/reference/v1-units-id/update-unit
+
+        Args:
+            unit_id: ID of the unit to update
+            params: A dict of key value pairs to update.
+
+        Returns: dict
+             updated unit
+
         """
 
         url = f"{self.endpoint}/v1/units/{unit_id}"
@@ -175,27 +180,31 @@ class VacasaConnect:
         """
         Create a unit via connect. Required args are at the top of the list.
             https://vacasa.docs.stoplight.io/units/postv1units
-        :param housing_type: Effective foreign key to table Codes with CodeTypeId = 2, corresponds to “Housing Type” on Listing tab for a unit
-        :param secured_by: An int id of a user/process that signed up the unit
-        :param turnover_day: Corresponds to “Fixed Turnover” on Rates tab for a unit
-        :param code: Unit code, alternate unique identifier for a unit
-        :param name: Unique name for the unit
-        :param bedrooms:
-        :param full_baths:
-        :param half_baths:
-        :param max_occupancy:
-        :param latitude:
-        :param longitude:
-        :param amenity_email: Selected from hardcoded list of email addresses in Admin source code, corresponds to “Send Amenity Request Email to” on Listing tab for a unit
-        :param m_source: Effective foreign key to table Codes with CodeTypeId = 3, corresponds to “Source” on Listing tab for a unit,
-        :param address:
-        :param king_beds:
-        :param queen_beds:
-        :param double_beds:
-        :param twin_beds:
-        :param sofabed:
-        :param futon:
-        :return: Created unit with additional calculated fields
+
+        Args:
+            housing_type: Effective foreign key to table Codes with CodeTypeId = 2, corresponds to “Housing Type” on Listing tab for a unit
+            secured_by: An int id of a user/process that signed up the unit
+            turnover_day: Corresponds to “Fixed Turnover” on Rates tab for a unit
+            code: Unit code, alternate unique identifier for a unit
+            name: Unique name for the unit
+            bedrooms:
+            full_baths:
+            half_baths:
+            max_occupancy:
+            latitude:
+            longitude:
+            amenity_email: Selected from hardcoded list of email addresses in Admin source code, corresponds to “Send Amenity Request Email to” on Listing tab for a unit
+            m_source: Effective foreign key to table Codes with CodeTypeId = 3, corresponds to “Source” on Listing tab for a unit,
+            address:
+            king_beds:
+            queen_beds:
+            double_beds:
+            twin_beds:
+            sofabed:
+            futon:
+
+        Returns: dict
+            Created unit with additional calculated fields
         """
 
         url = f"{self.endpoint}/v1/units"
@@ -217,7 +226,6 @@ class VacasaConnect:
             "amenity_email": amenity_email,
             "m_source": m_source,
             "address": address,
-            "secured_by": secured_by,
         }
 
         amenities_map = {
@@ -997,9 +1005,12 @@ class VacasaConnect:
                       active_only: bool = True):
         """
         https://vacasa.docs.stoplight.io/contracts/get-contracts-list
-        :param params: Params used to filter query.
-        :param active_only: Show only the active contracts
-        :return: Pages of contracts
+        Args:
+            params: Params used to filter query.
+            active_only: Show only the active contracts
+
+        Yields:
+            An iterator of contracts
         """
 
         if params is None:
@@ -1029,20 +1040,23 @@ class VacasaConnect:
                         referral_discount: int = 0):
         """
         https://vacasa.docs.stoplight.io/contracts/postv1contracts
-        :param unit_id:  Id of the unit associated with the contract
-        :param management_fee: Number representing the percentage that Vacasa gets on a rental
-        :param owners: List of objects that contain three properties 'percentage_ownership', 'tax_ownership', 'contact_id'
-        :param created_by: ID of logged in user
-        :param start_date: Start date of the contract
-        :param end_date: End date of a contract (By default will be '01/01/2099'
-        :param monthly_rent: Fixed monthly rent per contract
-        :param template_version_id: Foreign key to table contract_template_version, corresponds to “Template Version” on Contract page in Admin
-        :param form_id: Foreign key to table contract_form, corresponds to “Contract Form” on Contract page in Admin
-        :param channel_fee_cost_sharing_id: Foreign key to table contract_channel_fee_cost_sharing, corresponds to “Channel Fee Cost Sharing” on Contract page in Admin
-        :param amendment_by_notice_id: Foreign key to table contract_amendment_by_notice, corresponds to “Amendment by Notice” on Contract page in Admin
-        :param referral_eligible: Corresponds to “Owner Referral Eligible” on Contract page in Admin
-        :param referral_discount: Corresponds to “Owner Referral Discount” on Contract page in Admin
-        :return: Created Contract
+        Args:
+            unit_id:  Id of the unit associated with the contract
+            management_fee: Number representing the percentage that Vacasa gets on a rental
+            owners: List of objects that contain three properties 'percentage_ownership', 'tax_ownership', 'contact_id'
+            created_by: ID of logged in user
+            start_date: Start date of the contract
+            end_date: End date of a contract (By default will be '01/01/2099'
+            monthly_rent: Fixed monthly rent per contract
+            template_version_id: Foreign key to table contract_template_version, corresponds to “Template Version” on Contract page in Admin
+            form_id: Foreign key to table contract_form, corresponds to “Contract Form” on Contract page in Admin
+            channel_fee_cost_sharing_id: Foreign key to table contract_channel_fee_cost_sharing, corresponds to “Channel Fee Cost Sharing” on Contract page in Admin
+            amendment_by_notice_id: Foreign key to table contract_amendment_by_notice, corresponds to “Amendment by Notice” on Contract page in Admin
+            referral_eligible: Corresponds to “Owner Referral Eligible” on Contract page in Admin
+            referral_discount: Corresponds to “Owner Referral Discount” on Contract page in Admin
+
+        Returns: dict
+            Created Contract
         """
 
         payload = {
@@ -1073,8 +1087,12 @@ class VacasaConnect:
                      params: dict = None):
         """
         https://vacasa.docs.stoplight.io/contacts/getv1contacts
-        :param params: Filter down contacts
-        :return: Pages of contacts
+
+        Args:
+            params: Filters to reduce set of contacts
+
+        Yields:
+            Iterator of contacts, each contact is a dict
         """
 
         if params is None:
@@ -1102,19 +1120,23 @@ class VacasaConnect:
         """
         https://vacasa.docs.stoplight.io/contacts/postv1contacts
 
-        :param first_name: First name of the contact
-        :param email: Email of the contact
-        :param last_name: Last name of contact
-        :param address_1: Mailing address line 1 of contact
-        :param address_2: Mailing address line 2 of contact
-        :param city: Mailing city address of contact
-        :param state: Mailing state of contact
-        :param zip: Mailing zip code of contact
-        :param country_code: Mailing country code of contact
-        :param phone: Phone Number of contact
-        :param phone_notes: Corresponds to “Phone Notes” on Contact page in Admin
-        :param language_id: Foreign key to table languages
-        :return: Created Contact
+        Args:
+            first_name: First name of the contact
+            email: Email of the contact
+            last_name: Last name of contact
+            address_1: Mailing address line 1 of contact
+            address_2: Mailing address line 2 of contact
+            city: Mailing city address of contact
+            state: Mailing state of contact
+            zip: Mailing zip code of contact
+            country_code: Mailing country code of contact
+            phone: Phone Number of contact
+            phone_notes: Corresponds to “Phone Notes” on Contact page in Admin
+            language_id: Foreign key to table languages
+
+        Returns: dict
+            Created Contact
+
         """
 
         payload = {
