@@ -202,7 +202,6 @@ class VacasaConnect:
         headers = self._headers()
 
         payload = {
-            "region_id": region_id,
             "code": code,
             "name": name,
             "housing_type": housing_type,
