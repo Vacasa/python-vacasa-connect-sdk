@@ -76,6 +76,16 @@ class VacasaConnect:
 
         return r
 
+    @staticmethod
+    def _patch(url, data: dict = None, json: dict = None, headers: dict = None):
+        """HTTP PATCH request helper."""
+        if not headers:
+            headers = {}
+        r = requests.patch(url, data=data, json=json, headers=headers)
+        log_http_error(r)
+
+        return r
+
     def _ensure_url_has_host(self, url: str):
         """Insurance against the API returning a URL that lacks a host name"""
         parsed_url = urlparse(url)
@@ -127,6 +137,110 @@ class VacasaConnect:
         r = self._get(url, headers=self._headers(), params=params)
 
         return r.json()
+
+    def update_unit(self, unit_id, params: dict):
+        """
+        Update a unit via connect.
+        https://vacasa.docs.stoplight.io/reference/v1-units-id/update-unit
+
+        Args:
+            unit_id: ID of the unit to update
+            params: A dict of key value pairs to update.
+
+        Returns: dict
+             updated unit
+
+        """
+
+        url = f"{self.endpoint}/v1/units/{unit_id}"
+        return self._patch(url, json={'data': {'attributes': params}}, headers=self._headers()).json()
+
+    def create_unit(self,
+                    housing_type: str,
+                    secured_by,
+                    turnover_day: int = 0,
+                    code: str = '',
+                    name: str = '',
+                    bedrooms: int = 0,
+                    full_baths: int = 0,
+                    half_baths: int = 0,
+                    max_occupancy: int = 0,
+                    latitude: int = 0,
+                    longitude: int = 0,
+                    amenity_email: str = '',
+                    m_source: str = '',
+                    address: dict = {},
+                    king_beds: int = 0,
+                    queen_beds: int = 0,
+                    double_beds: int = 0,
+                    twin_beds: int = 0,
+                    sofabed: int = 0,
+                    futon: int = 0
+                    ):
+        """
+        Create a unit via connect. Required args are at the top of the list.
+            https://vacasa.docs.stoplight.io/units/postv1units
+
+        Args:
+            housing_type: Effective foreign key to table Codes with CodeTypeId = 2, corresponds to “Housing Type” on Listing tab for a unit
+            secured_by: An int id of a user/process that signed up the unit
+            turnover_day: Corresponds to “Fixed Turnover” on Rates tab for a unit
+            code: Unit code, alternate unique identifier for a unit
+            name: Unique name for the unit
+            bedrooms:
+            full_baths:
+            half_baths:
+            max_occupancy:
+            latitude:
+            longitude:
+            amenity_email: Selected from hardcoded list of email addresses in Admin source code, corresponds to “Send Amenity Request Email to” on Listing tab for a unit
+            m_source: Effective foreign key to table Codes with CodeTypeId = 3, corresponds to “Source” on Listing tab for a unit,
+            address:
+            king_beds:
+            queen_beds:
+            double_beds:
+            twin_beds:
+            sofabed:
+            futon:
+
+        Returns: dict
+            Created unit with additional calculated fields
+        """
+
+        url = f"{self.endpoint}/v1/units"
+        headers = self._headers()
+
+        payload = {
+            "code": code,
+            "name": name,
+            "housing_type": housing_type,
+            "bedrooms": bedrooms,
+            "bathrooms": {
+                "full_baths": full_baths,
+                "half_baths": half_baths,
+            },
+            "max_occupancy": max_occupancy,
+            "turnover_day": turnover_day,
+            "latitude": latitude,
+            "longitude": longitude,
+            "amenity_email": amenity_email,
+            "m_source": m_source,
+            "address": address,
+        }
+
+        amenities_map = {
+            "KingBeds": king_beds,
+            "QueenBeds": queen_beds,
+            "DoubleBeds": double_beds,
+            "TwinBeds": twin_beds,
+            "Sofabed": sofabed,
+            "Futon": futon
+        }
+
+        return self._post(url,
+                          json={'data': {'attributes': payload, 'meta': {'amenities_map': amenities_map}}},
+                          headers=headers
+                          ).json()
 
     def get_units(self,
                   params: dict = None,
@@ -913,6 +1027,168 @@ class VacasaConnect:
 
         return self._post(url, json={'data': {'attributes': payload,
                                               'type': 'reservation-guest'}}, headers=headers).json()
+
+    def get_contracts(self,
+                      params: dict = None,
+                      active_only: bool = True):
+        """
+        https://vacasa.docs.stoplight.io/contracts/get-contracts-list
+        Args:
+            params: Params used to filter query.
+            active_only: Show only the active contracts
+
+        Yields:
+            An iterator of contracts
+        """
+
+        if params is None:
+            params = {}
+
+        if not active_only:
+            params['filter[terminated]'] = False
+
+        url = f"{self.endpoint}/v1/contracts"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
+
+    def create_contract(self,
+                        unit_id: int,
+                        management_fee: int,
+                        owners: list,
+                        created_by: int,
+                        start_date: str,
+                        end_date: str = '01/01/2099',
+                        monthly_rent: int = 0,
+                        template_version_id: int = 1,
+                        form_id: int = 1,
+                        channel_fee_cost_sharing_id: int = 5,
+                        amendment_by_notice_id: int = 4,
+                        referral_eligible: bool = False,
+                        referral_discount: int = 0):
+        """
+        https://vacasa.docs.stoplight.io/contracts/postv1contracts
+        Args:
+            unit_id:  Id of the unit associated with the contract
+            management_fee: Number representing the percentage that Vacasa gets on a rental
+            owners: List of objects that contain three properties 'percentage_ownership', 'tax_ownership', 'contact_id'
+            created_by: ID of logged in user
+            start_date: Start date of the contract
+            end_date: End date of a contract (By default will be '01/01/2099'
+            monthly_rent: Fixed monthly rent per contract
+            template_version_id: Foreign key to table contract_template_version, corresponds to “Template Version” on Contract page in Admin
+            form_id: Foreign key to table contract_form, corresponds to “Contract Form” on Contract page in Admin
+            channel_fee_cost_sharing_id: Foreign key to table contract_channel_fee_cost_sharing, corresponds to “Channel Fee Cost Sharing” on Contract page in Admin
+            amendment_by_notice_id: Foreign key to table contract_amendment_by_notice, corresponds to “Amendment by Notice” on Contract page in Admin
+            referral_eligible: Corresponds to “Owner Referral Eligible” on Contract page in Admin
+            referral_discount: Corresponds to “Owner Referral Discount” on Contract page in Admin
+
+        Returns: dict
+            Created Contract
+        """
+
+        payload = {
+            "unit_id": unit_id,
+            "management_fee": management_fee,
+            "monthly_rent": monthly_rent,
+            "start_date": start_date,
+            "end_date": end_date,
+            "template_version_id": template_version_id,
+            "form_id": form_id,
+            "channel_fee_cost_sharing_id": channel_fee_cost_sharing_id,
+            "amendment_by_notice_id": amendment_by_notice_id,
+            "owners": owners,
+            "referral_eligible": referral_eligible,
+            "referral_discount": referral_discount,
+            "created_by": created_by
+        }
+
+        url = f"{self.endpoint}/v1/contracts"
+        headers = self._headers()
+
+        return self._post(url,
+                          json={'data': {'attributes': payload}},
+                          headers=headers
+                          ).json()
+
+    def get_contacts(self,
+                     params: dict = None):
+        """
+        https://vacasa.docs.stoplight.io/contacts/getv1contacts
+
+        Args:
+            params: Filters to reduce set of contacts
+
+        Yields:
+            Iterator of contacts, each contact is a dict
+        """
+
+        if params is None:
+            params = {}
+
+        url = f"{self.endpoint}/v1/contacts"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
+
+    def create_contact(self,
+                       first_name: str,
+                       email: str,
+                       last_name: str = '',
+                       address_1: str = '',
+                       address_2: str = '',
+                       city: str = '',
+                       state: str = '',
+                       zip: str = '',
+                       country_code: str = '',
+                       phone: str = '',
+                       phone_notes: str = '',
+                       language_id: int = None
+                       ):
+        """
+        https://vacasa.docs.stoplight.io/contacts/postv1contacts
+
+        Args:
+            first_name: First name of the contact
+            email: Email of the contact
+            last_name: Last name of contact
+            address_1: Mailing address line 1 of contact
+            address_2: Mailing address line 2 of contact
+            city: Mailing city address of contact
+            state: Mailing state of contact
+            zip: Mailing zip code of contact
+            country_code: Mailing country code of contact
+            phone: Phone Number of contact
+            phone_notes: Corresponds to “Phone Notes” on Contact page in Admin
+            language_id: Foreign key to table languages
+
+        Returns: dict
+            Created Contact
+
+        """
+
+        payload = {
+            "first_name": first_name,
+            "last_name": last_name,
+            "address_1": address_1,
+            "address_2": address_2,
+            "city": city,
+            "state": state,
+            "zip": zip,
+            "country_code": country_code,
+            "email": email,
+            "phone": phone,
+            "phone_notes": phone_notes,
+            "language_id": language_id,
+        }
+
+        url = f"{self.endpoint}/v1/contacts"
+        headers = self._headers()
+
+        return self._post(url,
+                          json={'data': {'attributes': payload}},
+                          headers=headers
+                          ).json()
 
 
 def _trip_protection_to_integer(trip_protection: bool) -> int:
