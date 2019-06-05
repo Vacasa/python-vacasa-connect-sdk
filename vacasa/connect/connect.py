@@ -226,6 +226,7 @@ class VacasaConnect:
             "amenity_email": amenity_email,
             "m_source": m_source,
             "address": address,
+            "secured_by": secured_by,
         }
 
         amenities_map = {
