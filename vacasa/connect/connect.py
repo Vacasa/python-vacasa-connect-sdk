@@ -228,7 +228,7 @@ class VacasaConnect:
         }
 
         if code:
-            payload.update({"code": code})
+            payload["code"] = code
         if name:
             payload["name"] = name
         
