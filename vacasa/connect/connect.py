@@ -230,7 +230,7 @@ class VacasaConnect:
         if code:
             payload.update({"code": code})
         if name:
-            payload.update({"name": name})
+            payload["name"] = name
         
         amenities_map = {
             "KingBeds": king_beds,
