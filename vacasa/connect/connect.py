@@ -159,8 +159,8 @@ class VacasaConnect:
                     housing_type: str,
                     secured_by,
                     turnover_day: int = 0,
-                    code: str = '',
-                    name: str = '',
+                    code: str = None,
+                    name: str = None,
                     bedrooms: int = 0,
                     full_baths: int = 0,
                     half_baths: int = 0,
@@ -185,8 +185,8 @@ class VacasaConnect:
             housing_type: Effective foreign key to table Codes with CodeTypeId = 2, corresponds to “Housing Type” on Listing tab for a unit
             secured_by: An int id of a user/process that signed up the unit
             turnover_day: Corresponds to “Fixed Turnover” on Rates tab for a unit
-            code: Unit code, alternate unique identifier for a unit
-            name: Unique name for the unit
+            code: Unit code, alternate unique identifier for a unit. If not provided the Connect API will assign a temp code
+            name: Unique name for the unit. Can be empty
             bedrooms:
             full_baths:
             half_baths:
@@ -211,8 +211,6 @@ class VacasaConnect:
         headers = self._headers()
 
         payload = {
-            "code": code,
-            "name": name,
             "housing_type": housing_type,
             "bedrooms": bedrooms,
             "bathrooms": {
@@ -229,6 +227,11 @@ class VacasaConnect:
             "secured_by": secured_by,
         }
 
+        if code:
+            payload.update({"code": code})
+        if name:
+            payload.update({"name": name})
+        
         amenities_map = {
             "KingBeds": king_beds,
             "QueenBeds": queen_beds,
