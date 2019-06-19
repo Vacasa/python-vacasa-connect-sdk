@@ -138,7 +138,7 @@ class VacasaConnect:
 
         return r.json()
 
-    def update_unit(self, unit_id, params: dict):
+    def update_unit(self, unit_id, params: dict = None, amenities_map: dict = None):
         """
         Update a unit via connect.
         https://vacasa.docs.stoplight.io/reference/v1-units-id/update-unit
@@ -146,14 +146,18 @@ class VacasaConnect:
         Args:
             unit_id: ID of the unit to update
             params: A dict of key value pairs to update.
+            amenities_map: Map of beds to update
 
         Returns: dict
              updated unit
 
         """
+        if amenities_map is None:
+            amenities_map = {}
 
         url = f"{self.endpoint}/v1/units/{unit_id}"
-        return self._patch(url, json={'data': {'attributes': params}}, headers=self._headers()).json()
+        return self._patch(url, json={'data': {'attributes': params, 'meta': {'amenities_map': amenities_map}}},
+                           headers=self._headers()).json()
 
     def create_unit(self,
                     housing_type: str,
@@ -231,7 +235,7 @@ class VacasaConnect:
             payload["code"] = code
         if name:
             payload["name"] = name
-        
+
         amenities_map = {
             "KingBeds": king_beds,
             "QueenBeds": queen_beds,
@@ -1062,7 +1066,7 @@ class VacasaConnect:
                         owners: list,
                         created_by: int,
                         start_date: str,
-                        end_date: str = '01/01/2099',
+                        end_date: str = '2099-01-01',
                         monthly_rent: int = 0,
                         template_version_id: int = 1,
                         form_id: int = 1,
@@ -1078,7 +1082,7 @@ class VacasaConnect:
             owners: List of objects that contain three properties 'percentage_ownership', 'tax_ownership', 'contact_id'
             created_by: ID of logged in user
             start_date: Start date of the contract
-            end_date: End date of a contract (By default will be '01/01/2099'
+            end_date: End date of a contract (By default will be '2099-01-01'
             monthly_rent: Fixed monthly rent per contract
             template_version_id: Foreign key to table contract_template_version, corresponds to “Template Version” on Contract page in Admin
             form_id: Foreign key to table contract_form, corresponds to “Contract Form” on Contract page in Admin
@@ -1147,7 +1151,9 @@ class VacasaConnect:
                        country_code: str = '',
                        phone: str = '',
                        phone_notes: str = '',
-                       language_id: int = None
+                       language_id: int = None,
+                       created_by: int = None,
+                       tax_entity_name: str = None,
                        ):
         """
         https://vacasa.docs.stoplight.io/contacts/postv1contacts
@@ -1165,6 +1171,8 @@ class VacasaConnect:
             phone: Phone Number of contact
             phone_notes: Corresponds to “Phone Notes” on Contact page in Admin
             language_id: Foreign key to table languages
+            created_by: ID of logged in user
+            tax_entity_name: If the contact is a business, put the business name here
 
         Returns: dict
             Created Contact
@@ -1184,6 +1192,8 @@ class VacasaConnect:
             "phone": phone,
             "phone_notes": phone_notes,
             "language_id": language_id,
+            "created_by": created_by,
+            "tax_entity_name": tax_entity_name,
         }
 
         url = f"{self.endpoint}/v1/contacts"
@@ -1193,6 +1203,24 @@ class VacasaConnect:
                           json={'data': {'attributes': payload}},
                           headers=headers
                           ).json()
+
+    def update_contact(self, contact_id, params: dict):
+
+        """
+        Update a unit via connect.
+        https://vacasa.docs.stoplight.io/contacts/patchv1contactsid
+
+        Args:
+            contact_id: ID of the contact to update
+            params: A dict of key value pairs to update.
+
+        Returns: dict
+             updated unit
+
+        """
+
+        url = f"{self.endpoint}/v1/contacts/{contact_id}"
+        return self._patch(url, json={'data': {'attributes': params}}, headers=self._headers()).json()
 
 
 def _trip_protection_to_integer(trip_protection: bool) -> int:
