@@ -138,7 +138,7 @@ class VacasaConnect:
 
         return r.json()
 
-    def update_unit(self, unit_id, params: dict = None, amentity_map: dict = None):
+    def update_unit(self, unit_id, params: dict = None, amenities_map: dict = None):
         """
         Update a unit via connect.
         https://vacasa.docs.stoplight.io/reference/v1-units-id/update-unit
@@ -146,17 +146,17 @@ class VacasaConnect:
         Args:
             unit_id: ID of the unit to update
             params: A dict of key value pairs to update.
-            amentity_map: Map of beds to update
+            amenities_map: Map of beds to update
 
         Returns: dict
              updated unit
 
         """
-        if amentity_map is None:
-            amentity_map = {}
+        if amenities_map is None:
+            amenities_map = {}
 
         url = f"{self.endpoint}/v1/units/{unit_id}"
-        return self._patch(url, json={'data': {'attributes': params, 'meta': {'amenities_map': amentity_map}}},
+        return self._patch(url, json={'data': {'attributes': params, 'meta': {'amenities_map': amenities_map}}},
                            headers=self._headers()).json()
 
     def create_unit(self,
