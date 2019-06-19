@@ -138,7 +138,7 @@ class VacasaConnect:
 
         return r.json()
 
-    def update_unit(self, unit_id, params: dict):
+    def update_unit(self, unit_id, params: dict = None, amentity_map: dict = None):
         """
         Update a unit via connect.
         https://vacasa.docs.stoplight.io/reference/v1-units-id/update-unit
@@ -146,14 +146,18 @@ class VacasaConnect:
         Args:
             unit_id: ID of the unit to update
             params: A dict of key value pairs to update.
+            amentity_map: Map of beds to update
 
         Returns: dict
              updated unit
 
         """
+        if amentity_map is None:
+            amentity_map = {}
 
         url = f"{self.endpoint}/v1/units/{unit_id}"
-        return self._patch(url, json={'data': {'attributes': params}}, headers=self._headers()).json()
+        return self._patch(url, json={'data': {'attributes': params, 'meta': {'amenities_map': amentity_map}}},
+                           headers=self._headers()).json()
 
     def create_unit(self,
                     housing_type: str,
@@ -1167,7 +1171,7 @@ class VacasaConnect:
             phone: Phone Number of contact
             phone_notes: Corresponds to “Phone Notes” on Contact page in Admin
             language_id: Foreign key to table languages
-            created_by: Who created the contact
+            created_by: ID of logged in user
             tax_entity_name: If the contact is a business, put the business name here
 
         Returns: dict
