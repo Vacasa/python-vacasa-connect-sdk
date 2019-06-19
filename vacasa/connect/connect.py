@@ -1078,7 +1078,7 @@ class VacasaConnect:
             owners: List of objects that contain three properties 'percentage_ownership', 'tax_ownership', 'contact_id'
             created_by: ID of logged in user
             start_date: Start date of the contract
-            end_date: End date of a contract (By default will be '2099-1-1'
+            end_date: End date of a contract (By default will be '2099-01-01'
             monthly_rent: Fixed monthly rent per contract
             template_version_id: Foreign key to table contract_template_version, corresponds to “Template Version” on Contract page in Admin
             form_id: Foreign key to table contract_form, corresponds to “Contract Form” on Contract page in Admin
