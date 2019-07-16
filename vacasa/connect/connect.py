@@ -1154,6 +1154,7 @@ class VacasaConnect:
                        language_id: int = None,
                        created_by: int = None,
                        tax_entity_name: str = None,
+                       send_email: bool = False
                        ):
         """
         https://vacasa.docs.stoplight.io/contacts/postv1contacts
@@ -1173,6 +1174,7 @@ class VacasaConnect:
             language_id: Foreign key to table languages
             created_by: ID of logged in user
             tax_entity_name: If the contact is a business, put the business name here
+            send_email: Whether or not to send an email with account/login info
 
         Returns: dict
             Created Contact
@@ -1194,6 +1196,7 @@ class VacasaConnect:
             "language_id": language_id,
             "created_by": created_by,
             "tax_entity_name": tax_entity_name,
+            "send_email": send_email,
         }
 
         url = f"{self.endpoint}/v1/contacts"
