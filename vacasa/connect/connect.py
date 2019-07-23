@@ -777,8 +777,8 @@ class VacasaConnect:
         if anonymous_id is not None:
             if _is_uuid4(anonymous_id):
                 payload['anonymous_id'] = anonymous_id
-            else:
-                logger.warning("Ignoring invalid UUID4: %s", anonymous_id)
+            elif not anonymous_id.startswith('vacasa-qa-'):
+                logger.info("Ignoring invalid UUID4: %s", anonymous_id)
 
         if terms is not None:
             payload['terms'] = terms
