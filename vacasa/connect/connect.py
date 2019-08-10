@@ -648,7 +648,7 @@ class VacasaConnect:
         Returns:
             The response object as a dict
         """
-        url = f"{self.endpoint}/v1/quotes"
+        url = f"{self.endpoint}/v2/quotes"
         headers = self._headers(language, currency)
 
         params = {
