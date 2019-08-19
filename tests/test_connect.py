@@ -153,3 +153,44 @@ def test_create_cancelled_reservation_ignores_missing_display_currency_code(mock
     mock_post.assert_called_once_with('https://fake_url/v1/reservations',
                                       headers=ANY,
                                       json=deepcopy(TEST_EXPECTED['reservation_without_display_currency_code']))
+
+
+# ----- Contracts (DOCUMENTS) ----- #
+@patch.object(VacasaConnect, '_post')
+def test_create_contract(mock_post):
+    connect = mock_connect()
+
+    connect.create_contract(**deepcopy(TEST_DATA['normal_contract']))
+    mock_post.assert_called_once_with('https://fake_url/v1/contracts',
+                                      headers=ANY,
+                                      json=deepcopy(TEST_EXPECTED['normal_contract']))
+
+
+# ----- Contacts (PEOPLE) ----- #
+@patch.object(VacasaConnect, '_post')
+def test_create_contact(mock_post):
+    connect = mock_connect()
+
+    connect.create_contact(**deepcopy(TEST_DATA['normal_contact']))
+    mock_post.assert_called_once_with('https://fake_url/v1/contacts',
+                                      headers=ANY,
+                                      json=deepcopy(TEST_EXPECTED['normal_contact']))
+
+
+@patch.object(VacasaConnect, '_patch')
+def test_update_finance_payload(mock_patch):
+    connect = mock_connect()
+
+    connect.update_contact_finances_payload(12345, deepcopy(TEST_DATA['normal_contact_finances']))
+    mock_patch.assert_called_once_with('https://fake_url/v1/contacts/12345/finances',
+                                      headers=ANY,
+                                      json=deepcopy(TEST_EXPECTED['normal_contact_finances']))
+
+@patch.object(VacasaConnect, '_patch')
+def test_update_finance(mock_patch):
+    connect = mock_connect()
+
+    connect.update_contact_finances(12340, **deepcopy(TEST_DATA['normal_contact_finances']))
+    mock_patch.assert_called_once_with('https://fake_url/v1/contacts/12340/finances',
+                                      headers=ANY,
+                                      json=deepcopy(TEST_EXPECTED['normal_contact_finances']))

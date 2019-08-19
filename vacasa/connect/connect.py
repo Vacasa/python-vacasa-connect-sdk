@@ -1157,7 +1157,7 @@ class VacasaConnect:
                        send_email: bool = False
                        ):
         """
-        https://vacasa.docs.stoplight.io/contacts/postv1contacts
+        https://connect.vacasa.com/#tag/Contacts/paths/~1v1~1contacts/post
 
         Args:
             first_name: First name of the contact
@@ -1210,20 +1210,75 @@ class VacasaConnect:
     def update_contact(self, contact_id, params: dict):
 
         """
-        Update a unit via connect.
-        https://vacasa.docs.stoplight.io/contacts/patchv1contactsid
+        Update a contact via connect.
+        https://connect.vacasa.com/#tag/Contacts/paths/~1v1~1contacts/patch
 
         Args:
             contact_id: ID of the contact to update
             params: A dict of key value pairs to update.
 
         Returns: dict
-             updated unit
+             updated contact
 
         """
 
         url = f"{self.endpoint}/v1/contacts/{contact_id}"
         return self._patch(url, json={'data': {'attributes': params}}, headers=self._headers()).json()
+
+
+    def update_contact_finances(self,
+                                contact_id,
+                                account_name: str = None,
+                                account_number: str = None,
+                                routing_number: str = None,
+                                tax_id: str = None,
+                                tax_entity_name: str = None,
+                                tax_form_code_id: int = 0):
+
+        """
+        Update a contacts finances via connect.
+        https://connect.vacasa.com/#tag/Contacts/paths/~1v1~1contacts~1{id}~1finances/patch
+
+        Args:
+            contact_id: ID of the contact to update
+            account_name: Bank Account Name (<= 100 Chars)
+            account_number: Bank Account Number (<= 25 Chars)
+            routing_number: Bank Routing Number (<= 20 Chars)
+            tax_id: Tax Identification (<= 11 Chars)
+            tax_entity_name: Tax Name (<= 100 Chars)
+            tax_form_code_id:
+
+
+        Returns: None
+             Sensitve data.. no result (HTTP-204)
+
+        """
+        return self.update_contact_finances_payload(contact_id, dict(
+            account_name=account_name,
+            account_number=account_number,
+            routing_number=routing_number,
+            tax_id=tax_id,
+            tax_entity_name=tax_entity_name,
+            tax_form_code_id=tax_form_code_id))
+
+    def update_contact_finances_payload(self, contact_id, params: dict):
+
+        """
+        Update a contacts finances via connect.
+        https://connect.vacasa.com/#tag/Contacts/paths/~1v1~1contacts~1{id}~1finances/patch
+
+        Args:
+            contact_id: ID of the contact to update
+            params: A dict of key value pairs to update.
+
+        Returns: None
+             Sensitve data.. no result (HTTP-204)
+
+        """
+
+        url = f"{self.endpoint}/v1/contacts/{contact_id}/finances"
+        return self._patch(url, json={'data': {'attributes': params}}, headers=self._headers()).json()
+
 
 
 def _trip_protection_to_integer(trip_protection: bool) -> int:
