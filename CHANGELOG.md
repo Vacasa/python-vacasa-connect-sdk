@@ -10,3 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changes
 - The `get_quote()` method now utilizes
 [v2 of the quotes endpoint](https://connect.vacasait.com/#operation/get-quote-v2).
+
+
+## [2.1.0] - 2019-08-19
+### Added
+ - update_contact_finances()
