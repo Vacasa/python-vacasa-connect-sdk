@@ -1,6 +1,7 @@
 """Vacasa Connect Python SDK."""
 import logging
 from urllib.parse import urlparse, urlunparse
+from http import HTTPStatus
 from uuid import UUID
 
 from .idp_auth import IdpAuth
@@ -55,34 +56,34 @@ class VacasaConnect:
         }
 
     @staticmethod
-    def _get(url, headers: dict = None, params: dict = None):
+    def _get(url, headers: dict = None, params: dict = None, request_exceptions: bool = True):
         """HTTP GET request helper."""
         if headers is None:
             headers = {}
 
         r = requests.get(url, headers=headers, params=params)
-        log_http_error(r)
+        log_http_error(r, request_exceptions)
 
         return r
 
     @staticmethod
-    def _post(url, data: dict = None, json: dict = None, headers: dict = None):
+    def _post(url, data: dict = None, json: dict = None, headers: dict = None, request_exceptions: bool = True):
         """HTTP POST request helper."""
         if not headers:
             headers = {}
 
         r = requests.post(url, data=data, json=json, headers=headers)
-        log_http_error(r)
+        log_http_error(r, request_exceptions)
 
         return r
 
     @staticmethod
-    def _patch(url, data: dict = None, json: dict = None, headers: dict = None):
+    def _patch(url, data: dict = None, json: dict = None, headers: dict = None, request_exceptions: bool = True):
         """HTTP PATCH request helper."""
         if not headers:
             headers = {}
         r = requests.patch(url, data=data, json=json, headers=headers)
-        log_http_error(r)
+        log_http_error(r, request_exceptions)
 
         return r
 
@@ -1277,7 +1278,11 @@ class VacasaConnect:
         """
 
         url = f"{self.endpoint}/v1/contacts/{contact_id}/finances"
-        return self._patch(url, json={'data': {'attributes': params}}, headers=self._headers()).json()
+        r = self._patch(url, json={'data': {'attributes': params}}, headers=self._headers(), request_exceptions=False)
+        if r.status_code == HTTPStatus.NO_CONTENT:
+            return None
+        else:
+            return r.json()
 
 
 
