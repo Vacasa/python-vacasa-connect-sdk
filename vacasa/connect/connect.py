@@ -3,6 +3,7 @@ import logging
 from urllib.parse import urlparse, urlunparse
 from http import HTTPStatus
 from uuid import UUID
+from requests import HTTPError
 
 from .idp_auth import IdpAuth
 from .requests_config import request_with_retries
@@ -56,34 +57,34 @@ class VacasaConnect:
         }
 
     @staticmethod
-    def _get(url, headers: dict = None, params: dict = None, request_exceptions: bool = True):
+    def _get(url, headers: dict = None, params: dict = None):
         """HTTP GET request helper."""
         if headers is None:
             headers = {}
 
         r = requests.get(url, headers=headers, params=params)
-        log_http_error(r, request_exceptions)
+        log_http_error(r)
 
         return r
 
     @staticmethod
-    def _post(url, data: dict = None, json: dict = None, headers: dict = None, request_exceptions: bool = True):
+    def _post(url, data: dict = None, json: dict = None, headers: dict = None):
         """HTTP POST request helper."""
         if not headers:
             headers = {}
 
         r = requests.post(url, data=data, json=json, headers=headers)
-        log_http_error(r, request_exceptions)
+        log_http_error(r)
 
         return r
 
     @staticmethod
-    def _patch(url, data: dict = None, json: dict = None, headers: dict = None, request_exceptions: bool = True):
+    def _patch(url, data: dict = None, json: dict = None, headers: dict = None):
         """HTTP PATCH request helper."""
         if not headers:
             headers = {}
         r = requests.patch(url, data=data, json=json, headers=headers)
-        log_http_error(r, request_exceptions)
+        log_http_error(r)
 
         return r
 
@@ -1278,11 +1279,10 @@ class VacasaConnect:
         """
 
         url = f"{self.endpoint}/v1/contacts/{contact_id}/finances"
-        r = self._patch(url, json={'data': {'attributes': params}}, headers=self._headers(), request_exceptions=False)
-        if r.status_code == HTTPStatus.NO_CONTENT:
-            return None
-        else:
-            return r.json()
+        try:
+            r = self._patch(url, json={'data': {'attributes': params}}, headers=self._headers())
+        except HTTPError as e:
+            return e.response.json()
 
 
 
