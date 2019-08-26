@@ -5,10 +5,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.1] - 2019-08-23
 ### Fixed
- - good return on 204 for financial update
-
-### Changes
- - get, post, and patch now have options to suppress request exception re-raises
+ - not calling .json() on financial patch call result
 
 
 ## [2.1.0] - 2019-08-19

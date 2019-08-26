@@ -1,9 +1,7 @@
 """Vacasa Connect Python SDK."""
 import logging
 from urllib.parse import urlparse, urlunparse
-from http import HTTPStatus
 from uuid import UUID
-from requests import HTTPError
 
 from .idp_auth import IdpAuth
 from .requests_config import request_with_retries
@@ -1255,7 +1253,7 @@ class VacasaConnect:
              Sensitve data.. no result (HTTP-204)
 
         """
-        return self.update_contact_finances_payload(contact_id, dict(
+        self.update_contact_finances_payload(contact_id, dict(
             account_name=account_name,
             account_number=account_number,
             routing_number=routing_number,
@@ -1279,10 +1277,7 @@ class VacasaConnect:
         """
 
         url = f"{self.endpoint}/v1/contacts/{contact_id}/finances"
-        try:
-            r = self._patch(url, json={'data': {'attributes': params}}, headers=self._headers())
-        except HTTPError as e:
-            return e.response.json()
+        self._patch(url, json={'data': {'attributes': params}}, headers=self._headers())
 
 
 
