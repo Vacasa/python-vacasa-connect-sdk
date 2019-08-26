@@ -1253,7 +1253,7 @@ class VacasaConnect:
              Sensitve data.. no result (HTTP-204)
 
         """
-        return self.update_contact_finances_payload(contact_id, dict(
+        self.update_contact_finances_payload(contact_id, dict(
             account_name=account_name,
             account_number=account_number,
             routing_number=routing_number,
@@ -1277,7 +1277,7 @@ class VacasaConnect:
         """
 
         url = f"{self.endpoint}/v1/contacts/{contact_id}/finances"
-        return self._patch(url, json={'data': {'attributes': params}}, headers=self._headers()).json()
+        self._patch(url, json={'data': {'attributes': params}}, headers=self._headers())
 
 
 
