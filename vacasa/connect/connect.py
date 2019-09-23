@@ -898,6 +898,47 @@ class VacasaConnect:
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
+    def create_reservation_seed(self,
+                                unit_id: int,
+                                arrival: str,
+                                departure: str,
+                                booked_currency_code: str,
+                                quote_id: str,
+                                source: str = None,
+                                anonymous_id: str = None):
+        """
+
+        Args:
+            unit_id: A Vacasa Unit ID
+            arrival: Checkin date in 'YYYY-MM-DD' format
+            departure: Checkout date in 'YYYY-MM-DD' format
+            booked_currency_code: The currency of record for the unit being
+                booked in ISO 4217 alpha code format (e.g. 'USD', 'CLP', etc.).
+            quote_id: ID of a quote retrieved from the `GET /quotes` endpoint
+            source: A Vacasa-issued code identifying the source of this request
+            anonymous_id (optional): UUID4 for tracking
+
+        Returns:
+            A response object as a dict
+        """
+        url = f"{self.endpoint}/v1/reservations-seed"
+        headers = self._headers()
+        payload = dict(
+            arrival=arrival,
+            booked_currency_code=booked_currency_code,
+            departure=departure,
+            unit_id=unit_id,
+            quote_id=quote_id
+        )
+
+        if source is not None:
+            payload['source'] = source
+
+        if anonymous_id:
+            payload['anonymous_id'] = anonymous_id
+
+        return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
+
     def create_blocklist_entry(self,
                                reservation_id: int,
                                first_name: str,
@@ -1225,7 +1266,6 @@ class VacasaConnect:
         url = f"{self.endpoint}/v1/contacts/{contact_id}"
         return self._patch(url, json={'data': {'attributes': params}}, headers=self._headers()).json()
 
-
     def update_contact_finances(self,
                                 contact_id,
                                 account_name: str = None,
@@ -1278,7 +1318,6 @@ class VacasaConnect:
 
         url = f"{self.endpoint}/v1/contacts/{contact_id}/finances"
         self._patch(url, json={'data': {'attributes': params}}, headers=self._headers())
-
 
 
 def _trip_protection_to_integer(trip_protection: bool) -> int:
