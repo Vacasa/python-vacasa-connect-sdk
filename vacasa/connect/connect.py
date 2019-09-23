@@ -904,6 +904,7 @@ class VacasaConnect:
                                 departure: str,
                                 booked_currency_code: str,
                                 quote_id: str,
+                                source: str = None,
                                 anonymous_id: str = None):
         """
 
@@ -914,6 +915,7 @@ class VacasaConnect:
             booked_currency_code: The currency of record for the unit being
                 booked in ISO 4217 alpha code format (e.g. 'USD', 'CLP', etc.).
             quote_id: ID of a quote retrieved from the `GET /quotes` endpoint
+            source: A Vacasa-issued code identifying the source of this request
             anonymous_id (optional): UUID4 for tracking
 
         Returns:
@@ -928,6 +930,9 @@ class VacasaConnect:
             unit_id=unit_id,
             quote_id=quote_id
         )
+
+        if source is not None:
+            payload['source'] = source
 
         if anonymous_id:
             payload['anonymous_id'] = anonymous_id
