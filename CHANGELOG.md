@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [2.2.3] - 2019-10-04
+### Added
+ - param `created_by` to the `create_reservation_seed()` method, which uses [v1/reservations-seed](https://connect.vacasa.com/#operation/post-reservations-seed)
+
 # [2.2.2] - 2019-09-25
 ### Added
  - param `discount_id` to the `create_reservation_seed()` method, which uses [v1/reservations-seed](https://connect.vacasa.com/#operation/post-reservations-seed)
