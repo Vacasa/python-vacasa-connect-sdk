@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # [2.2.2] - 2019-09-25
 ### Added
+ - param `created_by` to the `create_reservation_seed()` method, which uses [v1/reservations-seed](https://connect.vacasa.com/#operation/post-reservations-seed)
+
+# [2.2.2] - 2019-09-25
+### Added
  - param `discount_id` to the `create_reservation_seed()` method, which uses [v1/reservations-seed](https://connect.vacasa.com/#operation/post-reservations-seed)
 
 # [2.2.1] - 2019-09-23
