@@ -999,7 +999,6 @@ class VacasaConnect:
         url = f"{self.endpoint}/v1/reservations-import"
         headers = self._headers()
         payload = {
-            'address': address,
             'adults': adults,
             'arrival': arrival,
             'departure': departure,
@@ -1009,6 +1008,8 @@ class VacasaConnect:
             'notes': notes,
             'unit_id': unit_id
         }
+        if address is not None:
+            payload['address']: address
         if anonymous_id is not None:
             payload['anonymous_id'] = anonymous_id
         if auto_pay is not None:
