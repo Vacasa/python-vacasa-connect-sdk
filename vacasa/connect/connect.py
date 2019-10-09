@@ -898,6 +898,159 @@ class VacasaConnect:
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
+    def create_reservation_import(self,
+                                  adults: int,
+                                  arrival: str,
+                                  departure: str,
+                                  email: str,
+                                  first_name: str,
+                                  last_name: str,
+                                  notes: list,
+                                  unit_id: int,
+                                  address: dict = None,
+                                  anonymous_id: str = None,
+                                  auto_pay: int = None,
+                                  booked_currency_code: str = None,
+                                  children: int = 0,
+                                  clean_after_stay: int = None,
+                                  created_by: int = None,
+                                  currency_code: str = None,
+                                  display_currency_code: str = None,
+                                  external_id: int = None,
+                                  fees: list = None,
+                                  paid: int = None,
+                                  pets: int = 0,
+                                  phone: str = None,
+                                  rent: list = None,
+                                  source: str = None,
+                                  taxes: list = None,
+                                  total: int = None,
+                                  trip_protection: bool = None,
+                                  type: int = None,
+                                  ):
+        """
+
+        Args:
+            adults: How many adults will be staying
+            arrival: Checkin date in 'YYYY-MM-DD' format
+            departure: Checkout date in 'YYYY-MM-DD' format
+            email: User's email address
+            first_name: User's First Name (for billing)
+            last_name: User's Last Name (for billing)
+            notes: Use this field to provide miscellaneous information about reservation
+            unit_id: A Vacasa Unit ID
+             address: User's address information, e.g.
+                    {
+                    'address_1': '999 W Main St #301',
+                    'city': 'Boise',
+                    'state': 'ID',
+                    'zip': '83702'
+                    }
+            anonymous_id (optional): UUID4 for tracking,
+            auto_pay: A flag to determine auto pay
+                        1 = Yes,
+                        0 = No,
+                        -1 = Special
+            booked_currency_code: The currency of record for the unit being
+                    booked in ISO 4217 alpha code format (e.g. 'USD', 'CLP', etc.).
+            children: How many children will be staying
+            clean_after_stay: A flag to determine if a unit should be cleaned after a stay
+                        1 = Yes,
+                        0 = No
+            created_by: User ID from logins.UserID that gets written to Reservations.CreateBy.
+                    For non-zero values, this is the Acquisition Rep's UserID
+            currency_code: ISO-4217 currency code
+            display_currency_code: The currency preference of the guest in
+                    ISO 4217 alpha code format (e.g. 'USD', 'CLP', etc.).
+            external_id: Enter the original reservation ID from the acquired company
+            fees: A list of fees by ID and amount
+                [{
+                    'id': int,
+                    'amount': float
+                }]
+            paid: The total amount paid thus far. Paid amount may not exceed total.
+            pets: How many pets will be staying
+            phone: User's phone number
+            rent: List of rent by day. Fields used here are date, amount, and ltd. See Folio API docs for more information
+                [{
+                    'date': string,
+                    'rent': float
+                    'ltd': float
+                }]
+            source: A Vacasa-issued code identifying the source of this request
+            taxes: List of taxes by id and amount
+                [{
+                    'id': int,
+                    'amount': float
+                }]
+            total: The total amount of the reservation (Fees + Taxes + Rent)
+            trip_protection: Has the user requested trip protection?
+                    False: No
+                    None: TBD
+                    True: Yes
+            type: The type of reservation to be created
+                    3 = Vacasa Hold,
+                    2 = Owner Hold,
+                    1 = Reservation
+
+        Returns:
+            A respone as a dict
+        """
+        url = f"{self.endpoint}/v1/reservations-import"
+        headers = self._headers()
+        payload = {
+            'adults': adults,
+            'arrival': arrival,
+            'departure': departure,
+            'email': email,
+            'first_name': first_name,
+            'last_name': last_name,
+            'notes': notes,
+            'unit_id': unit_id
+        }
+        if address is not None:
+            payload['address']: address
+        if anonymous_id is not None:
+            payload['anonymous_id'] = anonymous_id
+        if auto_pay is not None:
+            payload['auto_pay'] = auto_pay
+        if booked_currency_code is not None:
+            payload['booked_currency_code'] = booked_currency_code
+        if children is not None:
+            payload['children'] = children
+        if clean_after_stay is not None:
+            payload['clean_after_stay'] = clean_after_stay
+        if created_by is not None:
+            payload['created_by'] = created_by
+        if currency_code is not None:
+            payload['currency_code'] = currency_code
+        if display_currency_code is not None:
+            payload['display_currency_code'] = display_currency_code
+        if external_id is not None:
+            payload['external_id'] = external_id
+        if fees is not None:
+            payload['fees'] = fees
+        if paid is not None:
+            payload['paid'] = paid
+        if pets is not None:
+            payload['pets'] = pets
+        if phone is not None:
+            payload['phone'] = phone
+        if rent is not None:
+            payload['rent'] = rent
+        if source is not None:
+            payload['source'] = source
+        if taxes is not None:
+            payload['taxes'] = taxes
+        if total is not None:
+            payload['total'] = total
+        if trip_protection is not None:
+            payload['trip_protection'] = trip_protection
+        if type is not None:
+            payload['type'] = type
+
+        return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
+
     def create_reservation_seed(self,
                                 unit_id: int,
                                 arrival: str,
