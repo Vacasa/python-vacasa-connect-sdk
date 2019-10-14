@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [2.2.5] - 2019-10-14
+### Security
+- Bump ecdsa from 0.13.2 to 0.13.3
+
 # [2.2.4] - 2019-10-09
 ### Added
  - New `create_reservation_import()` method, which uses [/v1/reservations-import](https://connect.vacasa.com/#operation/post-reservations-import)
