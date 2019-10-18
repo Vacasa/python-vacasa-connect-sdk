@@ -909,7 +909,7 @@ class VacasaConnect:
                                   unit_id: int,
                                   address: dict = None,
                                   anonymous_id: str = None,
-                                  auto_pay: int = None,
+                                  autopay: int = None,
                                   booked_currency_code: str = None,
                                   children: int = 0,
                                   clean_after_stay: int = None,
@@ -947,7 +947,7 @@ class VacasaConnect:
                     'zip': '83702'
                     }
             anonymous_id (optional): UUID4 for tracking,
-            auto_pay: A flag to determine auto pay
+            autopay: A flag to determine auto pay
                         1 = Yes,
                         0 = No,
                         -1 = Special
@@ -1012,8 +1012,8 @@ class VacasaConnect:
             payload['address']: address
         if anonymous_id is not None:
             payload['anonymous_id'] = anonymous_id
-        if auto_pay is not None:
-            payload['auto_pay'] = auto_pay
+        if autopay is not None:
+            payload['autopay'] = autopay
         if booked_currency_code is not None:
             payload['booked_currency_code'] = booked_currency_code
         if children is not None:
