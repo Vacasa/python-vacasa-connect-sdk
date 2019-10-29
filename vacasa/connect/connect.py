@@ -1481,11 +1481,7 @@ class VacasaConnect:
         self._patch(url, json={'data': {'attributes': params}}, headers=self._headers())
 
     def get_language_list(self):
-        """
-
-        Returns: List of languages from Connect
-
-        """
+        """Get a list of languages from Connect"""
         url = f"{self.endpoint}/v1/languages"
         return self._get(url, headers=self._headers())
 
