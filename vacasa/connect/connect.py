@@ -1480,6 +1480,11 @@ class VacasaConnect:
         url = f"{self.endpoint}/v1/contacts/{contact_id}/finances"
         self._patch(url, json={'data': {'attributes': params}}, headers=self._headers())
 
+    def get_language_list(self):
+        """Get a list of languages from Connect"""
+        url = f"{self.endpoint}/v1/languages"
+        return self._get(url, headers=self._headers())
+
 
 def _trip_protection_to_integer(trip_protection: bool) -> int:
     """Convert from True/False/None to 1/0/-1"""

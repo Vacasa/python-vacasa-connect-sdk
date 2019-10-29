@@ -2,6 +2,10 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+# [2.2.7] - 2019-10-29
+### Added
+ - New `get_language_list()` method, which uses [/v1/languages](https://connect.vacasa.com/#operation/get-languages-list) to get the languages offered in Connect.
 # [2.2.6] - 2019-10-18
 ### Fixed
 - param `auto_pay` changed to `autopay` for reservation imports, see  [/v1/reservations-import](https://connect.vacasa.com/#operation/post-reservations-import)
