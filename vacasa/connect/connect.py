@@ -921,6 +921,7 @@ class VacasaConnect:
                                   paid: int = None,
                                   pets: int = 0,
                                   phone: str = None,
+                                  phone2: str = None,
                                   rent: list = None,
                                   source: str = None,
                                   taxes: list = None,
@@ -971,6 +972,7 @@ class VacasaConnect:
             paid: The total amount paid thus far. Paid amount may not exceed total.
             pets: How many pets will be staying
             phone: User's phone number
+            phone2: User's secondary phone number
             rent: List of rent by day. Fields used here are date, amount, and ltd. See Folio API docs for more information
                 [{
                     'date': string,
@@ -1036,6 +1038,8 @@ class VacasaConnect:
             payload['pets'] = pets
         if phone is not None:
             payload['phone'] = phone
+        if phone2 is not None:
+            payload['phone2'] = phone
         if rent is not None:
             payload['rent'] = rent
         if source is not None:
