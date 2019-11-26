@@ -2,17 +2,22 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+# [2.2.8] - 2019-11-26
+### Added
+- param `monthly_rent` and `management_fee` changed type from `int` to `float`.
+
 # [2.2.8] - 2019-11-19
 ### Added
 - param `phone2` added to reservation imports, it is a hidden post value not shown in the connect API.
 
-
 # [2.2.7] - 2019-10-29
 ### Added
  - New `get_language_list()` method, which uses [/v1/languages](https://connect.vacasa.com/#operation/get-languages-list) to get the languages offered in Connect.
+ 
 # [2.2.6] - 2019-10-18
 ### Fixed
 - param `auto_pay` changed to `autopay` for reservation imports, see  [/v1/reservations-import](https://connect.vacasa.com/#operation/post-reservations-import)
+
 # [2.2.5] - 2019-10-14
 ### Security
 - Bump ecdsa from 0.13.2 to 0.13.3
@@ -37,11 +42,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
  - not calling .json() on financial patch call result
 
-
 ## [2.1.0] - 2019-08-19
 ### Added
  - update_contact_finances()
-
 
 ## [2.0.0] - 2019-08-10
 ### Added
