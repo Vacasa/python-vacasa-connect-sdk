@@ -902,10 +902,8 @@ class VacasaConnect:
                                   adults: int,
                                   arrival: str,
                                   departure: str,
-                                  email: str,
                                   first_name: str,
                                   last_name: str,
-                                  notes: list,
                                   unit_id: int,
                                   address: dict = None,
                                   anonymous_id: str = None,
@@ -916,8 +914,10 @@ class VacasaConnect:
                                   created_by: int = None,
                                   currency_code: str = None,
                                   display_currency_code: str = None,
+                                  email: str = None,
                                   external_id: int = None,
                                   fees: list = None,
+                                  notes: list = None,
                                   paid: int = None,
                                   pets: int = 0,
                                   phone: str = None,
@@ -935,12 +935,10 @@ class VacasaConnect:
             adults: How many adults will be staying
             arrival: Checkin date in 'YYYY-MM-DD' format
             departure: Checkout date in 'YYYY-MM-DD' format
-            email: User's email address
             first_name: User's First Name (for billing)
             last_name: User's Last Name (for billing)
-            notes: Use this field to provide miscellaneous information about reservation
             unit_id: A Vacasa Unit ID
-             address: User's address information, e.g.
+            address: User's address information, e.g.
                     {
                     'address_1': '999 W Main St #301',
                     'city': 'Boise',
@@ -963,12 +961,14 @@ class VacasaConnect:
             currency_code: ISO-4217 currency code
             display_currency_code: The currency preference of the guest in
                     ISO 4217 alpha code format (e.g. 'USD', 'CLP', etc.).
+            email: User's email address
             external_id: Enter the original reservation ID from the acquired company
             fees: A list of fees by ID and amount
                 [{
                     'id': int,
                     'amount': float
                 }]
+            notes: Use this field to provide miscellaneous information about reservation
             paid: The total amount paid thus far. Paid amount may not exceed total.
             pets: How many pets will be staying
             phone: User's phone number

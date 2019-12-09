@@ -2,7 +2,11 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-# [2.2.8] - 2019-11-26
+# [2.2.10] - 2019-11-26
+### Added
+- param `email` and `notes` are no longer required.
+
+# [2.2.9] - 2019-11-26
 ### Added
 - param `monthly_rent` and `management_fee` changed type from `int` to `float`.
 
