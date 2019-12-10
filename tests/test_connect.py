@@ -53,6 +53,19 @@ def test_ensure_https():
 
     assert str(e).endswith("`endpoint` scheme must be https")
 
+
+# ----- Create Reservations Import ----- #
+@patch.object(VacasaConnect, '_post')
+def test_create_reservations_import(mock_post):
+    connect = mock_connect()
+    test_data = deepcopy(TEST_DATA['create_reservation_import'])
+    connect.create_reservation_import(**test_data)
+    constructed_dict = {k: v for k, v in test_data.items() if v is not None}
+    mock_post.assert_called_once_with('https://fake_url/v1/reservations-import',
+                                      headers=ANY,
+                                      json=dict(data=dict(attributes=deepcopy(constructed_dict))))
+
+
 # ----- Create Reservation ----- #
 @patch.object(VacasaConnect, '_post')
 def test_create_reservation_passes_terms(mock_post):
@@ -183,8 +196,9 @@ def test_update_finance_payload(mock_patch):
 
     connect.update_contact_finances_payload(12345, deepcopy(TEST_DATA['normal_contact_finances']))
     mock_patch.assert_called_once_with('https://fake_url/v1/contacts/12345/finances',
-                                      headers=ANY,
-                                      json=deepcopy(TEST_EXPECTED['normal_contact_finances']))
+                                       headers=ANY,
+                                       json=deepcopy(TEST_EXPECTED['normal_contact_finances']))
+
 
 @patch.object(VacasaConnect, '_patch')
 def test_update_finance(mock_patch):
@@ -192,5 +206,5 @@ def test_update_finance(mock_patch):
 
     connect.update_contact_finances(12340, **deepcopy(TEST_DATA['normal_contact_finances']))
     mock_patch.assert_called_once_with('https://fake_url/v1/contacts/12340/finances',
-                                      headers=ANY,
-                                      json=deepcopy(TEST_EXPECTED['normal_contact_finances']))
+                                       headers=ANY,
+                                       json=deepcopy(TEST_EXPECTED['normal_contact_finances']))
