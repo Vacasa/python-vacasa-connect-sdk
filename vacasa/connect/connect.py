@@ -902,10 +902,8 @@ class VacasaConnect:
                                   adults: int,
                                   arrival: str,
                                   departure: str,
-                                  email: str,
                                   first_name: str,
                                   last_name: str,
-                                  notes: list,
                                   unit_id: int,
                                   address: dict = None,
                                   anonymous_id: str = None,
@@ -916,8 +914,10 @@ class VacasaConnect:
                                   created_by: int = None,
                                   currency_code: str = None,
                                   display_currency_code: str = None,
+                                  email: str = None,
                                   external_id: int = None,
                                   fees: list = None,
+                                  notes: list = None,
                                   paid: int = None,
                                   pets: int = 0,
                                   phone: str = None,
@@ -935,12 +935,10 @@ class VacasaConnect:
             adults: How many adults will be staying
             arrival: Checkin date in 'YYYY-MM-DD' format
             departure: Checkout date in 'YYYY-MM-DD' format
-            email: User's email address
             first_name: User's First Name (for billing)
             last_name: User's Last Name (for billing)
-            notes: Use this field to provide miscellaneous information about reservation
             unit_id: A Vacasa Unit ID
-             address: User's address information, e.g.
+            address: User's address information, e.g.
                     {
                     'address_1': '999 W Main St #301',
                     'city': 'Boise',
@@ -963,12 +961,14 @@ class VacasaConnect:
             currency_code: ISO-4217 currency code
             display_currency_code: The currency preference of the guest in
                     ISO 4217 alpha code format (e.g. 'USD', 'CLP', etc.).
+            email: User's email address
             external_id: Enter the original reservation ID from the acquired company
             fees: A list of fees by ID and amount
                 [{
                     'id': int,
                     'amount': float
                 }]
+            notes: Use this field to provide miscellaneous information about reservation
             paid: The total amount paid thus far. Paid amount may not exceed total.
             pets: How many pets will be staying
             phone: User's phone number
@@ -996,63 +996,44 @@ class VacasaConnect:
                     1 = Reservation
 
         Returns:
-            A respone as a dict
+            A response as a dict
         """
+        optional_parameters = {'address': address,
+                               'anonymous_id': anonymous_id,
+                               'autopay': autopay,
+                               'booked_currency_code': booked_currency_code,
+                               'children': children,
+                               'clean_after_stay': clean_after_stay,
+                               'created_by': created_by,
+                               'currency_code': currency_code,
+                               'display_currency_code': display_currency_code,
+                               'email': email,
+                               'external_id': external_id,
+                               'fees': fees,
+                               'notes': notes,
+                               'paid': paid,
+                               'pets': pets,
+                               'phone': phone,
+                               'phone2': phone2,
+                               'rent': rent,
+                               'source': source,
+                               'taxes': taxes,
+                               'total': total,
+                               'trip_protection': trip_protection,
+                               'type': type
+                               }
+
         url = f"{self.endpoint}/v1/reservations-import"
         headers = self._headers()
         payload = {
             'adults': adults,
             'arrival': arrival,
             'departure': departure,
-            'email': email,
             'first_name': first_name,
             'last_name': last_name,
-            'notes': notes,
             'unit_id': unit_id
         }
-        if address is not None:
-            payload['address']: address
-        if anonymous_id is not None:
-            payload['anonymous_id'] = anonymous_id
-        if autopay is not None:
-            payload['autopay'] = autopay
-        if booked_currency_code is not None:
-            payload['booked_currency_code'] = booked_currency_code
-        if children is not None:
-            payload['children'] = children
-        if clean_after_stay is not None:
-            payload['clean_after_stay'] = clean_after_stay
-        if created_by is not None:
-            payload['created_by'] = created_by
-        if currency_code is not None:
-            payload['currency_code'] = currency_code
-        if display_currency_code is not None:
-            payload['display_currency_code'] = display_currency_code
-        if external_id is not None:
-            payload['external_id'] = external_id
-        if fees is not None:
-            payload['fees'] = fees
-        if paid is not None:
-            payload['paid'] = paid
-        if pets is not None:
-            payload['pets'] = pets
-        if phone is not None:
-            payload['phone'] = phone
-        if phone2 is not None:
-            payload['phone2'] = phone
-        if rent is not None:
-            payload['rent'] = rent
-        if source is not None:
-            payload['source'] = source
-        if taxes is not None:
-            payload['taxes'] = taxes
-        if total is not None:
-            payload['total'] = total
-        if trip_protection is not None:
-            payload['trip_protection'] = trip_protection
-        if type is not None:
-            payload['type'] = type
-
+        payload.update({k: v for k, v in optional_parameters.items() if v is not None})
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
     def create_reservation_seed(self,
