@@ -58,4 +58,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `get_quote()` method now utilizes
 [v2 of the quotes endpoint](https://connect.vacasait.com/#operation/get-quote-v2).
 
-
