@@ -915,7 +915,7 @@ class VacasaConnect:
                                   currency_code: str = None,
                                   display_currency_code: str = None,
                                   email: str = None,
-                                  external_id: int = None,
+                                  listing_channel_reservation_id: str = None,
                                   fees: list = None,
                                   notes: list = None,
                                   paid: int = None,
@@ -962,7 +962,7 @@ class VacasaConnect:
             display_currency_code: The currency preference of the guest in
                     ISO 4217 alpha code format (e.g. 'USD', 'CLP', etc.).
             email: User's email address
-            external_id: Enter the original reservation ID from the acquired company
+            listing_channel_reservation_id: Enter the original reservation ID from the acquired company
             fees: A list of fees by ID and amount
                 [{
                     'id': int,
@@ -1008,7 +1008,7 @@ class VacasaConnect:
                                'currency_code': currency_code,
                                'display_currency_code': display_currency_code,
                                'email': email,
-                               'external_id': external_id,
+                               'listing_channel_reservation_id': listing_channel_reservation_id,
                                'fees': fees,
                                'notes': notes,
                                'paid': paid,
