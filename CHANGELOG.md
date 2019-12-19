@@ -3,6 +3,11 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [4.0.0] - 2019-12-18
+### Changed
+- Renamed one parameter from the `create_reservation_import` method `external_id` -> `listing_channel_reservation_id`, and it
+  now accepts a `str` instead of an `int`.
+
 # [3.0.0] - 2019-12-16
 ### Changed
 - Removed four parameters from the `create_reservation_seed` method (`unit_id`, `arrival`, `departure`, and
