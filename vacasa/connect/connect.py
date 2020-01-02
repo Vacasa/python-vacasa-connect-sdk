@@ -5,7 +5,7 @@ from uuid import UUID
 
 from .idp_auth import IdpAuth
 from .requests_config import request_with_retries
-from .util import log_http_error, is_https_url
+from .util import log_http_error, is_https_url, subtract_days
 
 logger = logging.getLogger(__name__)
 requests = request_with_retries()
@@ -855,13 +855,17 @@ class VacasaConnect:
 
         url = f"{self.endpoint}/v1/reservations-abandoned"
         headers = self._headers()
+        last_night = subtract_days(departure, 1)
+        if last_night is None:
+            raise ValueError("Invalid departure date", departure)
+
         payload = {
             'adults': adults,
             'first_night': arrival,
             'children': children,
             'email': email,
             'cleaning_fees': cleaning_fees,
-            'last_night': departure,
+            'last_night': last_night,
             'fee_amount': fee_amount,
             'first_name': first_name,
             'last_name': last_name,
