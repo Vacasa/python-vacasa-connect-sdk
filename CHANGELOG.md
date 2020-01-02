@@ -3,6 +3,11 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.1] - 2020-01-02
+### Fixed
+- create_cancelled_reservation() now properly converts the `departure` parameter into the `last_night` value by
+  subtracting one day.
+
 # [4.0.0] - 2019-12-18
 ### Changed
 - Renamed one parameter from the `create_reservation_import` method `external_id` -> `listing_channel_reservation_id`, and it

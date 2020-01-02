@@ -31,7 +31,6 @@ TEST_DATA = dict(
         currency_code=None,
         display_currency_code=None,
         email='big_brother@1984go.watching',
-        external_id=None,
         fees=None,
         notes=None,
         paid=None,
