@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.3] - 2020-01-07
+### Changed
+- 400 errors now logged as info, and only 500 errors added as errors.
+
 ## [4.0.1] - 2020-01-02
 ### Fixed
 - create_cancelled_reservation() now properly converts the `departure` parameter into the `last_night` value by
@@ -73,4 +77,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changes
 - The `get_quote()` method now utilizes
 [v2 of the quotes endpoint](https://connect.vacasait.com/#operation/get-quote-v2).
-
