@@ -13,10 +13,11 @@ def log_http_error(r: Response):
     try:
         r.raise_for_status()
     except RequestException as e:
+        log_level = logging.INFO if r.status_code < 500 else logging.ERROR
         try:
-            logger.exception(r.json())
+            logger.log(log_level, r.json())
         except ValueError:
-            logger.exception(r.content)
+            logger.log(log_level, r.content)
         raise e
 
 
