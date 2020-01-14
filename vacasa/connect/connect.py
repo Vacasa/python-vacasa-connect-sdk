@@ -1296,6 +1296,54 @@ class VacasaConnect:
                           headers=headers
                           ).json()
 
+    def get_contract_template_versions(self):
+        """
+        Yields:
+            Iterator of contract template versions, each one is a dict
+        """
+
+        params = {}
+        url = f"{self.endpoint}/v1/contract-template-versions"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
+
+    def get_contract_forms(self):
+        """
+        Yields:
+            Iterator of contract forms, each one is a dict
+        """
+
+        params = {}
+        url = f"{self.endpoint}/v1/contract-forms"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
+
+    def get_contract_channel_fee_cost_sharings(self):
+        """
+        Yields:
+            Iterator of contract channel fee cost sharings, each one is a dict
+        """
+
+        params = {}
+        url = f"{self.endpoint}/v1/contract-channel-fee-cost-sharings"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
+
+    def get_contract_amendment_by_notices(self):
+        """
+        Yields:
+            Iterator of contract amendment by notices, each one is a dict
+        """
+
+        params = {}
+        url = f"{self.endpoint}/v1/contract-amendment-by-notices"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
+
     def get_contacts(self,
                      params: dict = None):
         """
