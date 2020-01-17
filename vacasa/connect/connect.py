@@ -1364,6 +1364,18 @@ class VacasaConnect:
 
         return self._iterate_pages(url, headers, params)
 
+    def get_contact_languages(self):
+        """
+        Yields:
+            Iterator of contact language preferences, each one is a dict
+        """
+
+        params = {}
+        url = f"{self.endpoint}/v1/languages"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
+
     def create_contact(self,
                        first_name: str,
                        email: str,
