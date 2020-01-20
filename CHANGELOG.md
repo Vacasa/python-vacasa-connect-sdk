@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.0] - 2020-01-20
+### Added
+- param `headers` to the `create_reservation` method, which uses [v1/reservations](https://connect.vacasa.com/#operation/post-reservations)
+
 ## [4.0.5] - 2020-01-17
 ### Added
 - Add call for contact languages.
