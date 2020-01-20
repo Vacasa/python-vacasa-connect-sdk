@@ -12,7 +12,10 @@ TEST_DATA = dict(
         first_name='Jane',
         last_name='Doe',
         account_number='bar',
-        exp_mmyy='0130'
+        exp_mmyy='0130',
+        headers={
+            'X-Header': True
+        }
     ),
     create_reservation_import=dict(
         adults=1,

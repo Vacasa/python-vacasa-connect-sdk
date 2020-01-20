@@ -186,10 +186,12 @@ class VacasaConnect:
             https://vacasa.docs.stoplight.io/units/postv1units
 
         Args:
-            housing_type: Effective foreign key to table Codes with CodeTypeId = 2, corresponds to “Housing Type” on Listing tab for a unit
+            housing_type: Effective foreign key to table Codes with CodeTypeId = 2,
+                          corresponds to “Housing Type” on Listing tab for a unit
             secured_by: An int id of a user/process that signed up the unit
             turnover_day: Corresponds to “Fixed Turnover” on Rates tab for a unit
-            code: Unit code, alternate unique identifier for a unit. If not provided the Connect API will assign a temp code
+            code: Unit code, alternate unique identifier for a unit.
+                  If not provided the Connect API will assign a temp code
             name: Unique name for the unit. Can be empty
             bedrooms:
             full_baths:
@@ -197,8 +199,10 @@ class VacasaConnect:
             max_occupancy:
             latitude:
             longitude:
-            amenity_email: Selected from hardcoded list of email addresses in Admin source code, corresponds to “Send Amenity Request Email to” on Listing tab for a unit
-            m_source: Effective foreign key to table Codes with CodeTypeId = 3, corresponds to “Source” on Listing tab for a unit,
+            amenity_email: Selected from hardcoded list of email addresses in Admin source code,
+                           corresponds to “Send Amenity Request Email to” on Listing tab for a unit
+            m_source: Effective foreign key to table Codes with CodeTypeId = 3,
+                      corresponds to “Source” on Listing tab for a unit,
             address:
             king_beds:
             queen_beds:
@@ -690,7 +694,8 @@ class VacasaConnect:
                            anonymous_id: str = None,
                            terms: str = None,
                            booked_currency_code: str = None,
-                           display_currency_code: str = None
+                           display_currency_code: str = None,
+                           headers: dict = None
                            ) -> dict:
         """ Reserve a given unit
 
@@ -732,12 +737,14 @@ class VacasaConnect:
                 booked in ISO 4217 alpha code format (e.g. 'USD', 'CLP', etc.).
             display_currency_code: The currency preference of the guest in
                 ISO 4217 alpha code format (e.g. 'USD', 'CLP', etc.).
+            headers: custom headers to be passed in and added to the dictionary
+                of common headers created by the _headers() method
 
         Returns:
             A response object as a dict
         """
         url = f"{self.endpoint}/v1/reservations"
-        headers = self._headers()
+        headers.update(self._headers())
         payload = {
             'unit_id': unit_id,
             'arrival': arrival,
@@ -977,7 +984,8 @@ class VacasaConnect:
             pets: How many pets will be staying
             phone: User's phone number
             phone2: User's secondary phone number
-            rent: List of rent by day. Fields used here are date, amount, and ltd. See Folio API docs for more information
+            rent: List of rent by day. Fields used here are date, amount, and ltd.
+                  See Folio API docs for more information
                 [{
                     'date': string,
                     'rent': float
@@ -1261,10 +1269,13 @@ class VacasaConnect:
             start_date: Start date of the contract
             end_date: End date of a contract (By default will be '2099-01-01'
             monthly_rent: Fixed monthly rent per contract
-            template_version_id: Foreign key to table contract_template_version, corresponds to “Template Version” on Contract page in Admin
+            template_version_id: Foreign key to table contract_template_version,
+                                 corresponds to “Template Version” on Contract page in Admin
             form_id: Foreign key to table contract_form, corresponds to “Contract Form” on Contract page in Admin
-            channel_fee_cost_sharing_id: Foreign key to table contract_channel_fee_cost_sharing, corresponds to “Channel Fee Cost Sharing” on Contract page in Admin
-            amendment_by_notice_id: Foreign key to table contract_amendment_by_notice, corresponds to “Amendment by Notice” on Contract page in Admin
+            channel_fee_cost_sharing_id: Foreign key to table contract_channel_fee_cost_sharing,
+                                         corresponds to “Channel Fee Cost Sharing” on Contract page in Admin
+            amendment_by_notice_id: Foreign key to table contract_amendment_by_notice,
+                                    corresponds to “Amendment by Notice” on Contract page in Admin
             referral_eligible: Corresponds to “Owner Referral Eligible” on Contract page in Admin
             referral_discount: Corresponds to “Owner Referral Discount” on Contract page in Admin
 
