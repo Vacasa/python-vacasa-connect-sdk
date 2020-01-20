@@ -744,7 +744,10 @@ class VacasaConnect:
             A response object as a dict
         """
         url = f"{self.endpoint}/v1/reservations"
-        headers.update(self._headers())
+        if headers:
+            headers.update(self._headers())
+        else:
+            headers = self._headers()
         payload = {
             'unit_id': unit_id,
             'arrival': arrival,
