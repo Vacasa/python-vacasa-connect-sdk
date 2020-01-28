@@ -571,14 +571,20 @@ class VacasaConnect:
         url = f"{self.endpoint}/v1/unit-amenity-properties"
         headers = self._headers()
         payload = {
-            'amenity_id': amenity_id,
-            'unit_id': unit_id,
-            'idamenities_property': idamenities_property,
-            'property_value': property_value
+            'data': {
+                'type': 'unit-amenity-property',
+                'attributes': {
+                    'amenity_id': amenity_id,
+                    'unit_id': unit_id,
+                    'idamenities_property': idamenities_property,
+                    'property_value': property_value
+                }
+            }
         }
 
-        return self._post(url, json={'data': {'attributes': payload,
-                                              'type': 'unit-amenity-property'}}, headers=headers).json()
+        r = self._post(url, json=payload, headers=headers)
+        r.raise_for_status()
+        return r.json()
 
     def update_unit_amenity_property(self, unit_amenity_property_id, params: dict):
         """Update a unit amenity property in Connect.
@@ -592,7 +598,17 @@ class VacasaConnect:
         """
 
         url = f"{self.endpoint}/v1/unit-amenity-properties/{unit_amenity_property_id}"
-        return self._patch(url, json={'data': {'attributes': params}}, headers=self._headers()).json()
+        headers = self._headers()
+        payload = {
+            'data': {
+                'type': 'unit-amenity-property',
+                'attributes': params
+            }
+        }
+
+        r = self._patch(url, json=payload, headers=headers)
+        r.raise_for_status()
+        return r.json()
 
     def get_cities(self, params: dict = None):
         """Retrieve a list of all cities
