@@ -503,6 +503,7 @@ class VacasaConnect:
         headers = self._headers()
         payload = {
             'data': {
+                'type': 'unit-amenities',
                 'attributes': {
                     'amenity_id': amenity_id,
                     'unit_id': unit_id,
@@ -533,6 +534,7 @@ class VacasaConnect:
         headers = self._headers()
         payload = {
             'data': {
+                'type': 'unit-amenities',
                 'attributes': params
             }
         }
