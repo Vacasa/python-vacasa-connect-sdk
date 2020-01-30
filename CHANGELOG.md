@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.4.1] - 2020-01-30
+### Changed
+- Add type `unit-amenities` to add_unit_amenity and update_unit_amenity methods.
+
 ## [4.4.0] - 2020-01-27
 ### Added
  - The `add_unit_amenity()` method, which uses [/v1/unit-amenities](https://connect.vacasa.com/#operation/post-unit-amenities)
