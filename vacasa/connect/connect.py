@@ -557,14 +557,14 @@ class VacasaConnect:
     def add_unit_amenity_property(self,
                                   amenity_id: int,
                                   unit_id: int,
-                                  idamenities_property: int,
+                                  idamenities_properties: int,
                                   property_value: str) -> dict:
         """Add a new unit amenity property in Connect.
 
         Args:
             amenity_id: An amenity ID.
             unit_id: A unit ID.
-            idamenities_property: An amenity property ID.
+            idamenities_properties: An amenity property ID.
             property_value: The property value for the new unit amenity property.
 
         Returns:
@@ -578,7 +578,7 @@ class VacasaConnect:
                 'attributes': {
                     'amenity_id': amenity_id,
                     'unit_id': unit_id,
-                    'idamenities_property': idamenities_property,
+                    'idamenities_properties': idamenities_properties,
                     'property_value': property_value
                 }
             }

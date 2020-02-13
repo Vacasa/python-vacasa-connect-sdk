@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.4.2] - 2020-02-13
+### Changed
+- Update `add_unit_amenity_property` request parameter to  `idamenities_properties`.
+
 ## [4.4.1] - 2020-01-30
 ### Changed
 - Add type `unit-amenities` to add_unit_amenity and update_unit_amenity methods.
