@@ -14,7 +14,8 @@ class IdpAuth:
                  client_id: str,
                  client_secret: str,
                  audience: str,
-                 scopes: list):
+                 scopes: list,
+                 leeway: int = 0):
         self._token = None
         self._claims = None
         self._config = None
@@ -24,6 +25,7 @@ class IdpAuth:
         self.client_secret = client_secret
         self._scopes = scopes
         self._audience = audience
+        self._leeway = leeway
 
     @property
     def token(self):
@@ -32,7 +34,7 @@ class IdpAuth:
             self._refresh_token()
 
         try:
-            jwt._validate_exp(self._claims)
+            jwt._validate_exp(self._claims, self._leeway)
         except ExpiredSignatureError:
             self._refresh_token()
 
