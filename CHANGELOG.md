@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.4.3] - 2020-02-14
 ### Changed
-Allow caller to use `leeway` to refresh token from IdpAuth before it become expired.
+- Allow caller to use `leeway` to refresh token from IdpAuth before it expires.
 
 ## [4.4.2] - 2020-02-13
 ### Changed
