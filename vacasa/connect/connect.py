@@ -830,6 +830,7 @@ class VacasaConnect:
                            terms: str = None,
                            booked_currency_code: str = None,
                            display_currency_code: str = None,
+                           fsc: list = None,
                            headers: dict = None
                            ) -> dict:
         """ Reserve a given unit
@@ -872,6 +873,8 @@ class VacasaConnect:
                 booked in ISO 4217 alpha code format (e.g. 'USD', 'CLP', etc.).
             display_currency_code: The currency preference of the guest in
                 ISO 4217 alpha code format (e.g. 'USD', 'CLP', etc.).
+            fsc: A list of credit dicts. Each credit object should contain
+                credit_account_id, email, and amount fields.
             headers: custom headers to be passed in and added to the dictionary
                 of common headers created by the _headers() method
 
@@ -915,6 +918,9 @@ class VacasaConnect:
 
         if discount_id:
             payload['discount_id'] = discount_id
+
+        if fsc:
+            payload['fsc'] = fsc
 
         if initial_payment_amount:
             payload['initial_payment_amount'] = initial_payment_amount
