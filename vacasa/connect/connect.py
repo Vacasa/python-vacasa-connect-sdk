@@ -3,6 +3,8 @@ import logging
 from urllib.parse import urlparse, urlunparse
 from uuid import UUID
 
+from requests import HTTPError
+
 from .idp_auth import IdpAuth
 from .requests_config import request_with_retries
 from .util import log_http_error, is_https_url, subtract_days
@@ -732,6 +734,26 @@ class VacasaConnect:
         headers = self._headers()
 
         return self._iterate_pages(url, headers, params)
+
+    def get_reservation_by_id(self, reservation_id):
+        """ Get a single reservation by ID """
+        if not reservation_id:
+            return None
+        url = f"{self.endpoint}/v1/reservations/{reservation_id}"
+        try:
+            return self._get(url, headers=self._headers()).json()['data']
+        except (HTTPError, KeyError):
+            return None
+
+    def get_reservation_by_confirmation_code(self, confirmation_code):
+        """ Get a single reservation by confirmation code """
+        if not confirmation_code:
+            return None
+        try:
+            result_list = self.get_reservations(params={'filter[confirmation_code]': confirmation_code})
+            return next(result_list, None)
+        except (HTTPError, KeyError):
+            return None
 
     def get_offices(self, params: dict = None):
         """Retrieve a list of Vacasa local office locations
