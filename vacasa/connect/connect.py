@@ -173,7 +173,7 @@ class VacasaConnect:
                     longitude: int = 0,
                     amenity_email: str = '',
                     m_source: str = '',
-                    address: dict = {},
+                    address: dict = None,
                     king_beds: int = 0,
                     queen_beds: int = 0,
                     double_beds: int = 0,
@@ -231,7 +231,7 @@ class VacasaConnect:
             "longitude": longitude,
             "amenity_email": amenity_email,
             "m_source": m_source,
-            "address": address,
+            "address": {} if address is None else address,
             "secured_by": secured_by,
         }
 
@@ -1690,7 +1690,7 @@ class VacasaConnect:
             }
         }
 
-        return self._post(path, json=payload)
+        return self._post(path, json=payload, headers=self._headers())
 
     def cancel_reservation_preview(self, reservation_id: str, user_id: int, force_zero: bool = False):
         """ Create a preview of the effects of cancelling a reservation """
@@ -1720,7 +1720,7 @@ class VacasaConnect:
         if policy_info:
             payload['data']['attributes']['adjustment_policy'] = {'policy_info': policy_info}
 
-        return self._patch(path, json=payload)
+        return self._patch(path, json=payload, headers=self._headers())
 
     def cancel_reservation_apply(self,
                                  reservation_id: str,
