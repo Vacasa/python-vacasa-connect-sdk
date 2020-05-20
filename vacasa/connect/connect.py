@@ -1675,6 +1675,76 @@ class VacasaConnect:
         url = f"{self.endpoint}/v1/languages"
         return self._get(url, headers=self._headers())
 
+    def _preview_adjustment(self, reservation_id: str, user_id: int, policy_info: dict):
+        """ Create a preview of the effects of applying an Adjustment Policy to a Reservation """
+        path = f"{self.endpoint}/v1/reservation-adjustments/"
+
+        payload = {
+            'data': {
+                'type': 'reservation-adjustment',
+                'attributes': {
+                    "adjustment_policy": {'policy_info': policy_info},
+                    "reservation_id": reservation_id,
+                    "user_id": user_id
+                }
+            }
+        }
+
+        return self._post(path, json=payload)
+
+    def cancel_reservation_preview(self, reservation_id: str, user_id: int, force_zero: bool = False):
+        """ Create a preview of the effects of cancelling a reservation """
+        return self._preview_adjustment(reservation_id, user_id, policy_info={
+            'policy_type': 'cancel-reservation',
+            'force_zero': force_zero
+        })
+
+    def _apply_adjustment(self,
+                          reservation_id: str,
+                          user_id: int,
+                          adjustment_uuid: str,
+                          policy_info: dict = None):
+        """Apply an Adjustment Policy to a Reservation"""
+        path = f"{self.endpoint}/v1/booking/{reservation_id}/adjustment/{adjustment_uuid}"
+
+        payload = {
+            'data': {
+                'type': 'reservation-adjustment',
+                'attributes': {
+                    "reservation_id": reservation_id,
+                    "user_id": user_id
+                }
+            }
+        }
+
+        if policy_info:
+            payload['data']['attributes']['adjustment_policy'] = {'policy_info': policy_info}
+
+        return self._patch(path, json=payload)
+
+    def cancel_reservation_apply(self,
+                                 reservation_id: str,
+                                 user_id: int,
+                                 adjustment_uuid: str,
+                                 fsc_rate: float = None,
+                                 fsc_note: str = None,
+                                 email: str = None):
+        """ Cancel a reservation by applying an adjustment policy (requires a UUID from cancel_reservation_preview """
+        policy_info = None
+
+        if fsc_rate is not None:
+            policy_info = {
+                'fsc': {
+                    "rate": fsc_rate,
+                    "note": fsc_note
+                }
+            }
+
+            if email:
+                policy_info['fsc']['email'] = email
+
+        return self._apply_adjustment(reservation_id, user_id, adjustment_uuid, policy_info)
+
 
 def _trip_protection_to_integer(trip_protection: bool) -> int:
     """Convert from True/False/None to 1/0/-1"""
