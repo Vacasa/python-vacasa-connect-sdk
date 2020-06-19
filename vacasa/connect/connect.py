@@ -1622,7 +1622,6 @@ class VacasaConnect:
                           ).json()
 
     def update_contact(self, contact_id, params: dict):
-
         """
         Update a contact via connect.
         https://connect.vacasa.com/#tag/Contacts/paths/~1v1~1contacts/patch
@@ -1647,7 +1646,6 @@ class VacasaConnect:
                                 tax_id: str = None,
                                 tax_entity_name: str = None,
                                 tax_form_code_id: int = 0):
-
         """
         Update a contacts finances via connect.
         https://connect.vacasa.com/#tag/Contacts/paths/~1v1~1contacts~1{id}~1finances/patch
@@ -1675,7 +1673,6 @@ class VacasaConnect:
             tax_form_code_id=tax_form_code_id))
 
     def update_contact_finances_payload(self, contact_id, params: dict):
-
         """
         Update a contacts finances via connect.
         https://connect.vacasa.com/#tag/Contacts/paths/~1v1~1contacts~1{id}~1finances/patch
@@ -1788,3 +1785,64 @@ def _is_uuid4(value: str) -> bool:
         return False
 
     return str(uuid) == value
+
+
+def get_unit_reservation_buffers(self, params: dict = None):
+    """
+    get a list of unit reservation buffers
+    """
+
+    url = f"{self.endpoint}/v1/unit-reservation-buffers"
+    headers = self._headers()
+
+    return self._iterate_pages(url, headers, params)
+
+
+def get_unit_reservation_buffer_by_id(self, unit_reservation_buffer_id: int):
+    """
+    get an unit reservation buffer by id
+    """
+
+    url = f"{self.endpoint}/v1/unit-reservation-buffers/{unit_reservation_buffer_id}"
+    headers = self._headers()
+
+    return self._get(url, headers).json()
+
+
+def create_unit_reservation_buffer(self,
+                                   unit_id: int,
+                                   buffer_days: int,
+                                   start_date: str,
+                                   end_date: str):
+    """
+    create a unit reservation buferr
+    """
+
+    payload = {
+        'data': {
+            'type': 'unit-reservation-buffer',
+            'attributes': {
+                "unit_id": unit_id,
+                "buffer_days": buffer_days,
+                "start_date": start_date,
+                "end_date": end_date
+            }
+        }
+    }
+
+    url = f"{self.endpoint}/v1/unit-reservation-buffers"
+    headers = self._headers()
+
+    return self._post(url, json=payload, headers=headers).json()
+
+
+def update_unit_reservation_buffer(self, unit_reservation_buffer_id: int, params: dict):
+    """
+    update a unit reservation buffer
+    """
+
+    url = f"{self.endpoint}/v1/unit-reservation-buffers/{unit_reservation_buffer_id}"
+    headers = self._headers()
+
+    return self._patch(url, json={'data': {
+        'type': 'unit-reservation-buffer', 'attributes': params}}, headers=headers).json()
