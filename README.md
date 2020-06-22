@@ -54,3 +54,8 @@ pipenv install
 # Run tests
 pytest
 ```
+
+# Creating a Pull Request
+Create a feature branch off the head of `master`.
+
+Make sure you update the `CHANGELOG.md` as well as the version in `setup.py`.
