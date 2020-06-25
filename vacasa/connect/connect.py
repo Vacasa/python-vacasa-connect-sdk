@@ -1846,3 +1846,62 @@ def update_unit_reservation_buffer(self, unit_reservation_buffer_id: int, params
 
     return self._patch(url, json={'data': {
         'type': 'unit-reservation-buffer', 'attributes': params}}, headers=headers).json()
+
+def get_unit_blocks(self, params: dict = None):
+    """
+    get a list of unit blocks
+    """
+
+    url = f"{self.endpoint}/v1/unit-blocks"
+    headers = self._headers()
+
+    return self._iterate_pages(url, headers, params)
+
+def get_unit_unit_block_by_id(self, unit_block_id: int):
+    """
+    get an unit block by id
+    """
+
+    url = f"{self.endpoint}/v1/unit-blocks/{unit_block_id}"
+    headers = self._headers()
+
+    return self._get(url, headers).json()
+
+def create_unit_block(self,
+                                   unit_id: int,
+                                   unit_reservation_buffer_id: int,
+                                   unit_block_type_id: int,
+                                   days_out: int,
+                                   note: str):
+    """
+    create a unit block
+    """
+
+    payload = {
+        'data': {
+            'type': 'unit-block',
+            'attributes': {
+                "unit_id": unit_id,
+                "unit_reservation_buffer_id": unit_reservation_buffer_id,
+                "unit_block_type_id": unit_block_type_id,
+                "days_out": days_out,
+                "note": note
+            }
+        }
+    }
+
+    url = f"{self.endpoint}/v1/unit-blocks"
+    headers = self._headers()
+
+    return self._post(url, json=payload, headers=headers).json()
+    
+def update_unit_block(self, unit_reservation_buffer_id: int, params: dict):
+    """
+    update a unit block
+    """
+
+    url = f"{self.endpoint}/v1/unit-blocks/{unit_reservation_buffer_id}"
+    headers = self._headers()
+
+    return self._patch(url, json={'data': {
+        'type': 'unit-reservation-buffer', 'attributes': params}}, headers=headers).json()
