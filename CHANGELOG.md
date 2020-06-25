@@ -3,6 +3,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.9.0] - 2020-06-25
+### Added
+- Added endpoints for unit blocks management: `get_unit_blocks`,`get_unit_unit_block_by_id`,`create_unit_block`,`update_unit_block`
+
+## [4.8.0] - 2020-06-19
+### Added
+- Added endpoints for rest days management: `get_unit_reservation_buffers`,`get_unit_reservation_buffer_by_id`,`create_unit_reservation_buffer`,`update_unit_reservation_buffer`
+
 ## [4.7.0] - 2020-05-20
 ### Added
 - Added `get_reservation_by_id()` and `get_reservation_by_confirmation_code()`
