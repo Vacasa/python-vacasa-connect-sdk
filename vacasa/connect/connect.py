@@ -1904,4 +1904,4 @@ def update_unit_block(self, unit_reservation_buffer_id: int, params: dict):
     headers = self._headers()
 
     return self._patch(url, json={'data': {
-        'type': 'unit-reservation-buffer', 'attributes': params}}, headers=headers).json()
+        'type': 'unit-block', 'attributes': params}}, headers=headers).json()
