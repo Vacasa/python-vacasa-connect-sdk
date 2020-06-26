@@ -1764,6 +1764,63 @@ class VacasaConnect:
 
         return self._apply_adjustment(reservation_id, user_id, adjustment_uuid, policy_info)
 
+    def get_unit_reservation_buffers(self, params: dict = None):
+        """
+        get a list of unit reservation buffers
+        """
+
+        url = f"{self.endpoint}/v1/unit-reservation-buffers"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
+
+    def get_unit_reservation_buffer_by_id(self, unit_reservation_buffer_id: int):
+        """
+        get an unit reservation buffer by id
+        """
+
+        url = f"{self.endpoint}/v1/unit-reservation-buffers/{unit_reservation_buffer_id}"
+        headers = self._headers()
+
+        return self._get(url, headers).json()
+
+    def create_unit_reservation_buffer(self,
+                                       unit_id: int,
+                                       buffer_days: int,
+                                       start_date: str,
+                                       end_date: str):
+        """
+        create a unit reservation buferr
+        """
+
+        payload = {
+            'data': {
+                'type': 'unit-reservation-buffer',
+                'attributes': {
+                    "unit_id": unit_id,
+                    "buffer_days": buffer_days,
+                    "start_date": start_date,
+                    "end_date": end_date
+                }
+            }
+        }
+
+        url = f"{self.endpoint}/v1/unit-reservation-buffers"
+        headers = self._headers()
+
+        return self._post(url, json=payload, headers=headers).json()
+
+    def update_unit_reservation_buffer(self, unit_reservation_buffer_id: int, params: dict):
+        """
+        update a unit reservation buffer
+        """
+
+        url = f"{self.endpoint}/v1/unit-reservation-buffers/{unit_reservation_buffer_id}"
+        headers = self._headers()
+
+        return self._patch(url, json={'data': {
+            'type': 'unit-reservation-buffer', 'attributes': params}}, headers=headers).json()
+
 
 def _trip_protection_to_integer(trip_protection: bool) -> int:
     """Convert from True/False/None to 1/0/-1"""
@@ -1785,64 +1842,3 @@ def _is_uuid4(value: str) -> bool:
         return False
 
     return str(uuid) == value
-
-
-def get_unit_reservation_buffers(self, params: dict = None):
-    """
-    get a list of unit reservation buffers
-    """
-
-    url = f"{self.endpoint}/v1/unit-reservation-buffers"
-    headers = self._headers()
-
-    return self._iterate_pages(url, headers, params)
-
-
-def get_unit_reservation_buffer_by_id(self, unit_reservation_buffer_id: int):
-    """
-    get an unit reservation buffer by id
-    """
-
-    url = f"{self.endpoint}/v1/unit-reservation-buffers/{unit_reservation_buffer_id}"
-    headers = self._headers()
-
-    return self._get(url, headers).json()
-
-
-def create_unit_reservation_buffer(self,
-                                   unit_id: int,
-                                   buffer_days: int,
-                                   start_date: str,
-                                   end_date: str):
-    """
-    create a unit reservation buferr
-    """
-
-    payload = {
-        'data': {
-            'type': 'unit-reservation-buffer',
-            'attributes': {
-                "unit_id": unit_id,
-                "buffer_days": buffer_days,
-                "start_date": start_date,
-                "end_date": end_date
-            }
-        }
-    }
-
-    url = f"{self.endpoint}/v1/unit-reservation-buffers"
-    headers = self._headers()
-
-    return self._post(url, json=payload, headers=headers).json()
-
-
-def update_unit_reservation_buffer(self, unit_reservation_buffer_id: int, params: dict):
-    """
-    update a unit reservation buffer
-    """
-
-    url = f"{self.endpoint}/v1/unit-reservation-buffers/{unit_reservation_buffer_id}"
-    headers = self._headers()
-
-    return self._patch(url, json={'data': {
-        'type': 'unit-reservation-buffer', 'attributes': params}}, headers=headers).json()
