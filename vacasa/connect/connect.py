@@ -1931,7 +1931,17 @@ def create_unit_block(self,
                       days_out: int,
                       note: str):
     """
-    create a unit block
+    create an unit block
+
+    Args:
+        unit_id: The id of the unit the unit block will be created for.
+        unit_reservation_buffer_id: Optional. Only required for updating existing unit blocks.
+        unit_block_type_id: The type of unit block that will be applied to this unit.
+        days_out: the ammount of days this unit block will be applied for this unit.
+        note: Standard procedure - The note must have the name of the person doing this upload and brief info about the reason for this upload. 
+
+    Returns:
+        Returns an object representing the object created on the database.
     """
 
     payload = {
