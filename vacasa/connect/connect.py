@@ -1925,11 +1925,11 @@ def get_unit_unit_block_by_id(self, unit_block_id: int):
     return self._get(url, headers).json()
 
 def create_unit_block(self,
-                                   unit_id: int,
-                                   unit_reservation_buffer_id: int,
-                                   unit_block_type_id: int,
-                                   days_out: int,
-                                   note: str):
+                      unit_id: int,
+                      unit_reservation_buffer_id: int,
+                      unit_block_type_id: int,
+                      days_out: int,
+                      note: str):
     """
     create a unit block
     """
