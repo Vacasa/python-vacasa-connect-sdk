@@ -1926,7 +1926,7 @@ def get_unit_unit_block_by_id(self, unit_block_id: int):
 
 def create_unit_block(self,
                       unit_id: int,
-                      unit_reservation_buffer_id: int,
+                      unit_block_id: int,
                       unit_block_type_id: int,
                       days_out: int,
                       note: str):
@@ -1935,7 +1935,7 @@ def create_unit_block(self,
 
     Args:
         unit_id: The id of the unit the unit block will be created for.
-        unit_reservation_buffer_id: Optional. Only required for updating existing unit blocks.
+        unit_block_id: Optional. Only required for updating existing unit blocks.
         unit_block_type_id: The type of unit block that will be applied to this unit.
         days_out: the ammount of days this unit block will be applied for this unit.
         note: Standard procedure - The note must have the name of the person doing this upload and brief info about the reason for this upload. 
@@ -1949,7 +1949,7 @@ def create_unit_block(self,
             'type': 'unit-block',
             'attributes': {
                 "unit_id": unit_id,
-                "unit_reservation_buffer_id": unit_reservation_buffer_id,
+                "unit_block_id": unit_block_id,
                 "unit_block_type_id": unit_block_type_id,
                 "days_out": days_out,
                 "note": note
@@ -1962,12 +1962,12 @@ def create_unit_block(self,
 
     return self._post(url, json=payload, headers=headers).json()
     
-def update_unit_block(self, unit_reservation_buffer_id: int, params: dict):
+def update_unit_block(self, unit_block_id: int, params: dict):
     """
     update a unit block
     """
 
-    url = f"{self.endpoint}/v1/unit-blocks/{unit_reservation_buffer_id}"
+    url = f"{self.endpoint}/v1/unit-blocks/{unit_block_id}"
     headers = self._headers()
 
     return self._patch(url, json={'data': {
