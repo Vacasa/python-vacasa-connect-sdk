@@ -1843,7 +1843,6 @@ class VacasaConnect:
 
     def create_unit_block(self,
                         unit_id: int,
-                        unit_block_id: int,
                         unit_block_type_id: int,
                         days_out: int,
                         note: str):
@@ -1866,7 +1865,6 @@ class VacasaConnect:
                 'type': 'unit-block',
                 'attributes': {
                     "unit_id": unit_id,
-                    "unit_block_id": unit_block_id,
                     "unit_block_type_id": unit_block_type_id,
                     "days_out": days_out,
                     "note": note
