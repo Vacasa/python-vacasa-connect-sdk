@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.11.1] - 2020-07-16
+### Added
+- Fixed parameters for unit block creation: `get_unit_blocks`,`get_unit_unit_block_by_id`,`create_unit_block`,`update_unit_block`
+
 ## [4.11.0] - 2020-07-15
 ### Added
 - Fixed identation for unit block endpoints: `get_unit_blocks`,`get_unit_unit_block_by_id`,`create_unit_block`,`update_unit_block`
