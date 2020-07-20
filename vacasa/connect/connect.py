@@ -1788,7 +1788,8 @@ class VacasaConnect:
                                        unit_id: int,
                                        buffer_days: int,
                                        start_date: str,
-                                       end_date: str):
+                                       end_date: str,
+                                       reason_id: int):
         """
         create a unit reservation buferr
         """
@@ -1800,7 +1801,8 @@ class VacasaConnect:
                     "unit_id": unit_id,
                     "buffer_days": buffer_days,
                     "start_date": start_date,
-                    "end_date": end_date
+                    "end_date": end_date,
+                    "reason_id": reason_id
                 }
             }
         }
@@ -1842,10 +1844,10 @@ class VacasaConnect:
         return self._get(url, headers).json()
 
     def create_unit_block(self,
-                        unit_id: int,
-                        unit_block_type_id: int,
-                        days_out: int,
-                        note: str):
+                          unit_id: int,
+                          unit_block_type_id: int,
+                          days_out: int,
+                          note: str):
         """
         create an unit block
 
@@ -1875,7 +1877,7 @@ class VacasaConnect:
         headers = self._headers()
 
         return self._post(url, json=payload, headers=headers).json()
-        
+
     def update_unit_block(self, unit_block_id: int, params: dict):
         """
         update a unit block
@@ -1908,5 +1910,3 @@ def _is_uuid4(value: str) -> bool:
         return False
 
     return str(uuid) == value
-
-
