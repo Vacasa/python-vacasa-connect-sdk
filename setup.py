@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='VacasaConnect',
-    version='4.12.1',
+    version='4.12.2',
     description='A Python 3.6+ SDK for the connect.vacasa.com API.',
     packages=['vacasa.connect'],
     url='https://github.com/Vacasa/python-vacasa-connect-sdk',

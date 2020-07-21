@@ -1821,11 +1821,11 @@ class VacasaConnect:
         headers = self._headers()
 
         attributes = {
-            "unit_id": params.unit_id,
-            "buffer_days": params.buffer_days,
-            "start_date": params.start_date,
-            "end_date": params.end_date,
-            "unit_reservation_buffer_reason_id": params.reason_id
+            "unit_id": params["unit_id"],
+            "buffer_days": params["buffer_days"],
+            "start_date": params["start_date"],
+            "end_date": params["end_date"],
+            "unit_reservation_buffer_reason_id": params["reason_id"]
         }
 
         return self._patch(url, json={'data': {
