@@ -1802,7 +1802,7 @@ class VacasaConnect:
                     "buffer_days": buffer_days,
                     "start_date": start_date,
                     "end_date": end_date,
-                    "reason_id": reason_id
+                    "unit_reservation_buffer_reason_id": reason_id
                 }
             }
         }
@@ -1820,8 +1820,16 @@ class VacasaConnect:
         url = f"{self.endpoint}/v1/unit-reservation-buffers/{unit_reservation_buffer_id}"
         headers = self._headers()
 
+        attributes = {
+            "unit_id": params.unit_id,
+            "buffer_days": params.buffer_days,
+            "start_date": params.start_date,
+            "end_date": params.end_date,
+            "unit_reservation_buffer_reason_id": params.reason_id
+        }
+
         return self._patch(url, json={'data': {
-            'type': 'unit-reservation-buffer', 'attributes': params}}, headers=headers).json()
+            'type': 'unit-reservation-buffer', 'attributes': attributes}}, headers=headers).json()
 
     def get_unit_blocks(self, params: dict = None):
         """
