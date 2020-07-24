@@ -1,8 +1,8 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='VacasaConnect',
-    version='4.12.2',
+    version='4.13.0',
     description='A Python 3.6+ SDK for the connect.vacasa.com API.',
     packages=['vacasa.connect'],
     url='https://github.com/Vacasa/python-vacasa-connect-sdk',
