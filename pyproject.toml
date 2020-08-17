@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "python-vacasa-connect-sdk"
+name = "VacasaConnect"
 version = "4.13.1"
 description = ""
 authors = []

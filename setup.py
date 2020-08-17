@@ -4,7 +4,7 @@ setup(
     name='VacasaConnect',
     version='4.13.1',
     description='A Python 3.6+ SDK for the connect.vacasa.com API.',
-    packages=['vacasa.connect'],
+    packages=['vacasa', 'vacasa.connect'],
     url='https://github.com/Vacasa/python-vacasa-connect-sdk',
     license='MIT',
     install_requires=[
