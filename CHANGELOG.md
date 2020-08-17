@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.13.1] - 2020-08-17
+### Changed
+- Add pyproject.toml for poetry [namespace package support](https://github.com/python-poetry/poetry/issues/356#issuecomment-410193960)
+
 ## [4.13.0] - 2020-07-24
 ### Changed
 - Migrate from distutils -> setuptools
