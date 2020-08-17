@@ -3,7 +3,7 @@ name = "VacasaConnect"
 version = "4.13.1"
 description = ""
 authors = []
-packages = [{ include = "vacasa/connect" }]
+packages = [{ include = "vacasa" }]
 
 [tool.poetry.dependencies]
 python = "^3.6"
