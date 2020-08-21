@@ -171,7 +171,7 @@ class VacasaConnect:
                                headers=self._headers()).json()
 
 
-def create_unit(self,
+    def create_unit(self,
                     housing_type: str,
                     secured_by,
                     turnover_day: int = 0,
