@@ -154,16 +154,22 @@ class VacasaConnect:
              updated unit
 
         """
+        if params is None and amenities_map is None:
+            return "Invalid update parameters"
+
+        payload = {}
 
         url = f"{self.endpoint}/v1/units/{unit_id}"
 
-        if amenities_map is None and params is not None:
-            return self._patch(url, json={'data': {'attributes': params}},
+        if params is not None:
+            payload['attributes'] = params
+
+        if amenities_map is not None:
+            payload['meta'] = {'amenities_map': amenities_map}
+
+        return self._patch(url, json={'data': payload},
                                headers=self._headers()).json()
-        if amenities_map and params:
-            return self._patch(url, json={'data': {'attributes': params, 'meta': {'amenities_map': amenities_map}}},
-                               headers=self._headers()).json()
-        return "Invalid update parameters"
+
 
 def create_unit(self,
                     housing_type: str,
