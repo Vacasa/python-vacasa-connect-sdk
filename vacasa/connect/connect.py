@@ -168,10 +168,9 @@ class VacasaConnect:
             payload['meta'] = {'amenities_map': amenities_map}
 
         return self._patch(url, json={'data': payload},
-                               headers=self._headers()).json()
+                           headers=self._headers()).json()
 
-
-def create_unit(self,
+    def create_unit(self,
                     housing_type: str,
                     secured_by,
                     turnover_day: int = 0,
@@ -1566,7 +1565,8 @@ def create_unit(self,
     def create_contact(self,
                        first_name: str,
                        email: str,
-                       last_name: str = '',
+                       last_name: str,
+                       language_id: int,
                        address_1: str = '',
                        address_2: str = '',
                        city: str = '',
@@ -1575,7 +1575,6 @@ def create_unit(self,
                        country_code: str = '',
                        phone: str = '',
                        phone_notes: str = '',
-                       language_id: int = None,
                        created_by: int = None,
                        tax_entity_name: str = None,
                        send_email: bool = False
@@ -1604,24 +1603,36 @@ def create_unit(self,
             Created Contact
 
         """
-
         payload = {
             "first_name": first_name,
-            "last_name": last_name,
-            "address_1": address_1,
-            "address_2": address_2,
-            "city": city,
-            "state": state,
-            "zip": zip,
-            "country_code": country_code,
             "email": email,
-            "phone": phone,
-            "phone_notes": phone_notes,
-            "language_id": language_id,
-            "created_by": created_by,
-            "tax_entity_name": tax_entity_name,
-            "send_email": send_email,
+            "last_name": last_name
         }
+
+        if address_1:
+            payload["address_1"] = address_1
+        if address_2:
+            payload["address_2"] = address_2
+        if city:
+            payload["city"] = city
+        if state:
+            payload["state"] = state
+        if zip:
+            payload["zip"] = zip
+        if country_code:
+            payload["country_code"] = country_code
+        if phone:
+            payload["phone"] = phone
+        if phone_notes:
+            payload["phone_notes"] = phone_notes
+        if language_id:
+            payload["language_id"] = language_id
+        if created_by:
+            payload["created_by"] = created_by
+        if tax_entity_name:
+            payload["tax_entity_name"] = tax_entity_name
+        if send_email:
+            payload["send_email"] = send_email
 
         url = f"{self.endpoint}/v1/contacts"
         headers = self._headers()
