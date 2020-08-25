@@ -1621,6 +1621,8 @@ class VacasaConnect:
             "send_email": send_email,
         }
 
+        #Using dict comprehension to remove items that are None
+
         payload = {k: v for k, v in payload.items() if v is not None}
 
         url = f"{self.endpoint}/v1/contacts"
