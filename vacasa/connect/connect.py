@@ -168,8 +168,7 @@ class VacasaConnect:
             payload['meta'] = {'amenities_map': amenities_map}
 
         return self._patch(url, json={'data': payload},
-                               headers=self._headers()).json()
-
+                           headers=self._headers()).json()
 
     def create_unit(self,
                     housing_type: str,
@@ -1566,16 +1565,16 @@ class VacasaConnect:
     def create_contact(self,
                        first_name: str,
                        email: str,
-                       last_name: str = '',
-                       address_1: str = '',
-                       address_2: str = '',
-                       city: str = '',
-                       state: str = '',
-                       zip: str = '',
-                       country_code: str = '',
-                       phone: str = '',
-                       phone_notes: str = '',
-                       language_id: int = None,
+                       language_id: int,
+                       last_name: str = None,
+                       address_1: str = None,
+                       address_2: str = None,
+                       city: str = None,
+                       state: str = None,
+                       zip: str = None,
+                       country_code: str = None,
+                       phone: str = None,
+                       phone_notes: str = None,
                        created_by: int = None,
                        tax_entity_name: str = None,
                        send_email: bool = False
@@ -1604,7 +1603,6 @@ class VacasaConnect:
             Created Contact
 
         """
-
         payload = {
             "first_name": first_name,
             "last_name": last_name,
@@ -1622,6 +1620,10 @@ class VacasaConnect:
             "tax_entity_name": tax_entity_name,
             "send_email": send_email,
         }
+
+        #Using dict comprehension to remove items that are None
+
+        payload = {k: v for k, v in payload.items() if v is not None}
 
         url = f"{self.endpoint}/v1/contacts"
         headers = self._headers()
