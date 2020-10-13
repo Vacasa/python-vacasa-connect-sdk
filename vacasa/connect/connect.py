@@ -1910,12 +1910,12 @@ class VacasaConnect:
             'type': 'unit-block', 'attributes': params}}, headers=headers).json()
 
     def get_logins(self, email: str):
-        """
-        Get logins by email address.
-        """
+        """ Get logins by email address. """
         url = f"{self.endpoint}/v1/logins"
-        params = {'filter[email]': email}
         headers = self._headers()
+        params = {
+            'filter[email]': email
+        }
 
         return self._iterate_pages(url, headers, params)
 
