@@ -1909,6 +1909,16 @@ class VacasaConnect:
         return self._patch(url, json={'data': {
             'type': 'unit-block', 'attributes': params}}, headers=headers).json()
 
+    def get_logins(self, email: str):
+        """
+        Get logins by email address.
+        """
+        url = f"{self.endpoint}/v1/logins"
+        params = {'filter[email]': email}
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
+
 
 def _trip_protection_to_integer(trip_protection: bool) -> int:
     """Convert from True/False/None to 1/0/-1"""
