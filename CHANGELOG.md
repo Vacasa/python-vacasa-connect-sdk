@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.14.0] - 2020-10-14
+## Added
+- The `get_logins()` method, which uses [/v1/logins](https://connect.vacasa.com/#operation/get-logins-list)
+
 ## [4.13.3] - 2020-08-24
 ## Changed
 - Changed how contact records are sent, only send fields that have data
