@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.15.0] - 2020-10-23
+## Changed
+- Modified `update_amentities()` and `update_amenity_properties()` to follow correct PATCH functionality and not send items to be updated that are null.
+
 ## [4.14.0] - 2020-10-14
 ## Added
 - The `get_logins()` method, which uses [/v1/logins](https://connect.vacasa.com/#operation/get-logins-list)

@@ -543,6 +543,10 @@ class VacasaConnect:
         """
         url = f"{self.endpoint}/v1/unit-amenities/{unit_amenity_id}"
         headers = self._headers()
+
+        # Since it is a PATCH operation, only update with params that are not None
+        params = {k: v for k, v in params.items() if v is not None}
+
         payload = {
             'data': {
                 'type': 'unit-amenities',
@@ -612,6 +616,10 @@ class VacasaConnect:
 
         url = f"{self.endpoint}/v1/unit-amenity-properties/{unit_amenity_property_id}"
         headers = self._headers()
+
+        # Since it is a PATCH operation, only update with params that are not None
+        params = {k: v for k, v in params.items() if v is not None}
+
         payload = {
             'data': {
                 'type': 'unit-amenity-property',
