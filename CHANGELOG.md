@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.16.0] - 2020-11-03
+## Changed
+- Added Delete method for unit reservation buffers.
+
 ## [4.15.0] - 2020-10-23
 ## Changed
 - Modified `update_amentities()` and `update_amenity_properties()` to follow correct PATCH functionality and not send items to be updated that are null.
