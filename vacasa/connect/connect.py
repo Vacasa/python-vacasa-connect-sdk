@@ -88,6 +88,16 @@ class VacasaConnect:
 
         return r
 
+    @staticmethod
+    def _delete(url, data: dict = None, json: dict = None, headers: dict = None):
+        """HTTP DELETE request helper."""
+        if not headers:
+            headers = {}
+        r = requests.delete(url, data=data, json=json, headers=headers)
+        log_http_error(r)
+
+        return r
+
     def _ensure_url_has_host(self, url: str):
         """Insurance against the API returning a URL that lacks a host name"""
         parsed_url = urlparse(url)
@@ -261,7 +271,8 @@ class VacasaConnect:
         }
 
         return self._post(url,
-                          json={'data': {'attributes': payload, 'meta': {'amenities_map': amenities_map}}},
+                          json={'data': {'attributes': payload, 'meta': {
+                              'amenities_map': amenities_map}}},
                           headers=headers
                           ).json()
 
@@ -767,7 +778,8 @@ class VacasaConnect:
         if not confirmation_code:
             return None
         try:
-            result_list = self.get_reservations(params={'filter[confirmation_code]': confirmation_code})
+            result_list = self.get_reservations(
+                params={'filter[confirmation_code]': confirmation_code})
             return next(result_list, None)
         except (HTTPError, KeyError):
             return None
@@ -841,7 +853,8 @@ class VacasaConnect:
         if discount_id is not None:
             params['discount_id'] = discount_id
 
-        params['trip_protection'] = _trip_protection_to_integer(trip_protection)
+        params['trip_protection'] = _trip_protection_to_integer(
+            trip_protection)
 
         return self._get(url, headers, params).json()
 
@@ -947,7 +960,8 @@ class VacasaConnect:
         if phone is not None:
             payload['phone'] = phone
 
-        payload['trip_protection'] = _trip_protection_to_integer(trip_protection)
+        payload['trip_protection'] = _trip_protection_to_integer(
+            trip_protection)
 
         if source is not None:
             payload['source'] = source
@@ -1228,7 +1242,8 @@ class VacasaConnect:
             'last_name': last_name,
             'unit_id': unit_id
         }
-        payload.update({k: v for k, v in optional_parameters.items() if v is not None})
+        payload.update(
+            {k: v for k, v in optional_parameters.items() if v is not None})
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
     def create_reservation_seed(self,
@@ -1629,7 +1644,7 @@ class VacasaConnect:
             "send_email": send_email,
         }
 
-        #Using dict comprehension to remove items that are None
+        # Using dict comprehension to remove items that are None
 
         payload = {k: v for k, v in payload.items() if v is not None}
 
@@ -1707,7 +1722,8 @@ class VacasaConnect:
         """
 
         url = f"{self.endpoint}/v1/contacts/{contact_id}/finances"
-        self._patch(url, json={'data': {'attributes': params}}, headers=self._headers())
+        self._patch(
+            url, json={'data': {'attributes': params}}, headers=self._headers())
 
     def get_language_list(self):
         """Get a list of languages from Connect"""
@@ -1757,7 +1773,8 @@ class VacasaConnect:
         }
 
         if policy_info:
-            payload['data']['attributes']['adjustment_policy'] = {'policy_info': policy_info}
+            payload['data']['attributes']['adjustment_policy'] = {
+                'policy_info': policy_info}
 
         return self._patch(path, json=payload, headers=self._headers())
 
@@ -1850,6 +1867,17 @@ class VacasaConnect:
 
         return self._patch(url, json={'data': {
             'type': 'unit-reservation-buffer', 'attributes': attributes}}, headers=headers).json()
+
+    def delete_unit_reservation_buffer(self, unit_reservation_buffer_id: int):
+        """
+        delete a unit reservation buffer
+        """
+
+        url = f"{self.endpoint}/v1/unit-reservation-buffers/{unit_reservation_buffer_id}"
+        headers = self._headers()
+
+        return self._delete(url, json={'data': {
+            'type': 'unit-reservation-buffer'}}, headers=headers).json()
 
     def get_unit_blocks(self, params: dict = None):
         """
