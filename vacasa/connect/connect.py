@@ -1945,6 +1945,38 @@ class VacasaConnect:
         return self._patch(url, json={'data': {
             'type': 'unit-block', 'attributes': params}}, headers=headers).json()
 
+    def get_accounting_entities(self, params: dict):
+        """
+        get accounting entities of one or many units (depending on the param filter[unit_id])
+        """
+
+        url = f"{self.endpoint}/v1/accounting-entity-units"
+        headers = self._headers()
+
+        return self._get(url, json={'data': {
+            'type': 'accounting-entity-unit', 'attributes': params}}, headers=headers).json()
+
+    def update_accounting_entity(self, record_id: int, params: dict):
+        """
+        updates a record on the relation table accounting-entity-units
+        """
+
+        url = f"{self.endpoint}/v1/accounting-entity-units/{record_id}"
+        headers = self._headers()
+
+        return self._get(url, json={'data': {
+            'type': 'accounting-entity-unit', 'attributes': params}}, headers=headers).json()
+
+    def create_accounting_entity(self, payload: dict):
+        """
+        creates an accounting entity
+        """
+
+        url = f"{self.endpoint}/v1/accounting-entity-units"
+        headers = self._headers()
+
+        return self._get(url, json=payload, headers=headers).json()
+
     def get_logins(self, email: str):
         """ Get logins by email address. """
         url = f"{self.endpoint}/v1/logins"
