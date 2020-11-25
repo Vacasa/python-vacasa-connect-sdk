@@ -1945,7 +1945,7 @@ class VacasaConnect:
         return self._patch(url, json={'data': {
             'type': 'unit-block', 'attributes': params}}, headers=headers).json()
 
-    def get_accounting_entities(self, params: dict):
+    def get_accounting_entities(self, params: dict = None):
         """
         get accounting entities of one or many units (depending on the param filter[unit_id])
         """
@@ -1953,8 +1953,7 @@ class VacasaConnect:
         url = f"{self.endpoint}/v1/accounting-entity-units"
         headers = self._headers()
 
-        return self._get(url, json={'data': {
-            'type': 'accounting-entity-unit', 'attributes': params}}, headers=headers).json()
+        return self._get(url, headers=headers, params=params).json()
 
     def update_accounting_entity(self, record_id: int, params: dict):
         """
@@ -1964,7 +1963,7 @@ class VacasaConnect:
         url = f"{self.endpoint}/v1/accounting-entity-units/{record_id}"
         headers = self._headers()
 
-        return self._get(url, json={'data': {
+        return self._patch(url, json={'data': {
             'type': 'accounting-entity-unit', 'attributes': params}}, headers=headers).json()
 
     def create_accounting_entity(self, payload: dict):
@@ -1975,7 +1974,7 @@ class VacasaConnect:
         url = f"{self.endpoint}/v1/accounting-entity-units"
         headers = self._headers()
 
-        return self._get(url, json=payload, headers=headers).json()
+        return self._post(url, json=payload, headers=headers).json()
 
     def get_logins(self, email: str):
         """ Get logins by email address. """
