@@ -1456,7 +1456,8 @@ class VacasaConnect:
                         channel_fee_cost_sharing_id: int = 5,
                         amendment_by_notice_id: int = 4,
                         referral_eligible: bool = False,
-                        referral_discount: int = 0):
+                        referral_discount: int = 0,
+                        secured_by: int = None):
         """
         https://vacasa.docs.stoplight.io/contracts/postv1contracts
         Args:
@@ -1476,6 +1477,7 @@ class VacasaConnect:
                                     corresponds to “Amendment by Notice” on Contract page in Admin
             referral_eligible: Corresponds to “Owner Referral Eligible” on Contract page in Admin
             referral_discount: Corresponds to “Owner Referral Discount” on Contract page in Admin
+            secured_by: The ID of the user that secured the contract.
 
         Returns: dict
             Created Contract
@@ -1494,7 +1496,8 @@ class VacasaConnect:
             "owners": owners,
             "referral_eligible": referral_eligible,
             "referral_discount": referral_discount,
-            "created_by": created_by
+            "created_by": created_by,
+            "secured_by": secured_by
         }
 
         url = f"{self.endpoint}/v1/contracts"
