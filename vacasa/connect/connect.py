@@ -1292,10 +1292,9 @@ class VacasaConnect:
                                               arrival: str,
                                               departure: str,
                                               adults: int,
-                                              children: int = 0,
-                                              pets: int = 0,
-                                              source: str = None,
-                                              anonymous_id: str = None,
+                                              children: int,
+                                              pets: int,
+                                              source: str,
                                               ):
         """ Create a "seed" reservation (missing guest/payment info).  Requires finance details from a valid quote """
         url = f"{self.endpoint}/v1/reservations-seed"
@@ -1312,13 +1311,8 @@ class VacasaConnect:
             adults=adults,
             children=children,
             pets=pets,
+            source=source
         )
-
-        if source is not None:
-            payload['source'] = source
-
-        if anonymous_id:
-            payload['anonymous_id'] = anonymous_id
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
@@ -1774,7 +1768,6 @@ class VacasaConnect:
             tax_form_code_id=tax_form_code_id,
             tax_id=tax_id
         ))
-
 
     def update_contact_finances_payload(self, contact_id, params: dict):
         """
