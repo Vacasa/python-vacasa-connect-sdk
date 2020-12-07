@@ -1680,7 +1680,16 @@ class VacasaConnect:
                                 routing_number: str = None,
                                 tax_id: str = None,
                                 tax_entity_name: str = None,
-                                tax_form_code_id: int = 0):
+                                tax_form_code_id: int = 0,
+                                tax_classification_type: str = None,
+                                tax_classification: str = None,
+                                tax_classification_other: str = None,
+                                exempt_payee_code: str = None,
+                                exempt_facta_code: str = None,
+                                ein: str = None,
+                                signature: str = None,
+                                sign_date: str = None,
+                                ip_address: str = None):
         """
         Update a contacts finances via connect.
         https://connect.vacasa.com/#tag/Contacts/paths/~1v1~1contacts~1{id}~1finances/patch
@@ -1693,7 +1702,15 @@ class VacasaConnect:
             tax_id: Tax Identification (<= 11 Chars)
             tax_entity_name: Tax Name (<= 100 Chars)
             tax_form_code_id:
-
+            tax_classification_type: For W9
+            tax_classification: For W9
+            tax_classification_other: For W9
+            exempt_payee_code: For W9
+            exempt_facta_code: For W9
+            ein: Contact EIN number for W9
+            signature: Signature for W9
+            sign_date: 'YYYY-MM-DD'
+            ip_address: IP Address for W9 Table
 
         Returns: None
              Sensitve data.. no result (HTTP-204)
@@ -1702,10 +1719,21 @@ class VacasaConnect:
         self.update_contact_finances_payload(contact_id, dict(
             account_name=account_name,
             account_number=account_number,
+            ein=ein,
+            exempt_facta_code=exempt_facta_code,
+            exempt_payee_code=exempt_payee_code,
+            ip_address=ip_address,
             routing_number=routing_number,
-            tax_id=tax_id,
+            sign_date=sign_date,
+            signature=signature,
+            tax_classification=tax_classification,
+            tax_classification_other=tax_classification_other,
+            tax_classification_type=tax_classification_type,
             tax_entity_name=tax_entity_name,
-            tax_form_code_id=tax_form_code_id))
+            tax_form_code_id=tax_form_code_id,
+            tax_id=tax_id
+        ))
+
 
     def update_contact_finances_payload(self, contact_id, params: dict):
         """
