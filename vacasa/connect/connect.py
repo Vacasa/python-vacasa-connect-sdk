@@ -1,5 +1,6 @@
 """Vacasa Connect Python SDK."""
 import logging
+from typing import List
 from urllib.parse import urlparse, urlunparse
 from uuid import UUID
 
@@ -1252,7 +1253,7 @@ class VacasaConnect:
                                 created_by: int,
                                 source: str = None,
                                 anonymous_id: str = None):
-        """
+        """ Create a "seed" reservation (missing guest/payment info).  Requires a /v1/quotes ID
 
         Args:
             booked_currency_code: The currency of record for the unit being
@@ -1278,6 +1279,40 @@ class VacasaConnect:
 
         if anonymous_id:
             payload['anonymous_id'] = anonymous_id
+
+        return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
+
+    def create_reservation_seed_from_finances(self,
+                                              booked_currency_code: str,
+                                              created_by: int,
+                                              unit_id: int,
+                                              fees: List[dict],
+                                              rent: List[dict],
+                                              taxes: List[dict],
+                                              arrival: str,
+                                              departure: str,
+                                              adults: int,
+                                              children: int,
+                                              pets: int,
+                                              source: str,
+                                              ):
+        """ Create a "seed" reservation (missing guest/payment info).  Requires finance details from a valid quote """
+        url = f"{self.endpoint}/v1/reservations-seed"
+        headers = self._headers()
+        payload = dict(
+            booked_currency_code=booked_currency_code,
+            created_by=created_by,
+            unit_id=unit_id,
+            fees=fees,
+            rent=rent,
+            taxes=taxes,
+            arrival=arrival,
+            departure=departure,
+            adults=adults,
+            children=children,
+            pets=pets,
+            source=source
+        )
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
@@ -1736,7 +1771,6 @@ class VacasaConnect:
             tax_form_code_id=tax_form_code_id,
             tax_id=tax_id
         ))
-
 
     def update_contact_finances_payload(self, contact_id, params: dict):
         """
