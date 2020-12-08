@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.20.0] - 2020-12-07
+## Changed
+- Added `secured_by` parameter to `create_contract`.
+
 ## [4.19.0] - 2020-12-07
 ## Added
 - Added `create_reservation_seed_from_finances()` to support new `/v1/reservations-seed` functionality
