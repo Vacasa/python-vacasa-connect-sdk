@@ -1534,9 +1534,11 @@ class VacasaConnect:
             "owners": owners,
             "referral_eligible": referral_eligible,
             "referral_discount": referral_discount,
-            "created_by": created_by,
-            "secured_by": secured_by
+            "created_by": created_by
         }
+
+        if secured_by is not None:
+            payload["secured_by"] = secured_by
 
         url = f"{self.endpoint}/v1/contracts"
         headers = self._headers()
