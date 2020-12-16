@@ -1295,6 +1295,7 @@ class VacasaConnect:
                                               children: int,
                                               pets: int,
                                               source: str,
+                                              discount_id: int = None
                                               ):
         """ Create a "seed" reservation (missing guest/payment info).  Requires finance details from a valid quote """
         url = f"{self.endpoint}/v1/reservations-seed"
@@ -1313,6 +1314,8 @@ class VacasaConnect:
             pets=pets,
             source=source
         )
+        if discount_id:
+            payload['discount_id'] = discount_id
 
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
