@@ -5,7 +5,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.21.2] - 2021-07-23
 ## Added
-- Added `get_acquisition` to support `/v1/acquisitions` functionality
+- Added `get_acquisitions` to support `/v1/acquisitions` functionality
 
 ## [4.21.1] - 2020-12-17
 ## Changed

@@ -2056,7 +2056,7 @@ class VacasaConnect:
 
         return self._iterate_pages(url, headers, params)
 
-    def get_acquisition(self, params: dict = None):
+    def get_acquisitions(self, params: dict = None):
         """Retrieve a list of acquisitions
 
         Yields:
