@@ -2056,6 +2056,17 @@ class VacasaConnect:
 
         return self._iterate_pages(url, headers, params)
 
+    def get_acquisition(self, params: dict = None):
+        """Retrieve a list of acquisitions
+
+        Yields:
+            An iterator of acquisitions. Each acquisition is a dict.
+        """
+        url = f"{self.endpoint}/v1/acquisitions"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
+
 
 def _trip_protection_to_integer(trip_protection: bool) -> int:
     """Convert from True/False/None to 1/0/-1"""
