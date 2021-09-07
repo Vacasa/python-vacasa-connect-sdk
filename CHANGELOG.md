@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.21.4] - 2021-09-07
+## Changed
+- Updated the python dependencies in response to Dependabot alerts.
+
 ## [4.21.3] - 2021-08-05
 ## Changed
 - Updated the `install_requires` section of `setup.py` to match current version in the `Pipfile.lock`.
