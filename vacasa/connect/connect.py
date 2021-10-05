@@ -2067,6 +2067,14 @@ class VacasaConnect:
 
         return self._iterate_pages(url, headers, params)
 
+    def get_unit_bulk(self, ids: str):
+        """ Get a list of units using POST method to avoid the URL max length limit of GET method"""
+        url = f"{self.endpoint}/v1/unit-bulk"
+        headers = self._headers()
+        payload = dict(ids=ids)
+
+        return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
+
 
 def _trip_protection_to_integer(trip_protection: bool) -> int:
     """Convert from True/False/None to 1/0/-1"""
