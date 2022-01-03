@@ -1897,7 +1897,7 @@ class VacasaConnect:
                                        start_date: str,
                                        end_date: str,
                                        reason_id: int,
-                                       notes: str):
+                                       notes: str = None):
         """
         create a unit reservation buferr
         """
