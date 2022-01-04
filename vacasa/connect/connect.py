@@ -1896,7 +1896,8 @@ class VacasaConnect:
                                        buffer_days: int,
                                        start_date: str,
                                        end_date: str,
-                                       reason_id: int):
+                                       reason_id: int,
+                                       notes: str = None):
         """
         create a unit reservation buferr
         """
@@ -1909,7 +1910,8 @@ class VacasaConnect:
                     "buffer_days": buffer_days,
                     "start_date": start_date,
                     "end_date": end_date,
-                    "unit_reservation_buffer_reason_id": reason_id
+                    "unit_reservation_buffer_reason_id": reason_id,
+                    "notes": notes
                 }
             }
         }
