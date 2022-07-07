@@ -443,7 +443,8 @@ class VacasaConnect:
                       params: dict = None,
                       include_categories: bool = False,
                       include_content: bool = False,
-                      include_options: bool = False
+                      include_options: bool = False,
+                      filter_required = False
                       ):
         """Retrieve a master list of all amenities
 
@@ -464,6 +465,9 @@ class VacasaConnect:
 
         if include_options:
             params = self._add_include_param(params, 'options')
+
+        if filter_required:
+            params['filter[required]'] = True
 
         return self._iterate_pages(url, headers, params)
 
@@ -1718,7 +1722,7 @@ class VacasaConnect:
 
     def update_contact_finances(self,
                                 contact_id,
-                                account_name: str = None,
+                                ©: str = None,
                                 account_number: str = None,
                                 routing_number: str = None,
                                 tax_id: str = None,
