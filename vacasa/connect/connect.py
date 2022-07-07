@@ -1722,7 +1722,7 @@ class VacasaConnect:
 
     def update_contact_finances(self,
                                 contact_id,
-                                ©: str = None,
+                                account_name: str = None,
                                 account_number: str = None,
                                 routing_number: str = None,
                                 tax_id: str = None,
