@@ -444,7 +444,7 @@ class VacasaConnect:
                       include_categories: bool = False,
                       include_content: bool = False,
                       include_options: bool = False,
-                      filter_required = False
+                      filter_required: bool = False
                       ):
         """Retrieve a master list of all amenities
 
