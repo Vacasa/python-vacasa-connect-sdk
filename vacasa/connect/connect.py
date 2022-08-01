@@ -2082,6 +2082,27 @@ class VacasaConnect:
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
 
+    def get_tickets(self, params: dict = None):
+        """Retrieve a list of tickets
+        Yields:
+            An iterator of tickets. Each ticket is a dict.
+        """
+        url = f"{self.endpoint}/v1/tickets"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
+
+    def get_ticket_by_id(self, ticket_id):
+        """ Get a single ticket by ID """
+        if not ticket_id:
+            return None
+        url = f"{self.endpoint}/v1/tickets/{ticket_id}"
+        try:
+            return self._get(url, headers=self._headers()).json()['data']
+        except (HTTPError, KeyError):
+            return None
+
+
 def _trip_protection_to_integer(trip_protection: bool) -> int:
     """Convert from True/False/None to 1/0/-1"""
     if trip_protection is None:
