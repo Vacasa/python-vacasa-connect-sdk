@@ -2092,15 +2092,12 @@ class VacasaConnect:
 
         return self._iterate_pages(url, headers, params)
 
-    def get_ticket_by_id(self, ticket_id):
+    def get_ticket_by_id(self, ticket_id: int, params: dict = None):
         """ Get a single ticket by ID """
-        if not ticket_id:
-            return None
         url = f"{self.endpoint}/v1/tickets/{ticket_id}"
-        try:
-            return self._get(url, headers=self._headers()).json()['data']
-        except (HTTPError, KeyError):
-            return None
+        r = self._get(url, headers=self._headers(), params=params)
+
+        return r.json()['data']
 
 
 def _trip_protection_to_integer(trip_protection: bool) -> int:
