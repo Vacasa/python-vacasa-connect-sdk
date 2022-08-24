@@ -2099,6 +2099,29 @@ class VacasaConnect:
 
         return r.json()['data']
 
+    def update_ticket(self, ticket_id: int, params: dict):
+        """
+        update a record on the relation table maintenance_tickets
+        """
+
+        url = f"{self.endpoint}/v1/tickets/{ticket_id}"
+        headers = self._headers()
+
+        return self._patch(url, json={'data': {
+            'type': 'tickets', 'attributes': params}}, headers=headers).json()
+
+    def create_ticket(self, payload: dict):
+        """
+        creates a ticket
+        """
+
+        url = f"{self.endpoint}/v1/tickets"
+        headers = self._headers()
+        json={'data': {
+            'type': 'tickets', 'attributes': payload}}
+
+        return self._post(url, json=json, headers=headers).json()
+
 
 def _trip_protection_to_integer(trip_protection: bool) -> int:
     """Convert from True/False/None to 1/0/-1"""

@@ -80,6 +80,21 @@ TEST_EXPECTED = dict(
                 tax_form_code_id= 12
             )
         )
+    ),
+    ticket_data=dict(
+        data=dict(
+            type = 'tickets',
+            attributes=dict(
+                title="ticket title",
+                unit_id=1,
+                assigned_to=24351,
+                severity=1,
+                created_by=24351,
+                display_severity="Urgent",
+                display_status="Accepted",
+                status=1
+            )
+        )
     )
 
 )

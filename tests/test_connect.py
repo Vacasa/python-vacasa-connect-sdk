@@ -191,3 +191,24 @@ def test_update_finance_payload(mock_patch):
     mock_patch.assert_called_once_with('https://fake_url/v1/contacts/12345/finances',
                                        headers=ANY,
                                        json=deepcopy(TEST_EXPECTED['normal_contact_finances']))
+
+# ----- Tickets ----- #
+
+@patch.object(VacasaConnect, '_post')
+def test_create_ticket(mock_post):
+    connect = mock_connect()
+
+    connect.create_ticket(deepcopy(TEST_DATA['ticket_data']))
+    mock_post.assert_called_once_with('https://fake_url/v1/tickets',
+                                      headers=ANY,
+                                      json=deepcopy(TEST_EXPECTED['ticket_data']))
+
+
+@patch.object(VacasaConnect, '_patch')
+def test_update_tickets(mock_patch):
+    connect = mock_connect()
+
+    connect.update_ticket(12340, deepcopy(TEST_DATA['ticket_data']))
+    mock_patch.assert_called_once_with('https://fake_url/v1/tickets/12340',
+                                       json=deepcopy(TEST_EXPECTED['ticket_data']),
+                                       headers=ANY)
