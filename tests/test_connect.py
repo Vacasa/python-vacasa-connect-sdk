@@ -47,13 +47,6 @@ def test_add_meta_param_adds_another_to_existing():
     assert params == expected
 
 
-def test_ensure_https():
-    with pytest.raises(ValueError) as e:
-        VacasaConnect(mock_idp, 'http://fake_endpoint')
-
-    assert str(e).endswith("`endpoint` scheme must be https")
-
-
 # ----- Create Reservations Import ----- #
 @patch.object(VacasaConnect, '_post')
 def test_create_reservations_import(mock_post):
@@ -196,15 +189,5 @@ def test_update_finance_payload(mock_patch):
 
     connect.update_contact_finances_payload(12345, deepcopy(TEST_DATA['normal_contact_finances']))
     mock_patch.assert_called_once_with('https://fake_url/v1/contacts/12345/finances',
-                                       headers=ANY,
-                                       json=deepcopy(TEST_EXPECTED['normal_contact_finances']))
-
-
-@patch.object(VacasaConnect, '_patch')
-def test_update_finance(mock_patch):
-    connect = mock_connect()
-
-    connect.update_contact_finances(12340, **deepcopy(TEST_DATA['normal_contact_finances']))
-    mock_patch.assert_called_once_with('https://fake_url/v1/contacts/12340/finances',
                                        headers=ANY,
                                        json=deepcopy(TEST_EXPECTED['normal_contact_finances']))
