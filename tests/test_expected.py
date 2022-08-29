@@ -83,7 +83,7 @@ TEST_EXPECTED = dict(
     ),
     ticket_data=dict(
         data=dict(
-            type = 'tickets',
+            type = 'ticket',
             attributes=dict(
                 title="ticket title",
                 unit_id=1,
