@@ -2106,9 +2106,9 @@ class VacasaConnect:
 
         url = f"{self.endpoint}/v1/tickets/{ticket_id}"
         headers = self._headers()
+        json = {'data': {'type': 'ticket', 'attributes': params}}
 
-        return self._patch(url, json={
-            'type': 'ticket', 'attributes': params}, headers=headers).json()
+        return self._patch(url, json=json, headers=headers).json()
 
     def create_ticket(self, payload: dict):
         """
@@ -2117,7 +2117,7 @@ class VacasaConnect:
 
         url = f"{self.endpoint}/v1/tickets"
         headers = self._headers()
-        json={'type': 'ticket', 'attributes': payload}
+        json={'data': {'type': 'ticket', 'attributes': payload}}
 
         return self._post(url, json=json, headers=headers).json()
 
