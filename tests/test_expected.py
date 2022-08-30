@@ -82,7 +82,6 @@ TEST_EXPECTED = dict(
         )
     ),
     ticket_data=dict(
-        data=dict(
             type = 'ticket',
             attributes=dict(
                 title="ticket title",
@@ -95,7 +94,6 @@ TEST_EXPECTED = dict(
                 status=1
             )
         )
-    )
 
 )
 
