@@ -91,7 +91,17 @@ TEST_DATA = dict(
         tax_id="00-0000-0",
         tax_entity_name="Arbys",
         tax_form_code_id=12
-    )
+    ),
+    ticket_data=dict(
+        title="ticket title",
+        unit_id=1,
+        assigned_to=24351,
+        severity=1,
+        created_by=24351,
+        display_severity="Urgent",
+        display_status="Accepted",
+        status=1
+    ),
 )
 
 # terms
