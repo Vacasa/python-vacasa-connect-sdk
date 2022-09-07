@@ -40,7 +40,7 @@ class VacasaConnect:
             currency: An ISO-4217 currency code. Send to request monetary
                 values in this currency.
             user_agent: The User-Agent header string used to identify your app or
-                service
+                service.
         """
         if not is_https_url(endpoint):
             raise ValueError("`endpoint` scheme must be https")
@@ -58,7 +58,7 @@ class VacasaConnect:
             'Authorization': f"Bearer {self._auth.token}",
             'Accept-Language': self.language if language is None else language,
             'X-Accept-Currency': self.currency if currency is None else currency,
-            'X-Accept-Timezone': self.timezone,
+            'X-Accept-Timezone': self.timezone
         }
 
         if self.user_agent:
