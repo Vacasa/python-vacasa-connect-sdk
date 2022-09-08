@@ -23,6 +23,7 @@ class VacasaConnect:
                  timezone: str = 'UTC',
                  language: str = 'en-US',
                  currency: str = 'USD',
+                 user_agent: str = None
                  ):
         """Initialize an instance of the VacasaConnect class.
 
@@ -38,6 +39,8 @@ class VacasaConnect:
                 {{ISO-639-1 Code}}-{{ISO 3166-1 Alpha-2 Code}}.
             currency: An ISO-4217 currency code. Send to request monetary
                 values in this currency.
+            user_agent: The User-Agent header string used to identify your app or
+                service.
         """
         if not is_https_url(endpoint):
             raise ValueError("`endpoint` scheme must be https")
@@ -47,15 +50,21 @@ class VacasaConnect:
         self.timezone = timezone
         self.language = language
         self.currency = currency
+        self.user_agent = user_agent
 
     def _headers(self, language=None, currency=None) -> dict:
         """Build common headers."""
-        return {
+        headers = {
             'Authorization': f"Bearer {self._auth.token}",
             'Accept-Language': self.language if language is None else language,
             'X-Accept-Currency': self.currency if currency is None else currency,
             'X-Accept-Timezone': self.timezone
         }
+
+        if self.user_agent:
+            headers['User-Agent'] = self.user_agent
+
+        return headers
 
     @staticmethod
     def _get(url, headers: dict = None, params: dict = None):
