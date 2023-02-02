@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='VacasaConnect',
-    version='4.27.0',
+    version='4.27.1',
     description='A Python 3.6+ SDK for the connect.vacasa.com API.',
     packages=['vacasa.connect'],
     url='https://github.com/Vacasa/python-vacasa-connect-sdk',
@@ -13,7 +13,7 @@ setup(
         'python-jose==3.*'
     ],
     extras_require={
-        "cryptography": ['cryptography>=3.*']
+        "cryptography": ['cryptography==3.*']
     },
     long_description=open('README.md').read()
 )
