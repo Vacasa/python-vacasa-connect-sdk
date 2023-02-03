@@ -13,7 +13,7 @@ setup(
         'python-jose==3.*'
     ],
     extras_require={
-        "cryptography": ['cryptography>=3.*, <=38.0.3']
+        "cryptography": ['cryptography==38.0.*']
     },
     long_description=open('README.md').read()
 )
