@@ -2099,7 +2099,7 @@ class VacasaConnect:
         url = f"{self.endpoint}/v1/tickets"
         headers = self._headers()
         if include_comments:
-            params = self._add_meta_param(params, 'comments')
+            params = self._add_include_param(params, 'comments')
 
         return self._iterate_pages(url, headers, params)
 
@@ -2108,7 +2108,7 @@ class VacasaConnect:
         url = f"{self.endpoint}/v1/tickets/{ticket_id}"
         r = self._get(url, headers=self._headers(), params=params)
         if include_comments:
-            params = self._add_meta_param(params, 'comments')
+            params = self._add_include_param(params, 'comments')
 
         return r.json()['data']
 
