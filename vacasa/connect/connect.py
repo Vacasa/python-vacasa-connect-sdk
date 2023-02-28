@@ -2091,20 +2091,24 @@ class VacasaConnect:
         return self._post(url, json={'data': {'attributes': payload}}, headers=headers).json()
 
 
-    def get_tickets(self, params: dict = None):
+    def get_tickets(self, params: dict = None, include_comments: bool = False):
         """Retrieve a list of tickets
         Yields:
             An iterator of tickets. Each ticket is a dict.
         """
         url = f"{self.endpoint}/v1/tickets"
         headers = self._headers()
+        if include_comments:
+            params = self._add_include_param(params, 'comments')
 
         return self._iterate_pages(url, headers, params)
 
-    def get_ticket_by_id(self, ticket_id: int, params: dict = None):
+    def get_ticket_by_id(self, ticket_id: int, params: dict = None, include_comments: bool = False):
         """ Get a single ticket by ID """
         url = f"{self.endpoint}/v1/tickets/{ticket_id}"
         r = self._get(url, headers=self._headers(), params=params)
+        if include_comments:
+            params = self._add_include_param(params, 'comments')
 
         return r.json()['data']
 
