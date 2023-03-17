@@ -2133,6 +2133,17 @@ class VacasaConnect:
         json={'data': {'type': 'ticket', 'attributes': payload}}
 
         return self._post(url, json=json, headers=headers).json()
+    
+    def create_ticket_comment(self, payload: dict):
+        """
+        creates a ticket comment
+        """
+
+        url = f"{self.endpoint}/v1/ticket-comments"
+        headers = self._headers()
+        json={'data': {'type': 'ticket-comment', 'attributes': payload}}
+
+        return self._post(url, json=json, headers=headers).json()
 
 
 def _trip_protection_to_integer(trip_protection: bool) -> int:
