@@ -2150,7 +2150,7 @@ class VacasaConnect:
         update a record on the maintenance_updates table
         """
 
-        url = f"{self.endpoint}/v1/tickets/{ticket_comment_id}"
+        url = f"{self.endpoint}/v1/ticket-comments/{ticket_comment_id}"
         headers = self._headers()
         json = {'data': {'type': 'ticket-comment', 'attributes': params}}
 
