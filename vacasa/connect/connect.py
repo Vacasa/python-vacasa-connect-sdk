@@ -2144,6 +2144,17 @@ class VacasaConnect:
         json={'data': {'type': 'ticket-comment', 'attributes': payload}}
 
         return self._post(url, json=json, headers=headers).json()
+    
+    def update_ticket_comment(self, ticket_comment_id: int, params: dict):
+        """
+        update a record on the maintenance_updates table
+        """
+
+        url = f"{self.endpoint}/v1/tickets/{ticket_comment_id}"
+        headers = self._headers()
+        json = {'data': {'type': 'ticket-comment', 'attributes': params}}
+
+        return self._patch(url, json=json, headers=headers).json()
 
 
 def _trip_protection_to_integer(trip_protection: bool) -> int:
