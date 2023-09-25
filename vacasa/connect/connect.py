@@ -1609,6 +1609,18 @@ class VacasaConnect:
 
         return self._iterate_pages(url, headers, params)
 
+    def get_expense_debit_methods(self):
+        """
+        Yields:
+            Iterator of expense debit methods, each one is a dict
+        """
+
+        params = {}
+        url = f"{self.endpoint}/v1/expense-debit-methods"
+        headers = self._headers()
+
+        return self._iterate_pages(url, headers, params)
+
     def get_contacts(self,
                      params: dict = None):
         """
