@@ -50,8 +50,7 @@ class VacasaConnect:
             raise ValueError("`endpoint` scheme must be https")
 
         global requests
-        if requests is None:
-            requests = request_with_retries(pool_connections=pool_connections, pool_maxsize=pool_maxsize)
+        requests = requests or request_with_retries(pool_connections=pool_connections, pool_maxsize=pool_maxsize)
 
         self._auth = auth
         self.endpoint = endpoint.rstrip('/')
