@@ -1,31 +1,45 @@
-from jose import jwt, ExpiredSignatureError
+"""IDP Authentication for Vacasa Connect."""
+import logging
+import time
+from typing import Optional
+
+import jwt
+from requests import HTTPError
 
 from .requests_config import request_with_retries
 from .util import log_http_error
 
-requests = request_with_retries()
+logger = logging.getLogger(__name__)
+requests = None
 
 
 class IdpAuth:
-    """Authorize with ConnectAPI using the Identity Provider Service (OIDC / JOSE)"""
+    """This class handles authentication with the IDP server."""
 
     def __init__(self,
-                 config_endpoint: str,
                  client_id: str,
                  client_secret: str,
-                 audience: str,
-                 scopes: list,
-                 leeway: int = 0):
-        self._token = None
-        self._claims = None
-        self._config = None
-        self._key = None
-        self.config_endpoint = config_endpoint
+                 idp_url: str = 'https://id.vacasa.com',
+                 pool_connections: int = 10,
+                 pool_maxsize: int = 10):
+        """Initialize an instance of the IdpAuth class.
+
+        Args:
+            client_id: The client ID for the IDP server.
+            client_secret: The client secret for the IDP server.
+            idp_url: The URL of the IDP server.
+            pool_connections: The number of connection pools to maintain (one per host).
+            pool_maxsize: The maximum number of connections to keep in each pool (simultaneous connections per host).
+        """
         self.client_id = client_id
         self.client_secret = client_secret
-        self._scopes = scopes
-        self._audience = audience
-        self._leeway = leeway
+        self.idp_url = idp_url.rstrip('/')
+        self._token = None
+        self._token_expiry = 0
+
+        global requests
+        if requests is None:
+            requests = request_with_retries(pool_connections=pool_connections, pool_maxsize=pool_maxsize)
 
     @property
     def token(self):

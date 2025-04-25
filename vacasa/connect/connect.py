@@ -11,7 +11,7 @@ from .requests_config import request_with_retries
 from .util import log_http_error, is_https_url, subtract_days
 
 logger = logging.getLogger(__name__)
-requests = request_with_retries()
+requests = None
 
 
 class VacasaConnect:
@@ -23,7 +23,9 @@ class VacasaConnect:
                  timezone: str = 'UTC',
                  language: str = 'en-US',
                  currency: str = 'USD',
-                 user_agent: str = None
+                 user_agent: str = None,
+                 pool_connections: int = 10,
+                 pool_maxsize: int = 10
                  ):
         """Initialize an instance of the VacasaConnect class.
 
@@ -41,9 +43,15 @@ class VacasaConnect:
                 values in this currency.
             user_agent: The User-Agent header string used to identify your app or
                 service.
+            pool_connections: The number of connection pools to maintain (one per host).
+            pool_maxsize: The maximum number of connections to keep in each pool (simultaneous connections per host).
         """
         if not is_https_url(endpoint):
             raise ValueError("`endpoint` scheme must be https")
+
+        global requests
+        if requests is None:
+            requests = request_with_retries(pool_connections=pool_connections, pool_maxsize=pool_maxsize)
 
         self._auth = auth
         self.endpoint = endpoint.rstrip('/')
@@ -218,9 +226,9 @@ class VacasaConnect:
 
         Args:
             housing_type: Effective foreign key to table Codes with CodeTypeId = 2,
-                          corresponds to “Housing Type” on Listing tab for a unit
+                          corresponds to "Housing Type" on Listing tab for a unit
             secured_by: An int id of a user/process that signed up the unit
-            turnover_day: Corresponds to “Fixed Turnover” on Rates tab for a unit
+            turnover_day: Corresponds to "Fixed Turnover" on Rates tab for a unit
             code: Unit code, alternate unique identifier for a unit.
                   If not provided the Connect API will assign a temp code
             name: Unique name for the unit. Can be empty
@@ -231,9 +239,9 @@ class VacasaConnect:
             latitude:
             longitude:
             amenity_email: Selected from hardcoded list of email addresses in Admin source code,
-                           corresponds to “Send Amenity Request Email to” on Listing tab for a unit
+                           corresponds to "Send Amenity Request Email to" on Listing tab for a unit
             m_source: Effective foreign key to table Codes with CodeTypeId = 3,
-                      corresponds to “Source” on Listing tab for a unit,
+                      corresponds to "Source" on Listing tab for a unit,
             address:
             king_beds:
             queen_beds:
@@ -1520,14 +1528,14 @@ class VacasaConnect:
             end_date: End date of a contract (By default will be '2099-01-01'
             monthly_rent: Fixed monthly rent per contract
             template_version_id: Foreign key to table contract_template_version,
-                                 corresponds to “Template Version” on Contract page in Admin
-            form_id: Foreign key to table contract_form, corresponds to “Contract Form” on Contract page in Admin
+                                 corresponds to "Template Version" on Contract page in Admin
+            form_id: Foreign key to table contract_form, corresponds to "Contract Form" on Contract page in Admin
             channel_fee_cost_sharing_id: Foreign key to table contract_channel_fee_cost_sharing,
-                                         corresponds to “Channel Fee Cost Sharing” on Contract page in Admin
+                                         corresponds to "Channel Fee Cost Sharing" on Contract page in Admin
             amendment_by_notice_id: Foreign key to table contract_amendment_by_notice,
-                                    corresponds to “Amendment by Notice” on Contract page in Admin
-            referral_eligible: Corresponds to “Owner Referral Eligible” on Contract page in Admin
-            referral_discount: Corresponds to “Owner Referral Discount” on Contract page in Admin
+                                    corresponds to "Amendment by Notice" on Contract page in Admin
+            referral_eligible: Corresponds to "Owner Referral Eligible" on Contract page in Admin
+            referral_discount: Corresponds to "Owner Referral Discount" on Contract page in Admin
             secured_by: The ID of the user that secured the contract.
 
         Returns: dict
@@ -1684,7 +1692,7 @@ class VacasaConnect:
             zip: Mailing zip code of contact
             country_code: Mailing country code of contact
             phone: Phone Number of contact
-            phone_notes: Corresponds to “Phone Notes” on Contact page in Admin
+            phone_notes: Corresponds to "Phone Notes" on Contact page in Admin
             language_id: Foreign key to table languages
             created_by: ID of logged in user
             tax_entity_name: If the contact is a business, put the business name here
