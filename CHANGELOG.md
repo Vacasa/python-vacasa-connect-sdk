@@ -2,6 +2,16 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [4.30.0] - 2024-03-21
+
+### Changed
+- Implemented singleton pattern for requests object in both `VacasaConnect` and `IdpAuth` classes
+- Added connection pool configuration parameters:
+  - `pool_connections`: Number of connection pools to maintain (one per host)
+  - `pool_maxsize`: Maximum number of simultaneous connections per host
+- Updated documentation to reflect new connection pool configuration options
+
 ## [4.29.0] - 2023-09-20
 
 ## Changed

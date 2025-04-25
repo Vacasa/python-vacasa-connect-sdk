@@ -10,21 +10,29 @@ Before you can use this SDK you'll need access to the
 # Initialize an instance of the VacasaConnect class using your credentials.
 from vacasa.connect import VacasaConnect, IdpAuth
 
+# Basic initialization with default connection pool settings
+# Default values: pool_connections=10, pool_maxsize=10
 connect = VacasaConnect(
     endpoint=CONNECT_API_ENDPOINT,
     auth=IdpAuth(
-        config_endpoint=OIDC_CONFIG_ENDPOINT,
         client_id=CLIENT_ID,
         client_secret=CLIENT_SECRET,
-        audience=OIDC_AUDIENCE,
-        scopes=[
-            # see OIDC_CONFIG_ENDPOINT for supported scopes
-            LIST,
-            OF,
-            REQUESTED,
-            SCOPES,
-        ]
+        idp_url=IDP_URL
     ),
+)
+
+# Optional: Customize connection pool settings for better performance
+connect = VacasaConnect(
+    endpoint=CONNECT_API_ENDPOINT,
+    auth=IdpAuth(
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
+        idp_url=IDP_URL,
+        pool_connections=20,  # Optional: Number of connection pools (one per host)
+        pool_maxsize=30      # Optional: Maximum simultaneous connections per host
+    ),
+    pool_connections=20,     # Optional: Number of connection pools (one per host)
+    pool_maxsize=30         # Optional: Maximum simultaneous connections per host
 )
 
 # Get units

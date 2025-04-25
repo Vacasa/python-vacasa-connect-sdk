@@ -48,7 +48,7 @@ class RetryWithJitter(Retry):
         return next_retry
 
 
-def request_with_retries(retry_config: Retry = None) -> requests.Session:
+def request_with_retries(retry_config: Retry = None, pool_connections: int = 10, pool_maxsize: int = 10) -> requests.Session:
     """ Requests initiated with the resulting session should retry server/connection errors with backoff and jitter """
     if retry_config is None:
         retry_config = RetryWithJitter(
@@ -63,7 +63,7 @@ def request_with_retries(retry_config: Retry = None) -> requests.Session:
         )
 
     session = requests.Session()
-    adapter = HTTPAdapter(max_retries=retry_config)
+    adapter = HTTPAdapter(max_retries=retry_config, pool_connections=pool_connections, pool_maxsize=pool_maxsize)
     session.mount('http://', adapter)
     session.mount('https://', adapter)
     return session
